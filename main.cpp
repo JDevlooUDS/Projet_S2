@@ -1,7 +1,8 @@
-#include <iostream>
+#include "header/game.h"
 using namespace std;
 
 int main(int argc, char* argv) {
-    cout << "Hello world!" << endl;
+    Game game;
+    game.run();
     return 0;
 }

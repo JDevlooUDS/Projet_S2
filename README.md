@@ -1,6 +1,6 @@
 # Projet_S2
 
-## Instalation
+## Installation
 **Si vous ne voulez pas installer les logiciels vous pouvez utiliser ceux des laboratoires de l'université tout est déjà installé et configuré**
 
 Puisque pour l'APP 7 d'info il faut utiliser Qt avec visual studio 2022 on doit bâtir le projet autour de ces restrictions. Pour installer visual studio 2022 utiliser ce [lien](https://aka.ms/vs/17/release/vs_community.exe). Également, il faut installer Qt simplement suivre la procédure sur le site de session dans la section **Manuels, matériels et logiciels.** Lorsque vous télécharger visual studio 2022 il faut au minimum ajouter le module Développement Desktop en C++.
