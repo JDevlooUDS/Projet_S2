@@ -39,3 +39,15 @@
 
 # debug information files
 *.dwo
+
+# Visual studio files
+.vs
+*.sln
+*.vcxproj
+*.vcxproj.*
+debug
+release
+
+# Qt files
+.qmake.stash
+
