@@ -1,6 +1,11 @@
 #include <iostream>
 using namespace std;
 
+struct Position {
+	int x = 0;
+	int y = 0;
+};
+
 class GameObject {
 public:
 	GameObject();
@@ -16,6 +21,9 @@ public:
 	void activate();
 	void deactivate();
 	void setSprite(char sprite);
+	void setPosition(int x, int y);
+	char getSprite();
+	Position getPosition();
 
 	
 
@@ -24,4 +32,5 @@ private:
 	int speed = 0;
 	char sprite = ' ';
 	bool active = false;
+	Position pos;
 };
