@@ -9,6 +9,9 @@ GameObject::~GameObject()  {
 }
 
 void GameObject::move(int x, int y) {
+	if (!active) return;
+	lastPos.x = pos.x;
+	lastPos.y = pos.y;
 	pos.x += x;
 	pos.y += y;
 }
@@ -64,4 +67,8 @@ void GameObject::setPosition(int x, int y) {
 
 Position GameObject::getPosition() {
 	return pos;
+}
+
+Position GameObject::getLastPosition() {
+	return lastPos;
 }

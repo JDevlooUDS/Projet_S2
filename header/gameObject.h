@@ -24,6 +24,7 @@ public:
 	void setPosition(int x, int y);
 	char getSprite();
 	Position getPosition();
+	Position getLastPosition();
 
 	
 
@@ -33,4 +34,5 @@ private:
 	char sprite = ' ';
 	bool active = false;
 	Position pos;
+	Position lastPos;
 };

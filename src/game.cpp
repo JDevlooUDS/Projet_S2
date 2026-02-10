@@ -3,7 +3,14 @@
 Game::Game() {
 	if (loadMap() == 0) isMapLoaded = true;
 	if (isMapLoaded) isRunning = true;
+	player.activate();
 	player.setPosition(0,2);
+
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(consoleHandle, &info);
 }
 
 Game::~Game() {
@@ -21,9 +28,20 @@ void Game::run() {
 void Game::getInputs() {
 	inputs.reset();
 	//Valider seulement quand la touche est appuyé et non maintenue. 
-	if (GetKeyState('A') & 0x8000) inputs.isLeftPressed = true;
-	if (GetKeyState('D') & 0x8000) inputs.isLeftPressed = true;
-	if (GetKeyState(VK_ESCAPE) & 0x8000) inputs.isEscapePressed = true;
+	if (GetAsyncKeyState('A') & 0x8000) {
+
+		if (!wasAKeyPressedLastFrame) inputs.isLeftPressed = true;
+		wasAKeyPressedLastFrame = true;
+	}
+	else wasAKeyPressedLastFrame = false;
+
+	if (GetAsyncKeyState('D') & 0x8000) {
+		if (!wasDKeyPressedLastFrame) inputs.isRightPressed = true;
+		wasDKeyPressedLastFrame = true;
+	}
+	else wasDKeyPressedLastFrame = false;
+
+	if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) inputs.isEscapePressed = true;
 }
 
 void Game::update() {
@@ -33,8 +51,11 @@ void Game::update() {
 
 	int playerPosX = player.getPosition().x;
 	int playerPosY = player.getPosition().y * mapLenght;
+	Position lastPos = player.getLastPosition();
+	int mapYLastPos = lastPos.y * mapLenght;
 
 	map[playerPosY + playerPosX] = player.getSprite();
+	map[mapYLastPos + lastPos.x] = ' ';
 }
 
 void Game::draw() {

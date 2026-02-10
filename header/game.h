@@ -29,4 +29,7 @@ private:
 	int mapHeight = 0;
 	char* map = nullptr;
 	Player player;
+
+	bool wasAKeyPressedLastFrame = false;
+	bool wasDKeyPressedLastFrame = false;
 };
