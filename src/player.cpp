@@ -27,3 +27,7 @@ void Player::fall() {
 bool Player::isJumping() {
 	return jumping;
 }
+
+void Player::cancelJump() {
+	jumping = false;
+}

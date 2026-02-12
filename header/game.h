@@ -20,6 +20,7 @@ private:
 	void update();
 	void draw();
 	int loadMap();
+	void managePlayerMovement();
 
 	Inputs inputs;
 	bool isRunning = false;
@@ -34,6 +35,9 @@ private:
 	bool wasAKeyPressedLastFrame = false;
 	bool wasDKeyPressedLastFrame = false;
 	bool wasSpaceKeyPressedLastFrame = false;
+	bool wasDashKeyPressedLastFrame = false;
+	bool isMapUpdated = true;
+
 	chrono::milliseconds delay = chrono::milliseconds(1000);
 	chrono::system_clock::time_point jumpTimer;
 

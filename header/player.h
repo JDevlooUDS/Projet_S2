@@ -7,6 +7,7 @@ public:
 	void jump();
 	void fall();
 	bool isJumping();
+	void cancelJump();
 private:
 	bool jumping = false;
 };
