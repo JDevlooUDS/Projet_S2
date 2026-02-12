@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <cstdlib>
 #include "player.h"
+#include <chrono>
 
 using namespace std;
 
@@ -32,4 +33,8 @@ private:
 
 	bool wasAKeyPressedLastFrame = false;
 	bool wasDKeyPressedLastFrame = false;
+	bool wasSpaceKeyPressedLastFrame = false;
+	chrono::milliseconds delay = chrono::milliseconds(1000);
+	chrono::system_clock::time_point jumpTimer;
+
 };

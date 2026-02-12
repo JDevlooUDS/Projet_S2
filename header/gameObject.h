@@ -28,7 +28,7 @@ public:
 
 	
 
-private:
+protected:
 	int hp = 0;
 	int speed = 0;
 	char sprite = ' ';

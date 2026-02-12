@@ -26,8 +26,7 @@ void Game::run() {
 }
 
 void Game::getInputs() {
-	inputs.reset();
-	//Valider seulement quand la touche est appuyé et non maintenue. 
+	inputs.reset(); 
 	if (GetAsyncKeyState('A') & 0x8000) {
 
 		if (!wasAKeyPressedLastFrame) inputs.isLeftPressed = true;
@@ -41,21 +40,52 @@ void Game::getInputs() {
 	}
 	else wasDKeyPressedLastFrame = false;
 
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+		if (!wasSpaceKeyPressedLastFrame) inputs.isSpacePressed = true;
+		wasSpaceKeyPressedLastFrame = true;
+	}
+	else wasSpaceKeyPressedLastFrame = false;
+
 	if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) inputs.isEscapePressed = true;
 }
 
 void Game::update() {
+	Position playerPos = player.getPosition();
+	Position lastPlayerPos = player.getLastPosition();
+	int mapLastPosY = lastPlayerPos.y * mapLenght;
+	int mapPosY = playerPos.y * mapLenght;
+
 	if (inputs.isEscapePressed) isRunning = false;
-	if (inputs.isLeftPressed) player.move(-1,0);
-	if (inputs.isRightPressed) player.move(1,0);
+	if (inputs.isLeftPressed) {
+		if (map[mapPosY + playerPos.x - 1] == ' ' && playerPos.x > 0) {
+			player.move(-1, 0);
+		}
+	}
+	if (inputs.isRightPressed) {
+		if (map[mapPosY + playerPos.x + 1] == ' ' && playerPos.x < mapLenght) {
+			player.move(1, 0);
+		}
+	}
 
-	int playerPosX = player.getPosition().x;
-	int playerPosY = player.getPosition().y * mapLenght;
-	Position lastPos = player.getLastPosition();
-	int mapYLastPos = lastPos.y * mapLenght;
+	if (inputs.isSpacePressed) {
+		if (!player.isJumping()) {
+			player.jump();
+			jumpTimer = chrono::system_clock::now();
+		}
+	}
 
-	map[playerPosY + playerPosX] = player.getSprite();
-	map[mapYLastPos + lastPos.x] = ' ';
+	if (chrono::system_clock::now() - jumpTimer >= delay) {
+		if (player.isJumping()) {
+			player.fall();
+		}
+	}
+
+	playerPos = player.getPosition();
+	lastPlayerPos = player.getLastPosition();
+	mapLastPosY = lastPlayerPos.y * mapLenght;
+	mapPosY = playerPos.y * mapLenght;
+	map[mapPosY + playerPos.x] = player.getSprite();
+	map[mapLastPosY + lastPlayerPos.x] = ' ';
 }
 
 void Game::draw() {
@@ -66,8 +96,8 @@ void Game::draw() {
 }
 
 int Game::loadMap() {
-	uintmax_t size = filesystem::file_size("C:/Users/jerem/Documents/Coding/Universite/Session 2/Projet/Projet_S2/map/map.txt");
-	ifstream mapFile("C:/Users/jerem/Documents/Coding/Universite/Session 2/Projet/Projet_S2/map/map.txt");
+	uintmax_t size = filesystem::file_size("C:/Users/jerem/Documents/Universite/Session2/Projet_info/Projet_S2/map/map.txt");
+	ifstream mapFile("C:/Users/jerem/Documents/Universite/Session2/Projet_info/Projet_S2/map/map.txt");
 	if (!mapFile.is_open()) return 1;
 	
 	map = new char[size];
