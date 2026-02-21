@@ -9,11 +9,15 @@ GameObject::~GameObject()  {
 }
 
 void GameObject::move(int x, int y) {
-
+	if (!active) return;
+	lastPos.x = pos.x;
+	lastPos.y = pos.y;
+	pos.x += x;
+	pos.y += y;
 }
 
 void GameObject::damage(int damage) {
-	
+	hp -= damage;
 }
 
 void GameObject::draw(ostream& os) {
@@ -50,4 +54,21 @@ int GameObject::getSpeed() {
 
 void GameObject::setSprite(char sprite) {
 	this->sprite = sprite;
+}
+
+char GameObject::getSprite() {
+	return sprite;
+}
+
+void GameObject::setPosition(int x, int y) {
+	pos.x = x;
+	pos.y = y;
+}
+
+Position GameObject::getPosition() {
+	return pos;
+}
+
+Position GameObject::getLastPosition() {
+	return lastPos;
 }
