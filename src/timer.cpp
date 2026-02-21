@@ -1,4 +1,4 @@
-#include "timer.h"
+#include "../header/timer.h"
 
 using namespace std;
 
@@ -13,17 +13,17 @@ Timer::~Timer() {
 
 }
 
-Timer::activate() {
+void Timer::activate() {
 	startTime = clock();
 	active = true;
 }
 
-Timer::deactivate() {
+float Timer::deactivate() {
 	active = false;
 	return elapsedTime;
 }
 
-Timer::update() {
+void Timer::update() {
 	if (active) {
 		clock_t currentTime = clock();
 		double elapsedTime = (double)(currentTime - startTime)/CLOCKS_PER_SEC;
