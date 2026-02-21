@@ -13,8 +13,10 @@ public:
 	void activate(); // start timer a 0
 	float deactivate(); // arrete timer et retourne le temps ecoule
 	void update(); // appeller chaque frame quand timer on
+	bool isActive();
+	double getTime();
 private:
-	float elapsedTime;
+	double elapsedTime;
 	float startTime;
 	bool active;
 };

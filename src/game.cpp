@@ -11,6 +11,7 @@ Game::Game() {
 	info.dwSize = 100;
 	info.bVisible = FALSE;
 	SetConsoleCursorInfo(consoleHandle, &info);
+	timer.activate();
 }
 
 Game::~Game() {
@@ -60,15 +61,18 @@ void Game::update() {
 		isRunning = false;
 		return;
 	}
+	if (timer.isActive()) timer.update();
 	managePlayerMovement();
 }
 
 void Game::draw() {
-	if (!isMapUpdated) return;
+	//if (!isMapUpdated) return;
 	system("cls");
 
+
 	if (isFinished) {
-		cout << "Travail termine...";
+		cout << "Travail termine..." << endl;
+		cout << "temps (s) : " << timer.getTime() << endl;
 		return;
 	}
 
@@ -76,6 +80,8 @@ void Game::draw() {
 		cout << "Joueur mort" << endl;
 		return;
 	}
+
+	cout << "Temps (s) : " << timer.getTime() << endl;
 
 	cout << "Hp : " << player.getHp() << endl;
 
@@ -119,7 +125,10 @@ void Game::managePlayerMovement() {
 	int mapLastPosY = lastPlayerPos.y * mapLenght;
 	int mapPosY = playerPos.y * mapLenght;
 
-	if (inputs.isEscapePressed) isRunning = false;
+	if (inputs.isEscapePressed) {
+		isRunning = false;
+		timer.deactivate();
+	}
 	if (inputs.isLeftPressed) {
 		if (map[mapPosY + playerPos.x - 1] == ' ' && playerPos.x > 0) {
 			player.move(-1, 0);
@@ -130,6 +139,7 @@ void Game::managePlayerMovement() {
 		}
 		else if (map[mapPosY + playerPos.x - 1] == 'w') {
 			player.move(1, 0);
+			timer.deactivate();
 			isFinished = true;
 			isMapUpdated = true;
 		}
@@ -157,7 +167,7 @@ void Game::managePlayerMovement() {
 		killPlayer();
 	}
 
-	if (inputs.isSpacePressed) {
+	if (inputs.isSpacePressed && map[mapPosY - mapLenght + playerPos.x] == ' ') {
 		if (!player.isJumping()) {
 			player.jump();
 			isMapUpdated = true;
