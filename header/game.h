@@ -21,11 +21,13 @@ private:
 	void draw();
 	int loadMap();
 	void managePlayerMovement();
+	void killPlayer();
 
 	Inputs inputs;
 	bool isRunning = false;
 	bool isFinished = false;
 	bool isMapLoaded = false;
+	bool isPlayerDead = false;
 	int mapSize = 0;
 	int mapLenght = 0;
 	int mapHeight = 0;

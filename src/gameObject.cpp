@@ -17,7 +17,7 @@ void GameObject::move(int x, int y) {
 }
 
 void GameObject::damage(int damage) {
-	
+	hp -= damage;
 }
 
 void GameObject::draw(ostream& os) {

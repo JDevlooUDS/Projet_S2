@@ -1,6 +1,7 @@
 #include "../header/player.h"
 
 Player::Player() {
+	hp = 3;
 	GameObject::setSprite('O');
 }
 

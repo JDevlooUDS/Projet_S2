@@ -56,15 +56,36 @@ void Game::getInputs() {
 }
 
 void Game::update() {
+	if (isFinished) {
+		isRunning = false;
+		return;
+	}
 	managePlayerMovement();
 }
 
 void Game::draw() {
 	if (!isMapUpdated) return;
 	system("cls");
+
+	if (isFinished) {
+		cout << "Travail termine...";
+		return;
+	}
+
+	if (isPlayerDead) {
+		cout << "Joueur mort" << endl;
+		return;
+	}
+
+	cout << "Hp : " << player.getHp() << endl;
+
 	for (int i = 0; i < mapSize; i++) {
 		cout << map[i];
 	}
+
+
+
+	
 	isMapUpdated = false;
 }
 
@@ -104,10 +125,26 @@ void Game::managePlayerMovement() {
 			player.move(-1, 0);
 			isMapUpdated = true;
 		}
+		else if (map[mapPosY + playerPos.x - 1] == 'x' && playerPos.x > 0) {
+			killPlayer();
+		}
+		else if (map[mapPosY + playerPos.x - 1] == 'w') {
+			player.move(1, 0);
+			isFinished = true;
+			isMapUpdated = true;
+		}
 	}
 	if (inputs.isRightPressed) {
 		if (map[mapPosY + playerPos.x + 1] == ' ' && playerPos.x < mapLenght) {
 			player.move(1, 0);
+			isMapUpdated = true;
+		}
+		else if (map[mapPosY + playerPos.x + 1] == 'x' && playerPos.x < mapLenght) {
+			killPlayer();
+		}
+		else if (map[mapPosY + playerPos.x + 1] == 'w') {
+			player.move(1, 0);
+			isFinished = true;
 			isMapUpdated = true;
 		}
 	}
@@ -115,6 +152,9 @@ void Game::managePlayerMovement() {
 	if (!player.isJumping() && map[mapPosY + mapLenght + playerPos.x] == ' ') {
 		player.fall();
 		isMapUpdated = true;
+	}
+	else if (!player.isJumping() && map[mapPosY + mapLenght + playerPos.x] == 'x') {
+		killPlayer();
 	}
 
 	if (inputs.isSpacePressed) {
@@ -148,4 +188,18 @@ void Game::managePlayerMovement() {
 	map[mapPosY + playerPos.x] = player.getSprite();
 	map[mapLastPosY + lastPlayerPos.x] = ' ';
 
+}
+
+void Game::killPlayer() {
+	player.damage(1);
+	if (player.getHp() == 0) {
+		player.deactivate();
+		isPlayerDead = true;
+		isRunning = false;
+	}
+	Position playerPos = player.getPosition();
+	int mapPlayerPosy = playerPos.y * mapLenght;
+	map[mapPlayerPosy + playerPos.x] = ' ';
+	player.setPosition(0,2);
+	isMapUpdated = true;
 }
