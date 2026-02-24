@@ -23,6 +23,7 @@ private:
 	int loadMap();
 	void managePlayerMovement();
 	void killPlayer();
+	void updateMap();
 
 	Inputs inputs;
 	bool isRunning = false;
