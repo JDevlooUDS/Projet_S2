@@ -96,8 +96,8 @@ void Game::draw() {
 }
 
 int Game::loadMap() {
-	uintmax_t size = filesystem::file_size("C:/Users/jerem/Documents/Universite/Session2/Projet_info/Projet_S2/map/map.txt");
-	ifstream mapFile("C:/Users/jerem/Documents/Universite/Session2/Projet_info/Projet_S2/map/map.txt");
+	uintmax_t size = filesystem::file_size("map/map.txt");
+	ifstream mapFile("map/map.txt");
 	if (!mapFile.is_open()) return 1;
 	
 	map = new char[size];

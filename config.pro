@@ -4,3 +4,6 @@ CONFIG += warn_on qt debug windows console
 HEADERS += ./header/gameObject.h ./header/game.h ./header/player.h ./header/inputs.h ./header/timer.h
 SOURCES += main.cpp ./src/gameObject.cpp ./src/game.cpp ./src/player.cpp ./src/timer.cpp
 INCLUDEPATH += ./header ./src ./map ./image
+map_folder.files = $$files($$PWD/map/*)
+map_folder.path = $$OUT_PWD/map
+INSTALLS += map_folder
