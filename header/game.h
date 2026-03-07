@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include "player.h"
 #include <chrono>
+#include "timer.h"
 
 using namespace std;
 
@@ -22,6 +23,7 @@ private:
 	int loadMap();
 	void managePlayerMovement();
 	void killPlayer();
+	void updateMap();
 
 	Inputs inputs;
 	bool isRunning = false;
@@ -39,6 +41,8 @@ private:
 	bool wasSpaceKeyPressedLastFrame = false;
 	bool wasDashKeyPressedLastFrame = false;
 	bool isMapUpdated = true;
+
+	Timer timer;
 
 	chrono::milliseconds delay = chrono::milliseconds(1000);
 	chrono::system_clock::time_point jumpTimer;

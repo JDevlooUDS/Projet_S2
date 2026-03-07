@@ -11,6 +11,7 @@ Game::Game() {
 	info.dwSize = 100;
 	info.bVisible = FALSE;
 	SetConsoleCursorInfo(consoleHandle, &info);
+	timer.activate();
 }
 
 Game::~Game() {
@@ -60,6 +61,7 @@ void Game::update() {
 		isRunning = false;
 		return;
 	}
+	if (timer.isActive()) timer.update();
 	managePlayerMovement();
 }
 
@@ -67,8 +69,10 @@ void Game::draw() {
 	if (!isMapUpdated) return;
 	system("cls");
 
+
 	if (isFinished) {
-		cout << "Travail termine...";
+		cout << "Travail termine..." << endl;
+		cout << "temps (s) : " << timer.getTime() << endl;
 		return;
 	}
 
@@ -76,6 +80,8 @@ void Game::draw() {
 		cout << "Joueur mort" << endl;
 		return;
 	}
+
+	cout << "Temps (s) : " << timer.getTime() << endl;
 
 	cout << "Hp : " << player.getHp() << endl;
 
@@ -90,8 +96,8 @@ void Game::draw() {
 }
 
 int Game::loadMap() {
-	uintmax_t size = filesystem::file_size("C:/Users/jerem/Documents/Universite/Session2/Projet_info/Projet_S2/map/map.txt");
-	ifstream mapFile("C:/Users/jerem/Documents/Universite/Session2/Projet_info/Projet_S2/map/map.txt");
+	uintmax_t size = filesystem::file_size("map/map.txt");
+	ifstream mapFile("map/map.txt");
 	if (!mapFile.is_open()) return 1;
 	
 	map = new char[size];
@@ -119,49 +125,62 @@ void Game::managePlayerMovement() {
 	int mapLastPosY = lastPlayerPos.y * mapLenght;
 	int mapPosY = playerPos.y * mapLenght;
 
-	if (inputs.isEscapePressed) isRunning = false;
+	if (inputs.isEscapePressed) {
+		isRunning = false;
+		timer.deactivate();
+	}
 	if (inputs.isLeftPressed) {
 		if (map[mapPosY + playerPos.x - 1] == ' ' && playerPos.x > 0) {
 			player.move(-1, 0);
 			isMapUpdated = true;
+			updateMap();
 		}
 		else if (map[mapPosY + playerPos.x - 1] == 'x' && playerPos.x > 0) {
 			killPlayer();
+			updateMap();
 		}
 		else if (map[mapPosY + playerPos.x - 1] == 'w') {
 			player.move(1, 0);
+			timer.deactivate();
 			isFinished = true;
 			isMapUpdated = true;
+			updateMap();
 		}
 	}
 	if (inputs.isRightPressed) {
 		if (map[mapPosY + playerPos.x + 1] == ' ' && playerPos.x < mapLenght) {
 			player.move(1, 0);
 			isMapUpdated = true;
+			updateMap();
 		}
 		else if (map[mapPosY + playerPos.x + 1] == 'x' && playerPos.x < mapLenght) {
 			killPlayer();
+			updateMap();
 		}
 		else if (map[mapPosY + playerPos.x + 1] == 'w') {
 			player.move(1, 0);
 			isFinished = true;
 			isMapUpdated = true;
+			updateMap();
 		}
 	}
 
 	if (!player.isJumping() && map[mapPosY + mapLenght + playerPos.x] == ' ') {
 		player.fall();
 		isMapUpdated = true;
+		updateMap();
 	}
 	else if (!player.isJumping() && map[mapPosY + mapLenght + playerPos.x] == 'x') {
 		killPlayer();
+		updateMap();
 	}
 
-	if (inputs.isSpacePressed) {
+	if (inputs.isSpacePressed && map[mapPosY - mapLenght + playerPos.x] == ' ') {
 		if (!player.isJumping()) {
 			player.jump();
 			isMapUpdated = true;
 			jumpTimer = chrono::system_clock::now();
+			updateMap();
 		}
 	}
 
@@ -171,23 +190,69 @@ void Game::managePlayerMovement() {
 			isMapUpdated = true;
 		}
 		else player.cancelJump();
-
+		updateMap();
 	}
 
 	if (inputs.isDashPressed) {
-		if (inputs.isLeftPressed || wasAKeyPressedLastFrame) player.move(-3, 0);
-		else player.move(3, 0);
+		char b1 = map[mapPosY + playerPos.x - 1];
+		char b2 = map[mapPosY + playerPos.x - 2];
+		char b3 = map[mapPosY + playerPos.x - 3];
+		char f1 = map[mapPosY + playerPos.x + 1];
+		char f2 = map[mapPosY + playerPos.x + 2];
+		char f3 = map[mapPosY + playerPos.x + 3];
+		if (inputs.isLeftPressed || wasAKeyPressedLastFrame) {
+			int move = 0;
+			if (b1 == 'x' || b2 == 'x' || b3 == 'x') {
+				killPlayer();
+				isMapUpdated = true;
+				updateMap();
+			}
+			else if (b1 == 'w' || b2 == 'w' || b3 == 'w') {
+				isFinished = true;
+				isMapUpdated = true;
+			}
+			else {
+			
+				if (b1 == '-' && playerPos.x - 1 >= 0) move = 0;
+				else if (b2 == '-' && playerPos.x - 2 >= 0) move = -1;
+				else if (b3 == '-' && playerPos.x - 3 >= 0) move = -2;
+				else move = -3;
+				player.move(move, 0);
+				updateMap();
+			}
+		}
+		else {
+			int move = 0;
+			if (f1 == 'x' || f2 == 'x' || f3 == 'x') {
+				killPlayer();
+				isMapUpdated = true;
+				updateMap();
+			}
+			else if (f1 == 'w' || f2 == 'w' || f3 == 'w') {
+				isFinished = true;
+				isMapUpdated = true;
+			}
+			else {
+
+				if (f1 == '-' && playerPos.x + 1 >= 0) move = 0;
+				else if (f2 == '-' && playerPos.x + 2 >= 0) move = 1;
+				else if (f3 == '-' && playerPos.x + 3 >= 0) move = 2;
+				else move = 3;
+				player.move(move, 0);
+				updateMap();
+			}
+		}
 		isMapUpdated = true;
 	}
+}
 
-
-	playerPos = player.getPosition();
-	lastPlayerPos = player.getLastPosition();
-	mapLastPosY = lastPlayerPos.y * mapLenght;
-	mapPosY = playerPos.y * mapLenght;
-	map[mapPosY + playerPos.x] = player.getSprite();
+void Game::updateMap() {
+	Position playerPos = player.getPosition();
+	Position lastPlayerPos = player.getLastPosition();
+	int mapLastPosY = lastPlayerPos.y * mapLenght;
+	int mapPosY = playerPos.y * mapLenght;
 	map[mapLastPosY + lastPlayerPos.x] = ' ';
-
+	map[mapPosY + playerPos.x] = player.getSprite();
 }
 
 void Game::killPlayer() {

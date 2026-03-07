@@ -26,7 +26,14 @@ float Timer::deactivate() {
 void Timer::update() {
 	if (active) {
 		clock_t currentTime = clock();
-		double elapsedTime = (double)(currentTime - startTime)/CLOCKS_PER_SEC;
-		cout << "elapsed time: " << elapsedTime << " seconds" << endl;
+		elapsedTime = (double)(currentTime - startTime)/CLOCKS_PER_SEC;
 	}
+}
+
+bool Timer::isActive() {
+	return active;
+}
+
+double Timer::getTime() {
+	return elapsedTime;
 }
