@@ -52,14 +52,6 @@ int GameObject::getSpeed() {
 	return speed;
 }
 
-void GameObject::setSprite(char sprite) {
-	this->sprite = sprite;
-}
-
-char GameObject::getSprite() {
-	return sprite;
-}
-
 void GameObject::setPosition(int x, int y) {
 	pos.x = x;
 	pos.y = y;

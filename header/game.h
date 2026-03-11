@@ -1,24 +1,30 @@
+#pragma once
 #include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <string>
 #include "inputs.h"
 #include <windows.h>
-#pragma once
 #include <cstdlib>
 #include "player.h"
 #include <chrono>
 #include "timer.h"
+#include "sceneManager.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QTimer>
 
 using namespace std;
 
 class Game : public QGraphicsView {
+	Q_OBJECT
 public:
 	Game(QGraphicsScene *scene = nullptr);
 	~Game();
 	void run();
+
+public slots:
+	void gameLoop();
 private:
 	void getInputs();
 	void update();
@@ -27,6 +33,8 @@ private:
 	void managePlayerMovement();
 	void killPlayer();
 	void updateMap();
+
+	QTimer* fps = nullptr;
 
 	Inputs inputs;
 	bool isRunning = false;

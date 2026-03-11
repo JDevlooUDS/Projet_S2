@@ -3,22 +3,14 @@
 Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	fps = new QTimer(this);
+	QObject::connect(fps, &QTimer::timeout, this, &Game::gameLoop);
+	fps->start(16);
 
-	if (loadMap() == 0) isMapLoaded = true;
-	if (isMapLoaded) isRunning = true;
-	player.activate();
-	player.setPosition(0,2);
-
-	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_CURSOR_INFO info;
-	info.dwSize = 100;
-	info.bVisible = FALSE;
-	SetConsoleCursorInfo(consoleHandle, &info);
-	timer.activate();
+	//Maintenant gérer la scene prison et le déplacement du personnage avec le deltatime
 }
 
 Game::~Game() {
-	if (map != nullptr) delete[] map;
 }
 
 void Game::run() {
@@ -255,7 +247,7 @@ void Game::updateMap() {
 	int mapLastPosY = lastPlayerPos.y * mapLenght;
 	int mapPosY = playerPos.y * mapLenght;
 	map[mapLastPosY + lastPlayerPos.x] = ' ';
-	map[mapPosY + playerPos.x] = player.getSprite();
+	map[mapPosY + playerPos.x] = ' ';
 }
 
 void Game::killPlayer() {
