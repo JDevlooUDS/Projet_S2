@@ -1,6 +1,4 @@
-#ifndef TIMER_H
-#define TIMER_H
-
+#pragma once
 #include <iostream>
 #include <ctime>
 
@@ -20,5 +18,3 @@ private:
 	float startTime;
 	bool active;
 };
-
-#endif

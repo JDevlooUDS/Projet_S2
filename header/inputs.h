@@ -1,3 +1,5 @@
+#pragma once
+
 struct Inputs {
 
 	bool isLeftPressed = false;

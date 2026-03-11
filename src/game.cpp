@@ -1,6 +1,9 @@
 #include "../header/game.h"
 
-Game::Game() {
+Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
 	if (loadMap() == 0) isMapLoaded = true;
 	if (isMapLoaded) isRunning = true;
 	player.activate();
