@@ -1,6 +1,5 @@
 #pragma once
-
-#include <iostream>
+#include "QGraphicsPixmapItem"
 using namespace std;
 
 struct Position {
@@ -8,7 +7,7 @@ struct Position {
 	int y = 0;
 };
 
-class GameObject {
+class GameObject : public QGraphicsPixmapItem{
 public:
 	GameObject();
 	~GameObject();
@@ -22,9 +21,7 @@ public:
 	int getSpeed();
 	void activate();
 	void deactivate();
-	void setSprite(char sprite);
 	void setPosition(int x, int y);
-	char getSprite();
 	Position getPosition();
 	Position getLastPosition();
 
@@ -33,7 +30,6 @@ public:
 protected:
 	int hp = 0;
 	int speed = 0;
-	char sprite = ' ';
 	bool active = false;
 	Position pos;
 	Position lastPos;
