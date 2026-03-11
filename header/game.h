@@ -4,16 +4,19 @@
 #include <string>
 #include "inputs.h"
 #include <windows.h>
+#pragma once
 #include <cstdlib>
 #include "player.h"
 #include <chrono>
 #include "timer.h"
+#include <QGraphicsView>
+#include <QGraphicsScene>
 
 using namespace std;
 
-class Game {
+class Game : public QGraphicsView {
 public:
-	Game();
+	Game(QGraphicsScene *scene = nullptr);
 	~Game();
 	void run();
 private:
