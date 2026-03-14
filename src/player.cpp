@@ -2,7 +2,6 @@
 
 Player::Player() {
 	hp = 3;
-	GameObject::setSprite('O');
 }
 
 Player::~Player() {

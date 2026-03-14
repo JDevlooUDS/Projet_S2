@@ -9,7 +9,6 @@
 #include "player.h"
 #include <chrono>
 #include "timer.h"
-#include "sceneManager.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QTimer>
