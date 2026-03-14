@@ -13,6 +13,8 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 Game::~Game() {
 }
 
+void Game::gameLoop() {}
+
 void Game::run() {
 	while (isRunning) {
 		getInputs();

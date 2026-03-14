@@ -3,10 +3,6 @@
 #include "prisonScene.h"
 #include <QObject>
 
-enum SceneType {
-	Prison
-};
-
 class SceneManager : public QObject{
 
 	Q_OBJECT
@@ -19,6 +15,6 @@ public slots:
 	void setScene(SceneType sceneType);
 
 private:
-	Game* game = nullptr;
+	Game* game;
 	PrisonScene prisonScene;
 };

@@ -6,7 +6,7 @@
 
 class PrisonScene : public BaseScene {
 public:
-	PrisonScene(QGraphicsView *parent = nullptr);
+	PrisonScene();
 	~PrisonScene();
 
 private:
