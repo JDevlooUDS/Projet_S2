@@ -12,26 +12,27 @@ Player::~Player() {
 
 }
 
-void Player::jump() {
-	Position p = getPosition();
-	lastPos.x = p.x;
-	lastPos.y = p.y;
-	setPosition(p.x, p.y - 1);
-	jumping = true;
+void Player::move(int x, int y, double deltaTime) {
+	if (!active) return;
+	lastPosition = pos();
+	moveBy(speed * x * deltaTime, fallVelocity * y * deltaTime);
 }
 
-void Player::fall() {
-	Position p = getPosition();
-	lastPos.x = p.x;
-	lastPos.y = p.y;
-	setPosition(p.x, p.y + 1);
-	jumping = false;
+void Player::jump() {
+	if (!isGrounded) return;
+	fallVelocity = JUMP_VELOCITY;
+	isGrounded = false;
 }
 
 bool Player::isJumping() {
-	return jumping;
+	return !isGrounded;
 }
 
-void Player::cancelJump() {
-	jumping = false;
+void Player::updateJump(double deltaTime) {
+	fallVelocity += GRAVITY * deltaTime;
+	if (fallVelocity > BASE_FALL_VELOCITY) fallVelocity = BASE_FALL_VELOCITY;
+}
+
+void Player::ground() {
+	isGrounded = true;
 }

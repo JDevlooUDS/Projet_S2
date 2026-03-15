@@ -19,6 +19,7 @@ protected:
 
 private:
 	Player* player = nullptr;
+	bool playerCollides = false;
 	vector<GameObject*> walls;
 	vector<GameObject*> grass;
 };

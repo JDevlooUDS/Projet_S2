@@ -6,9 +6,9 @@ PrisonScene::PrisonScene() {
 	setSceneRect(0, 0, 1920, 1080);
 	player = new Player();
 	player->activate();
+	loadMap();
 	addItem(player);
 	player->setPos(300, 0);
-	loadMap();
 }
 
 PrisonScene::~PrisonScene() {
@@ -17,8 +17,30 @@ PrisonScene::~PrisonScene() {
 }
 
 void PrisonScene::updateScene(double deltaTime) {
-	if (inputs.isLeftPressed) player->move(-1, 0, deltaTime);
-	if (inputs.isRightPressed) player->move(1, 0, deltaTime);
+	int dx = 0;
+	int dy = 1;
+	if (inputs.isLeftPressed) dx += -1;
+	if (inputs.isRightPressed) dx += 1;
+	if (inputs.isSpacePressed) player->jump();
+
+	if (player->isJumping()) player->updateJump(deltaTime);
+
+	player->move(0, dy, deltaTime);
+
+	foreach(GameObject * wall, walls) {
+		if (wall->collidesWithItem(player)) {
+			player->setY(player->getLastPosition().y());
+			player->ground();
+		}
+	}
+
+	player->move(dx, 0, deltaTime);
+
+	foreach(GameObject * wall, walls) {
+		if (wall->collidesWithItem(player)) {
+			player->setX(player->getLastPosition().x());
+		}
+	}
 }
 
 void PrisonScene::loadMap() {
@@ -50,8 +72,7 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 		inputs.isRightPressed = true;
 	}
 	if (event->key() == Qt::Key_Space) {
-		if (player->isActive()) player->deactivate();
-		else player->activate();
+		inputs.isSpacePressed = true;
 	}
 }
 
@@ -61,5 +82,8 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 	}
 	if (event->key() == Qt::Key_D) {
 		inputs.isRightPressed = false;
+	}
+	if (event->key() == Qt::Key_Space) {
+		inputs.isSpacePressed = false;
 	}
 }
