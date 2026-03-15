@@ -11,7 +11,7 @@ class GameObject : public QGraphicsPixmapItem{
 public:
 	GameObject();
 	~GameObject();
-	void move(int x, int y, double deltaTime);
+	virtual void move(int x, int y, double deltaTime);
 	void damage(int damage);
 	bool isActive();
 	void draw(ostream& os);
@@ -21,10 +21,8 @@ public:
 	int getSpeed();
 	void activate();
 	void deactivate();
-	void setPosition(int x, int y);
 	void setCollision(bool collides);
-	Position getPosition();
-	Position getLastPosition();
+	QPointF getLastPosition();
 
 	
 
@@ -33,6 +31,5 @@ protected:
 	int speed = 0;
 	bool active = false;
 	bool collides = false;
-	Position pos;
-	Position lastPos;
+	QPointF lastPosition;
 };

@@ -10,7 +10,8 @@ GameObject::~GameObject()  {
 
 void GameObject::move(int x, int y, double deltaTime) {
 	if (!active) return;
-	moveBy(speed * x * deltaTime, speed * y);
+	lastPosition = pos();
+	moveBy(speed * x * deltaTime, speed * y * deltaTime);
 }
 
 void GameObject::damage(int damage) {
@@ -51,19 +52,10 @@ int GameObject::getSpeed() {
 	return speed;
 }
 
-void GameObject::setPosition(int x, int y) {
-	pos.x = x;
-	pos.y = y;
-}
-
 void GameObject::setCollision(bool collides) {
 	this->collides = collides;
 }
 
-Position GameObject::getPosition() {
-	return pos;
-}
-
-Position GameObject::getLastPosition() {
-	return lastPos;
+QPointF GameObject::getLastPosition() {
+	return lastPosition;
 }
