@@ -56,6 +56,10 @@ void GameObject::setPosition(int x, int y) {
 	pos.y = y;
 }
 
+void GameObject::setCollision(bool collides) {
+	this->collides = collides;
+}
+
 Position GameObject::getPosition() {
 	return pos;
 }

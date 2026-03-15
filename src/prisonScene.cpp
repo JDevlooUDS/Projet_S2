@@ -24,7 +24,17 @@ void PrisonScene::updateScene(double deltaTime) {
 void PrisonScene::loadMap() {
 	vector<Tile> tiles = ResourceManager::getInstance().getTiles();
 	foreach(Tile tile, tiles) {
-		QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
+		GameObject* item = nullptr;
+		std::string s = tile.getName().toStdString();
+		if (s == "walls") {
+			item = new Wall();
+			walls.push_back(item);
+		}
+		else if (s == "grass") {
+			item = new GameObject();
+			item->setCollision(false);
+			grass.push_back(item);
+		}
 		item->setPos(tile.getXPosition(), tile.getYPosition());
 		item->setPixmap(tile.getPixmap());
 		item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, tile.isCollide());

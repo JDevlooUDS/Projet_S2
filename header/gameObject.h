@@ -22,6 +22,7 @@ public:
 	void activate();
 	void deactivate();
 	void setPosition(int x, int y);
+	void setCollision(bool collides);
 	Position getPosition();
 	Position getLastPosition();
 
@@ -31,6 +32,7 @@ protected:
 	int hp = 0;
 	int speed = 0;
 	bool active = false;
+	bool collides = false;
 	Position pos;
 	Position lastPos;
 };

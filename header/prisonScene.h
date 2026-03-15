@@ -3,6 +3,7 @@
 #include <QPixmap>
 #include "player.h"
 #include <QKeyEvent>
+#include "wall.h"
 #include "resourceManager.h"
 
 class PrisonScene : public BaseScene {
@@ -18,4 +19,6 @@ protected:
 
 private:
 	Player* player = nullptr;
+	vector<GameObject*> walls;
+	vector<GameObject*> grass;
 };
