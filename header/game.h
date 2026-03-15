@@ -10,8 +10,9 @@
 #include <chrono>
 #include "timer.h"
 #include <QGraphicsView>
-#include <QGraphicsScene>
+#include "baseScene.h"
 #include <QTimer>
+#include <QElapsedTimer>
 
 using namespace std;
 
@@ -34,6 +35,7 @@ private:
 	void updateMap();
 
 	QTimer* fps = nullptr;
+	QElapsedTimer elapsedTimer;
 
 	Inputs inputs;
 	bool isRunning = false;

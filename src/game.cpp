@@ -6,14 +6,19 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 	fps = new QTimer(this);
 	QObject::connect(fps, &QTimer::timeout, this, &Game::gameLoop);
 	fps->start(16);
-
-	//Maintenant gérer la scene prison et le déplacement du personnage avec le deltatime
+	elapsedTimer.start();
 }
 
 Game::~Game() {
 }
 
-void Game::gameLoop() {}
+void Game::gameLoop() {
+	qint64 deltaTimeMs = elapsedTimer.restart();
+	double deltaTime = deltaTimeMs / 1000.0;
+
+	BaseScene* currentScene = static_cast<BaseScene*>(scene());
+	currentScene->updateScene(deltaTime);
+}
 
 void Game::run() {
 	while (isRunning) {
@@ -128,7 +133,7 @@ void Game::managePlayerMovement() {
 	}
 	if (inputs.isLeftPressed) {
 		if (map[mapPosY + playerPos.x - 1] == ' ' && playerPos.x > 0) {
-			player.move(-1, 0);
+			//player.move(-1, 0);
 			isMapUpdated = true;
 			updateMap();
 		}
@@ -137,7 +142,7 @@ void Game::managePlayerMovement() {
 			updateMap();
 		}
 		else if (map[mapPosY + playerPos.x - 1] == 'w') {
-			player.move(1, 0);
+			//player.move(1, 0);
 			timer.deactivate();
 			isFinished = true;
 			isMapUpdated = true;
@@ -146,7 +151,7 @@ void Game::managePlayerMovement() {
 	}
 	if (inputs.isRightPressed) {
 		if (map[mapPosY + playerPos.x + 1] == ' ' && playerPos.x < mapLenght) {
-			player.move(1, 0);
+			//player.move(1, 0);
 			isMapUpdated = true;
 			updateMap();
 		}
@@ -155,7 +160,7 @@ void Game::managePlayerMovement() {
 			updateMap();
 		}
 		else if (map[mapPosY + playerPos.x + 1] == 'w') {
-			player.move(1, 0);
+			//player.move(1, 0);
 			isFinished = true;
 			isMapUpdated = true;
 			updateMap();
@@ -214,7 +219,7 @@ void Game::managePlayerMovement() {
 				else if (b2 == '-' && playerPos.x - 2 >= 0) move = -1;
 				else if (b3 == '-' && playerPos.x - 3 >= 0) move = -2;
 				else move = -3;
-				player.move(move, 0);
+				//player.move(move, 0);
 				updateMap();
 			}
 		}
@@ -235,7 +240,7 @@ void Game::managePlayerMovement() {
 				else if (f2 == '-' && playerPos.x + 2 >= 0) move = 1;
 				else if (f3 == '-' && playerPos.x + 3 >= 0) move = 2;
 				else move = 3;
-				player.move(move, 0);
+				//player.move(move, 0);
 				updateMap();
 			}
 		}

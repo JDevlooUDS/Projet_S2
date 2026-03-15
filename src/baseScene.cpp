@@ -4,4 +4,5 @@ BaseScene::BaseScene() {}
 
 BaseScene::~BaseScene() {}
 
-void BaseScene::changeScene(SceneType sceneType) {}
+void BaseScene::updateScene(double deltaTime) {
+}
