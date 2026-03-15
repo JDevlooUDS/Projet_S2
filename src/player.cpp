@@ -1,7 +1,14 @@
 #include "../header/player.h"
 
 Player::Player() {
+	QPixmap playerSprite(":/sprites/placeHolderSprite.png");
+	if (playerSprite.isNull())
+		qDebug() << "Failed to load sprite!";
+	setPixmap(playerSprite);
+	setFlag(QGraphicsItem::ItemIsFocusable);
+	setFocus();
 	hp = 3;
+	speed = 200;
 }
 
 Player::~Player() {

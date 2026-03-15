@@ -11,7 +11,7 @@ class GameObject : public QGraphicsPixmapItem{
 public:
 	GameObject();
 	~GameObject();
-	void move(int x, int y);
+	void move(int x, int y, double deltaTime);
 	void damage(int damage);
 	bool isActive();
 	void draw(ostream& os);

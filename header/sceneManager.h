@@ -1,7 +1,6 @@
 #pragma once
 #include "game.h"
 #include "prisonScene.h"
-#include <QObject>
 
 class SceneManager : public QObject{
 

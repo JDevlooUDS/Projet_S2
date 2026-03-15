@@ -3,7 +3,7 @@
 
 SceneManager::SceneManager(Game* game) {
 	this->game = game;
-	connect(&prisonScene, &PrisonScene::changeScene, this, &SceneManager::setScene);
+	connect(&prisonScene, &BaseScene::changeScene, this, &SceneManager::setScene);
 }
 SceneManager::~SceneManager() {}
 

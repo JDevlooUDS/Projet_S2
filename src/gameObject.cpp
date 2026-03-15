@@ -8,12 +8,9 @@ GameObject::~GameObject()  {
 
 }
 
-void GameObject::move(int x, int y) {
+void GameObject::move(int x, int y, double deltaTime) {
 	if (!active) return;
-	lastPos.x = pos.x;
-	lastPos.y = pos.y;
-	pos.x += x;
-	pos.y += y;
+	moveBy(speed * x * deltaTime, speed * y);
 }
 
 void GameObject::damage(int damage) {
@@ -30,10 +27,12 @@ bool GameObject::isActive() {
 
 void GameObject::activate() {
 	active = true;
+	setVisible(true);
 }
 
 void GameObject::deactivate() {
 	active = false;
+	setVisible(false);
 }
 
 void GameObject::setHp(int hp) {
