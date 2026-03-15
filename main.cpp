@@ -8,8 +8,7 @@ using namespace std;
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     Game game;
-    game.resize(800, 600);
-    ResourceManager resourceManager;
+    game.resize(1920, 1080);
     SceneManager sceneManager(&game);
     sceneManager.setScene(Prison);
     game.show();

@@ -2,10 +2,13 @@
 #include <QDebug>
 
 PrisonScene::PrisonScene() {
-	setSceneRect(0, 0, 800, 600);
+	ResourceManager::getInstance().loadPrisonSceneResources();
+	setSceneRect(0, 0, 1920, 1080);
 	player = new Player();
 	player->activate();
 	addItem(player);
+	player->setPos(300, 0);
+	loadMap();
 }
 
 PrisonScene::~PrisonScene() {
@@ -16,6 +19,17 @@ PrisonScene::~PrisonScene() {
 void PrisonScene::updateScene(double deltaTime) {
 	if (inputs.isLeftPressed) player->move(-1, 0, deltaTime);
 	if (inputs.isRightPressed) player->move(1, 0, deltaTime);
+}
+
+void PrisonScene::loadMap() {
+	vector<Tile> tiles = ResourceManager::getInstance().getTiles();
+	foreach(Tile tile, tiles) {
+		QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
+		item->setPos(tile.getXPosition(), tile.getYPosition());
+		item->setPixmap(tile.getPixmap());
+		item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, tile.isCollide());
+		addItem(item);
+	}
 }
 
 void PrisonScene::keyPressEvent(QKeyEvent* event) {

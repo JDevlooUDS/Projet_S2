@@ -1,10 +1,10 @@
 TEMPLATE = vcapp
 TARGET = Jeu
 ressources.base = resources
-ressources.files += resources/sprites/placeHolderSprite.png resources/map/test_map.json
+ressources.files += resources/sprites/placeHolderSprite.png resources/map/test_map.json resources/sprites/tilesets.png
 CONFIG += warn_on qt debug windows console
-HEADERS += ./header/gameObject.h ./header/game.h ./header/player.h ./header/inputs.h ./header/timer.h ./header/prisonScene.h ./header/sceneManager.h ./header/baseScene.h ./header/json.hpp ./header/resourceManager.h
-SOURCES += main.cpp ./src/gameObject.cpp ./src/game.cpp ./src/player.cpp ./src/timer.cpp ./src/prisonScene.cpp ./src/sceneManager.cpp ./src/baseScene.cpp ./src/resourceManager.cpp
+HEADERS += ./header/gameObject.h ./header/game.h ./header/player.h ./header/inputs.h ./header/timer.h ./header/prisonScene.h ./header/sceneManager.h ./header/baseScene.h ./header/resourceManager.h ./header/tile.h
+SOURCES += main.cpp ./src/gameObject.cpp ./src/game.cpp ./src/player.cpp ./src/timer.cpp ./src/prisonScene.cpp ./src/sceneManager.cpp ./src/baseScene.cpp ./src/resourceManager.cpp ./src/tile.cpp
 INCLUDEPATH += ./header ./src ./map ./image
 map_folder.files = $$files($$PWD/map/*)
 map_folder.path = $$OUT_PWD/map
