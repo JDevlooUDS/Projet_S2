@@ -51,6 +51,7 @@ bool ResourceManager::loadPrisonSceneResources() {
 			}
 			for (int i = 0; i < array.size(); i++) {
 				QJsonObject layer = array[i].toObject();
+				QString name = layer.value("name").toString();
 
 				bool collides = false;
 				QJsonArray properties = layer.value("properties").toArray();
@@ -64,7 +65,7 @@ bool ResourceManager::loadPrisonSceneResources() {
 				QJsonArray layerArray = layer.value("objects").toArray();
 				for (int j = 0; j < layerArray.size(); j++) {
 					QJsonObject item = layerArray[j].toObject();
-					Tile tile(item.value("x").toInt(),item.value("y").toInt(),item.value("height").toInt(),item.value("width").toInt(),collides,tiles[item.value("gid").toInt()]);
+					Tile tile(item.value("x").toInt(),item.value("y").toInt(),item.value("height").toInt(),item.value("width").toInt(),collides,tiles[item.value("gid").toInt()], name);
 					prisonMap.push_back(tile);
 				}
 			}

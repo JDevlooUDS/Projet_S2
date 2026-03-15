@@ -3,7 +3,7 @@
 
 class Tile {
 public:
-	Tile(int x, int y, int height, int lenght, bool collides, QPixmap& sprite);
+	Tile(int x, int y, int height, int lenght, bool collides, QPixmap& sprite, QString& name);
 	~Tile();
 
 	int getHeight();
@@ -11,6 +11,7 @@ public:
 	int getXPosition();
 	int getYPosition();
 	QPixmap& getPixmap();
+	QString& getName();
 	bool isCollide();
 private:
 	bool collides;
@@ -19,4 +20,5 @@ private:
 	int x;
 	int y;
 	QPixmap sprite;
+	QString name;
 };

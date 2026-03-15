@@ -2,6 +2,7 @@
 #include <QGraphicsScene>
 #include <qdebug.h>
 #include "inputs.h"
+#include <string>
 
 enum SceneType {
 	Prison
