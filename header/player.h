@@ -1,5 +1,6 @@
 #pragma once
 #include "gameObject.h"
+#include "resourceManager.h"
 
 class Player : public GameObject {
 public:
