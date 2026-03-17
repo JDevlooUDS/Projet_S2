@@ -18,6 +18,7 @@ protected:
 	void keyReleaseEvent(QKeyEvent* event) override;
 
 private:
+	bool playerJumpedLastFrame = false;
 	Player* player = nullptr;
 	bool playerCollides = false;
 	vector<GameObject*> walls;

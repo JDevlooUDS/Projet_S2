@@ -21,7 +21,7 @@ void PrisonScene::updateScene(double deltaTime) {
 	int dy = 1;
 	if (inputs.isLeftPressed) dx += -1;
 	if (inputs.isRightPressed) dx += 1;
-	if (inputs.isSpacePressed) player->jump();
+	if (inputs.isSpacePressed && !playerJumpedLastFrame) player->jump();
 
 	if (player->isJumping()) player->updateJump(deltaTime);
 
@@ -41,6 +41,8 @@ void PrisonScene::updateScene(double deltaTime) {
 			player->setX(player->getLastPosition().x());
 		}
 	}
+
+	playerJumpedLastFrame = inputs.isSpacePressed;
 }
 
 void PrisonScene::loadMap() {
@@ -71,6 +73,7 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_D) {
 		inputs.isRightPressed = true;
 	}
+	if (event->isAutoRepeat()) event->ignore();
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = true;
 	}
