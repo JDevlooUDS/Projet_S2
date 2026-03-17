@@ -51,3 +51,5 @@ release
 # Qt files
 .qmake.stash
 
+# pour macOS
+.DS_Store
