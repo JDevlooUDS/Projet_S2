@@ -19,9 +19,10 @@ void Player::move(int x, int y, double deltaTime) {
 }
 
 void Player::jump() {
-	if (!isGrounded) return;
+	if (!isGrounded && jumpCount == 0) return;
 	fallVelocity = JUMP_VELOCITY;
 	isGrounded = false;
+	jumpCount--;
 }
 
 bool Player::isJumping() {
@@ -35,4 +36,5 @@ void Player::updateJump(double deltaTime) {
 
 void Player::ground() {
 	isGrounded = true;
+	jumpCount = 2;
 }

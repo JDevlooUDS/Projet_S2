@@ -21,4 +21,7 @@ private:
 
 	float fallVelocity = BASE_FALL_VELOCITY;
 	bool isGrounded = true;
+
+	int jumpCount = 2;
+	int dashCount = 1;
 };
