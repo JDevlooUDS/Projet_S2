@@ -15,11 +15,12 @@ Player::~Player() {
 void Player::move(int x, int y, double deltaTime) {
 	if (!active) return;
 	lastPosition = pos();
-	moveBy(speed * x * deltaTime, fallVelocity * y * deltaTime);
+	// multiplication par speedMultiplier (ralentissements des pièges)
+	moveBy(speed * speedMultiplier * x * deltaTime, fallVelocity * y * deltaTime);
 }
 
 void Player::jump() {
-	if (!isGrounded) return;
+	if (!isGrounded || !jumpEnabled) return;
 	fallVelocity = JUMP_VELOCITY;
 	isGrounded = false;
 }
@@ -33,6 +34,22 @@ void Player::updateJump(double deltaTime) {
 	if (fallVelocity > BASE_FALL_VELOCITY) fallVelocity = BASE_FALL_VELOCITY;
 }
 
+void Player::disableJump() {
+	jumpEnabled = false; 
+}
+
+void Player::enableJump() {
+	jumpEnabled = true; 
+}
+
 void Player::ground() {
 	isGrounded = true;
+}
+
+void Player::setSpeedMultiplier(float multiplier) {
+	speedMultiplier = multiplier;
+}
+
+float Player::getSpeedMultiplier() {
+	return speedMultiplier;
 }

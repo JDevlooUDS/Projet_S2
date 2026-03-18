@@ -4,6 +4,9 @@
 #include "player.h"
 #include <QKeyEvent>
 #include "wall.h"
+#include "trap.h"
+#include "boost.h"
+#include "end.h"
 #include "resourceManager.h"
 
 class PrisonScene : public BaseScene {
@@ -18,8 +21,13 @@ protected:
 	void keyReleaseEvent(QKeyEvent* event) override;
 
 private:
+	void showEnd();
+
 	Player* player = nullptr;
 	bool playerCollides = false;
 	vector<GameObject*> walls;
 	vector<GameObject*> grass;
+	vector<Trap*> traps;
+	vector<Boost*> boosts;
+	vector<End*> endZones;
 };
