@@ -19,11 +19,53 @@ PrisonScene::~PrisonScene() {
 void PrisonScene::updateScene(double deltaTime) {
 	int dx = 0;
 	int dy = 1;
+	if (jon.isConnected()) {
+		inputs.reset();
+		jon.RcvFromSerial(&inputs);
+	}
 	if (inputs.isLeftPressed) dx += -1;
 	if (inputs.isRightPressed) dx += 1;
-	if (inputs.isSpacePressed && !playerJumpedLastFrame) player->jump();
+	if ((inputs.isSpacePressed) && !playerJumpedLastFrame) player->jump();
+	if (inputs.isDashPressed) {
+		player->dash();
+		if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			player->setDashDirection(RIGHT);
+		}
+		else if (!inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			player->setDashDirection(DOWN);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
+			player->setDashDirection(LEFT);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
+			player->setDashDirection(UP);
+		}
+		else if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
+			player->setDashDirection(UP_RIGHT);
+		}
+		else if (inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			player->setDashDirection(DOWN_RIGHT);
+		}
+		else if (!inputs.isRightPressed && inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
+			player->setDashDirection(DOWN_LEFT);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && inputs.isUpPressed) {
+			player->setDashDirection(UP_LEFT);
+		}
+		else {
+			player->setDashDirection(RIGHT);
+		}
+	}
 
-	if (player->isJumping()) player->updateJump(deltaTime);
+	if (player->isDashing()) {
+		player->updateDash(deltaTime);
+		QVector2D playerVelocity = player->getFixedVelocity();
+		dx = playerVelocity.x();
+		dy = playerVelocity.y();
+	}
+	else {
+		if (player->isJumping()) player->updateJump(deltaTime);
+	}
 
 	player->move(0, dy, deltaTime);
 
@@ -73,6 +115,15 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_D) {
 		inputs.isRightPressed = true;
 	}
+	if (event->key() == Qt::Key_E) {
+		inputs.isDashPressed = true;
+	}
+	if (event->key() == Qt::Key_W) {
+		inputs.isUpPressed = true;
+	}
+	if (event->key() == Qt::Key_S) {
+		inputs.isDownPressed = true;
+	}
 	if (event->isAutoRepeat()) event->ignore();
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = true;
@@ -85,6 +136,15 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 	}
 	if (event->key() == Qt::Key_D) {
 		inputs.isRightPressed = false;
+	}
+	if (event->key() == Qt::Key_E) {
+		inputs.isDashPressed = false;
+	}
+	if (event->key() == Qt::Key_W) {
+		inputs.isUpPressed = false;
+	}
+	if (event->key() == Qt::Key_S) {
+		inputs.isDownPressed = false;
 	}
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = false;

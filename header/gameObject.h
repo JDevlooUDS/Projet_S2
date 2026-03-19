@@ -28,7 +28,7 @@ public:
 
 protected:
 	int hp = 0;
-	int speed = 0;
+	float speed = 0;
 	bool active = false;
 	bool collides = false;
 	QPointF lastPosition;
