@@ -7,6 +7,8 @@ struct Inputs {
 	bool isEscapePressed = false;
 	bool isSpacePressed = false;
 	bool isDashPressed = false;
+	bool isUpPressed = false;
+	bool isDownPressed = false;
 
 
 	void reset() {
