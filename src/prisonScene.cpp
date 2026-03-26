@@ -23,6 +23,7 @@ void PrisonScene::updateScene(double deltaTime) {
 		inputs.reset();
 		jon.RcvFromSerial(&inputs);
 	}
+	
 	if (inputs.isLeftPressed) dx += -1;
 	if (inputs.isRightPressed) dx += 1;
 	if ((inputs.isSpacePressed) && !playerJumpedLastFrame) player->jump();
@@ -149,4 +150,9 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = false;
 	}
+}
+
+
+QGraphicsItem* PrisonScene::getPlayer() {
+	return player;
 }

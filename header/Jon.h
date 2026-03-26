@@ -9,13 +9,13 @@
 #include <QSerialPortInfo>
 #include "../include/json.hpp"
 #include "QDebug"
+#include <QString>
 
 using json = nlohmann::json;
 
 class Jon
 {
 private:
-    //Inputs inputs;
     QSerialPort* arduino;
     bool connected = false;
 
