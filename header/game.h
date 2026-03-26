@@ -10,6 +10,7 @@
 #include <chrono>
 #include "timer.h"
 #include <QGraphicsView>
+#include "prisonScene.h"
 #include "baseScene.h"
 #include <QTimer>
 #include <QElapsedTimer>
@@ -27,4 +28,5 @@ public slots:
 private:
 	QTimer* fps = nullptr;
 	QElapsedTimer elapsedTimer;
+	QRect cameraPos;
 };
