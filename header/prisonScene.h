@@ -5,13 +5,14 @@
 #include <QKeyEvent>
 #include "wall.h"
 #include "resourceManager.h"
-#include "jon.h"
+#include "Jon.h"
 
 class PrisonScene : public BaseScene {
 public:
 	PrisonScene();
 	~PrisonScene();
 	void updateScene(double deltaTime) override;
+	QGraphicsItem* getPlayer();
 
 protected:
 	void loadMap();
