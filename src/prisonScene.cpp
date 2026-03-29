@@ -135,7 +135,7 @@ void PrisonScene::showEnd() {
 	addItem(title);
 
 	// temps
-	double finalTime = 6.7; // pour l'exemple
+	double finalTime = 0.0; // pour l'exemple
 	QString timeText = QString("Temps : %1 secondes").arg(finalTime, 0, 'f', 2);
 	QGraphicsTextItem* timeDisplay = new QGraphicsTextItem(timeText);
 	timeDisplay->setDefaultTextColor(Qt::white);
