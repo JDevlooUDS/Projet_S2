@@ -1,5 +1,6 @@
 #pragma once
 #include "QGraphicsPixmapItem"
+#include "inputs.h"
 using namespace std;
 
 struct Position {
@@ -11,7 +12,7 @@ class GameObject : public QGraphicsPixmapItem{
 public:
 	GameObject();
 	~GameObject();
-	virtual void move(int x, int y, double deltaTime);
+	virtual void move(double deltaTime);
 	void damage(int damage);
 	bool isActive();
 	void draw(ostream& os);
@@ -22,12 +23,15 @@ public:
 	void activate();
 	void deactivate();
 	void setCollision(bool collides);
+	virtual void update(double deltaTime, Inputs& inputs) = 0;
 	QPointF getLastPosition();
 
 	
 
 protected:
 	int hp = 0;
+	float xVelocity = 0;
+	float yVelocity = 0;
 	float speed = 0;
 	bool active = false;
 	bool collides = false;

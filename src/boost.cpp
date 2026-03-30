@@ -12,3 +12,5 @@ void Boost::applyEffect(Player* player) {
     player->setSpeedMultiplier(speedMultiplier);
     player->enableJump();
 }
+
+void Boost::update(double deltaTime, Inputs& inputs) {}
