@@ -43,6 +43,7 @@ private:
 	void moveY(double deltaTime);
 	void resolveCollisionX();
 	void resolveCollisionY();
+	void manageDashDirection(Inputs& inputs);
 
 	const float BASE_SPEED = 200.0;
 	const float DASH_SPEED = 600.0;
@@ -67,4 +68,8 @@ private:
 	DashDirection dashDirection = NONE;
 
 	int dashCount = 1;
+
+	double coyoteTimer = 0.0;
+	const double COYOTE_TIME_LIMIT = 0.1;
+	bool wasGroundedLastFrame = false;
 };
