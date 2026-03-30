@@ -9,6 +9,7 @@ PrisonScene::PrisonScene() {
 	loadMap();
 	addItem(player);
 	player->setPos(300, 0);
+	player->setWalls(walls);
 }
 
 PrisonScene::~PrisonScene() {
@@ -22,52 +23,6 @@ void PrisonScene::updateScene(double deltaTime) {
 	if (jon.isConnected()) {
 		inputs.reset();
 		jon.RcvFromSerial(&inputs);
-	}
-	
-	if (inputs.isLeftPressed) dx += -1;
-	if (inputs.isRightPressed) dx += 1;
-	if ((inputs.isSpacePressed) && !playerJumpedLastFrame) {
-  		player->jump();
-	}
-	if (inputs.isDashPressed) {
-		player->dash();
-		if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(RIGHT);
-		}
-		else if (!inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(DOWN);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(LEFT);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
-			player->setDashDirection(UP);
-		}
-		else if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
-			player->setDashDirection(UP_RIGHT);
-		}
-		else if (inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(DOWN_RIGHT);
-		}
-		else if (!inputs.isRightPressed && inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(DOWN_LEFT);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && inputs.isUpPressed) {
-			player->setDashDirection(UP_LEFT);
-		}
-		else {
-			player->setDashDirection(RIGHT);
-		}
-	}
-
-	if (player->isDashing()) {
-		player->updateDash(deltaTime);
-		QVector2D playerVelocity = player->getFixedVelocity();
-		dx = playerVelocity.x();
-		dy = playerVelocity.y();
-	}
-	else {
-		if (player->isJumping()) player->updateJump(deltaTime);
 	}
 
 	// pieges et boosts
@@ -100,24 +55,7 @@ void PrisonScene::updateScene(double deltaTime) {
 		}
 	}
 
-	player->move(0, dy, deltaTime);
-
-	foreach(GameObject * wall, walls) {
-		if (wall->collidesWithItem(player)) {
-			player->setY(player->getLastPosition().y());
-			player->ground();
-		}
-	}
-
-	player->move(dx, 0, deltaTime);
-
-	foreach(GameObject * wall, walls) {
-		if (wall->collidesWithItem(player)) {
-			player->setX(player->getLastPosition().x());
-		}
-	}
-
-	playerJumpedLastFrame = inputs.isSpacePressed;
+	player->update(deltaTime, inputs);
 }
 
 void PrisonScene::showEnd() {
@@ -158,9 +96,7 @@ void PrisonScene::loadMap() {
 			walls.push_back(item);
 		}
 		else if (s == "grass") {
-			item = new GameObject();
-			item->setCollision(false);
-			grass.push_back(item);
+			continue;
 		}
 		else if (s == "trap") {
 			Trap* trap = new Trap(0.4f);

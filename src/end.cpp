@@ -5,3 +5,5 @@ End::End() {
 }
 
 End::~End() {}
+
+void End::update(double deltaTime, Inputs& inputs) {}

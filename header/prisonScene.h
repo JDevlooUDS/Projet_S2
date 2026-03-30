@@ -25,7 +25,6 @@ protected:
 private:
 	void showEnd();
 
-	bool playerJumpedLastFrame = false;
 	Player* player = nullptr;
 	bool playerCollides = false;
 	vector<GameObject*> walls;

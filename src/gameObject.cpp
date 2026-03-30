@@ -8,10 +8,10 @@ GameObject::~GameObject()  {
 
 }
 
-void GameObject::move(int x, int y, double deltaTime) {
+void GameObject::move(double deltaTime) {
 	if (!active) return;
 	lastPosition = pos();
-	moveBy(speed * x * deltaTime, speed * y * deltaTime);
+	moveBy(speed * xVelocity * deltaTime, speed * yVelocity * deltaTime);
 }
 
 void GameObject::damage(int damage) {

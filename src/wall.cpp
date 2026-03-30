@@ -5,3 +5,5 @@ Wall::Wall() {
 }
 
 Wall::~Wall() {}
+
+void Wall::update(double deltaTime, Inputs& inputs) {}
