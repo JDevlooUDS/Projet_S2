@@ -18,8 +18,6 @@ PrisonScene::~PrisonScene() {
 }
 
 void PrisonScene::updateScene(double deltaTime) {
-	int dx = 0;
-	int dy = 1;
 	if (jon.isConnected()) {
 		inputs.reset();
 		jon.RcvFromSerial(&inputs);

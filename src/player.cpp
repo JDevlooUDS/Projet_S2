@@ -23,40 +23,15 @@ void Player::update(double deltaTime, Inputs& inputs) {
 		
 	}
 	jumpBufferTimer -= deltaTime;
-	if ((jumpBufferTimer > 0 && isGrounded) && jumpEnabled) {
+	coyoteTimer -= deltaTime;
+	if ((jumpBufferTimer > 0 && (isGrounded || coyoteTimer > 0)) && jumpEnabled) {
 		jump();
+		coyoteTimer = 0;
 		jumpBufferTimer = 0;
 	}
-	if (inputs.isDashPressed) {
-		dash();
-		if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(RIGHT);
-		}
-		else if (!inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(DOWN);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(LEFT);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
-			setDashDirection(UP);
-		}
-		else if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
-			setDashDirection(UP_RIGHT);
-		}
-		else if (inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(DOWN_RIGHT);
-		}
-		else if (!inputs.isRightPressed && inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(DOWN_LEFT);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && inputs.isUpPressed) {
-			setDashDirection(UP_LEFT);
-		}
-		else {
-			setDashDirection(RIGHT);
-		}
-	}
+
+	manageDashDirection(inputs);
+	
 
 	if (isDashing()) {
 		updateDash(deltaTime);
@@ -69,7 +44,7 @@ void Player::update(double deltaTime, Inputs& inputs) {
 	}
 
 	move(deltaTime);
-
+	wasGroundedLastFrame = isGrounded;
 }
 
 void Player::move(double deltaTime) {
@@ -198,17 +173,56 @@ void Player::resolveCollisionX() {
 }
 
 void Player::resolveCollisionY() {
+	bool resolved = false;
 	for (GameObject* wall : walls) {
 		if (collidesWithItem(wall)) {
 			if (yVelocity > 0) {
 				setY(lastPosition.y());
 				fallVelocity = 0;
+				resolved = true;
 				ground();
 			}
 			else if (yVelocity < 0) {		
 				setY(lastPosition.y());
 				fallVelocity = 0;
 			}
+		}
+	}
+	isGrounded = resolved;
+	if (!isGrounded && wasGroundedLastFrame) {
+		coyoteTimer = COYOTE_TIME_LIMIT;
+	}
+}
+
+void Player::manageDashDirection(Inputs& inputs) {
+	if (inputs.isDashPressed) {
+		dash();
+		if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(RIGHT);
+		}
+		else if (!inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(DOWN);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(LEFT);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
+			setDashDirection(UP);
+		}
+		else if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
+			setDashDirection(UP_RIGHT);
+		}
+		else if (inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(DOWN_RIGHT);
+		}
+		else if (!inputs.isRightPressed && inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(DOWN_LEFT);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && inputs.isUpPressed) {
+			setDashDirection(UP_LEFT);
+		}
+		else {
+			setDashDirection(RIGHT);
 		}
 	}
 }
