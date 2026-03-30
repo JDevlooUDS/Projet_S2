@@ -17,3 +17,5 @@ void Trap::applyEffect(Player* player) {
 void Trap::updateEffect(double deltaTime) {
     // animation ou autres
 }
+
+void Trap::update(double deltaTime, Inputs& inputs) {}

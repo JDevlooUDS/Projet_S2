@@ -10,6 +10,7 @@ PrisonScene::PrisonScene() {
 	loadMap();
 	addItem(player);
 	player->setPos(300, 0);
+	player->setWalls(walls);
 }
 
 PrisonScene::~PrisonScene() {
@@ -24,58 +25,9 @@ void PrisonScene::updateScene(double deltaTime) {
 	debugText(view, "fps: " + QString::number(1.0/deltaTime, 'f', 0), 10);
 	debugText(view, "pos_x: " + QString::number(player->x()), 30);
 
-
-	int dx = 0;
-	int dy = 1;
 	if (jon.isConnected()) {
 		//inputs.reset();
 		jon.RcvFromSerial(&inputs);
-	}
-	
-	if (inputs.isLeftPressed) dx += -1;
-	if (inputs.isRightPressed) dx += 1;
-	if ((inputs.isSpacePressed) && !playerJumpedLastFrame) {
-  		player->jump();
-	}
-	if (inputs.isDashPressed) {
-		player->dash();
-		if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(RIGHT);
-		}
-		else if (!inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(DOWN);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(LEFT);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
-			player->setDashDirection(UP);
-		}
-		else if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
-			player->setDashDirection(UP_RIGHT);
-		}
-		else if (inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(DOWN_RIGHT);
-		}
-		else if (!inputs.isRightPressed && inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
-			player->setDashDirection(DOWN_LEFT);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && inputs.isUpPressed) {
-			player->setDashDirection(UP_LEFT);
-		}
-		else {
-			player->setDashDirection(RIGHT);
-		}
-	}
-
-	if (player->isDashing()) {
-		player->updateDash(deltaTime);
-		QVector2D playerVelocity = player->getFixedVelocity();
-		dx = playerVelocity.x();
-		dy = playerVelocity.y();
-	}
-	else {
-		if (player->isJumping()) player->updateJump(deltaTime);
 	}
 
 	// pieges et boosts
@@ -107,25 +59,8 @@ void PrisonScene::updateScene(double deltaTime) {
 			return;
 		}
 	}
-	player->updateFlip(dx, deltaTime);
-	player->move(0, dy, deltaTime);
 
-	foreach(GameObject * wall, walls) {
-		if (wall->collidesWithItem(player)) {
-			player->setY(player->getLastPosition().y());
-			player->ground();
-		}
-	}
-	player->updateFlip(dx, deltaTime);
-	player->move(dx, 0, deltaTime);
-
-	foreach(GameObject * wall, walls) {
-		if (wall->collidesWithItem(player)) {
-			player->setX(player->getLastPosition().x());
-		}
-	}
-
-	playerJumpedLastFrame = inputs.isSpacePressed;
+	player->update(deltaTime, inputs);
 }
 
 void PrisonScene::showEnd() {
@@ -166,9 +101,7 @@ void PrisonScene::loadMap() {
 			walls.push_back(item);
 		}
 		else if (s == "grass") {
-			item = new GameObject();
-			item->setCollision(false);
-			grass.push_back(item);
+			continue;
 		}
 		else if (s == "trap") {
 			Trap* trap = new Trap(0.4f);
@@ -193,21 +126,21 @@ void PrisonScene::loadMap() {
 }
 
 void PrisonScene::keyPressEvent(QKeyEvent* event) {
-	if (!KEYBOARD_INPUT) return; //ne regarde pas le clavier si utilise manette
-	if (event->isAutoRepeat()) event->ignore(); //mettre en premier pour eviter les autres check
-	if (event->key() == Qt::Key_Left) {
+	if (!KEYBOARD_INPUT) return;
+	if (event->isAutoRepeat()) event->ignore();
+	if (event->key() == Qt::Key_A) {
 		inputs.isLeftPressed = true;
 	}
-	if (event->key() == Qt::Key_Right) {
+	if (event->key() == Qt::Key_D) {
 		inputs.isRightPressed = true;
 	}
-	if (event->key() == Qt::Key_X) {
+	if (event->key() == Qt::Key_E) {
 		inputs.isDashPressed = true;
 	}
-	if (event->key() == Qt::Key_Up) {
+	if (event->key() == Qt::Key_W) {
 		inputs.isUpPressed = true;
 	}
-	if (event->key() == Qt::Key_Down) {
+	if (event->key() == Qt::Key_S) {
 		inputs.isDownPressed = true;
 	}
 	
@@ -217,19 +150,19 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 }
 
 void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
-	if (event->key() == Qt::Key_Left) {
+	if (event->key() == Qt::Key_A) {
 		inputs.isLeftPressed = false;
 	}
-	if (event->key() == Qt::Key_Right) {
+	if (event->key() == Qt::Key_D) {
 		inputs.isRightPressed = false;
 	}
-	if (event->key() == Qt::Key_X) {
+	if (event->key() == Qt::Key_E) {
 		inputs.isDashPressed = false;
 	}
-	if (event->key() == Qt::Key_Up) {
+	if (event->key() == Qt::Key_W) {
 		inputs.isUpPressed = false;
 	}
-	if (event->key() == Qt::Key_Down) {
+	if (event->key() == Qt::Key_S) {
 		inputs.isDownPressed = false;
 	}
 	if (event->key() == Qt::Key_Space) {

@@ -14,23 +14,11 @@ Player::~Player() {
 
 }
 
-void Player::move(int x, int y, double deltaTime) {
-	bool pressingOpposite = (x > 0 && !facingRight) || (x < 0 && facingRight);
 
-	if (!active) return;
-	lastPosition = pos();
-	if (pressingOpposite) {
-		moveBy(reverseSpeed * speedMultiplier * x * deltaTime, fallVelocity * y * deltaTime);
-	}
-	else {
-	moveBy(speed * speedMultiplier * x * deltaTime, fallVelocity * y * deltaTime);
-	}
-}
+void Player::updateFlip(double deltaTime) {
+	if (!isGrounded || xVelocity == 0) return;  // accumule seulement, ne reset PAS si x==0
 
-void Player::updateFlip(int x, double deltaTime) {
-	if (!isGrounded || x == 0) return;  // accumule seulement, ne reset PAS si x==0
-
-	bool pressingOpposite = (x > 0 && !facingRight) || (x < 0 && facingRight);
+	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
 
 	if (pressingOpposite) {
 		flipHoldTime += deltaTime;
@@ -45,18 +33,79 @@ void Player::updateFlip(int x, double deltaTime) {
 	}
 }
 
+void Player::update(double deltaTime, Inputs& inputs) {
+	yVelocity = fallVelocity * 1;
+	xVelocity = 0;
+	if (inputs.isLeftPressed) xVelocity = -1 * speed;
+	if (inputs.isRightPressed) xVelocity = speed;
+
+	if ((inputs.isSpacePressed)) {
+		jumpBufferTimer = JUMP_BUFFER_LIMIT;
+		
+	}
+	jumpBufferTimer -= deltaTime;
+	coyoteTimer -= deltaTime;
+	if ((jumpBufferTimer > 0 && (isGrounded || coyoteTimer > 0)) && jumpEnabled) {
+		jump();
+		coyoteTimer = 0;
+		jumpBufferTimer = 0;
+	}
+
+	manageDashDirection(inputs);
+	
+
+	if (isDashing()) {
+		updateDash(deltaTime);
+		QVector2D playerVelocity = getFixedVelocity();
+		xVelocity = playerVelocity.x() * speed;
+		yVelocity = playerVelocity.y() * fallVelocity;
+	}
+	else {
+		updateGravity(deltaTime);
+	}
+	updateFlip(deltaTime);
+	move(deltaTime);
+	wasGroundedLastFrame = isGrounded;
+}
+
+void Player::move(double deltaTime) {
+	if (!active) return;
+	moveX(deltaTime);
+	resolveCollisionX();
+	moveY(deltaTime);
+	resolveCollisionY();
+}
+
+void Player::moveX(double deltaTime) {
+	if (!active) return;
+	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
+	lastPosition = pos();
+
+	if (pressingOpposite) {
+		xVelocity = xVelocity * (reverseSpeed / speed);
+	}
+	
+
+	moveBy(speedMultiplier * xVelocity * deltaTime,0);
+}
+
+void Player::moveY(double deltaTime) {
+	if (!active) return;
+	lastPosition = pos();
+	moveBy(0, yVelocity * deltaTime);
+}
+
 void Player::jump() {
-	if ((!isGrounded && jumpCount == 0) || !jumpEnabled) return;
  	fallVelocity = JUMP_VELOCITY;
 	isGrounded = false;
-	jumpCount--;
+	jumping = true;
 }
 
 bool Player::isJumping() {
-	return !isGrounded;
+	return jumping;
 }
 
-void Player::updateJump(double deltaTime) {
+void Player::updateGravity(double deltaTime) {
 	fallVelocity += GRAVITY * deltaTime;
 	if (fallVelocity > BASE_FALL_VELOCITY) {
 		fallVelocity = BASE_FALL_VELOCITY;
@@ -73,7 +122,7 @@ void Player::enableJump() {
 
 void Player::ground() {
 	isGrounded = true;
-	jumpCount = 1;
+	jumping = false;
 	dashCount = 1;
 }
 
@@ -83,8 +132,6 @@ void Player::setSpeedMultiplier(float multiplier) {
 
 float Player::getSpeedMultiplier() {
 	return speedMultiplier;
-	if (!dashing) dashCount = 1;
-	jumpCount = 1;
 }
 
 void Player::dash() {
@@ -135,5 +182,77 @@ QVector2D Player::getFixedVelocity() {
 			return QVector2D(-1.0,-1.0);
 		default:
 			return QVector2D(0,0);
+	}
+}
+
+void Player::setWalls(vector<GameObject*> walls) {
+	this->walls = walls;
+}
+
+void Player::resolveCollisionX() {
+	for (GameObject* wall : walls) {
+		if (collidesWithItem(wall)) {
+			if (xVelocity > 0) {
+				setX(lastPosition.x());
+			}
+			else if (xVelocity < 0) {
+				setX(lastPosition.x());
+			}
+		}
+	}
+}
+
+void Player::resolveCollisionY() {
+	bool resolved = false;
+	for (GameObject* wall : walls) {
+		if (collidesWithItem(wall)) {
+			if (yVelocity > 0) {
+				setY(lastPosition.y());
+				fallVelocity = 0;
+				resolved = true;
+				ground();
+			}
+			else if (yVelocity < 0) {		
+				setY(lastPosition.y());
+				fallVelocity = 0;
+			}
+		}
+	}
+	isGrounded = resolved;
+	if (!isGrounded && wasGroundedLastFrame) {
+		coyoteTimer = COYOTE_TIME_LIMIT;
+	}
+}
+
+void Player::manageDashDirection(Inputs& inputs) {
+	if (inputs.isDashPressed) {
+		dash();
+		if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(RIGHT);
+		}
+		else if (!inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(DOWN);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(LEFT);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
+			setDashDirection(UP);
+		}
+		else if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
+			setDashDirection(UP_RIGHT);
+		}
+		else if (inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(DOWN_RIGHT);
+		}
+		else if (!inputs.isRightPressed && inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
+			setDashDirection(DOWN_LEFT);
+		}
+		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && inputs.isUpPressed) {
+			setDashDirection(UP_LEFT);
+		}
+		else {
+			setDashDirection(RIGHT);
+		}
 	}
 }
