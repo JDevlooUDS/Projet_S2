@@ -1,11 +1,13 @@
 #include "../header/player.h"
 
+
 Player::Player() {
 	setPixmap(ResourceManager::getInstance().getPlayerSprite());
 	setFlag(QGraphicsItem::ItemIsFocusable);
 	setFocus();
 	hp = 3;
 	speed = BASE_SPEED;
+	reverseSpeed = REVERSE_SPEED;
 }
 
 Player::~Player() {
@@ -13,12 +15,34 @@ Player::~Player() {
 }
 
 void Player::move(int x, int y, double deltaTime) {
+	bool pressingOpposite = (x > 0 && !facingRight) || (x < 0 && facingRight);
+
 	if (!active) return;
 	lastPosition = pos();
-	float dx = x;
-	float dy = y;
-	
-	moveBy(speed * speedMultiplier * dx * deltaTime, fallVelocity * dy * deltaTime);
+	if (pressingOpposite) {
+		moveBy(reverseSpeed * speedMultiplier * x * deltaTime, fallVelocity * y * deltaTime);
+	}
+	else {
+	moveBy(speed * speedMultiplier * x * deltaTime, fallVelocity * y * deltaTime);
+	}
+}
+
+void Player::updateFlip(int x, double deltaTime) {
+	if (!isGrounded || x == 0) return;  // accumule seulement, ne reset PAS si x==0
+
+	bool pressingOpposite = (x > 0 && !facingRight) || (x < 0 && facingRight);
+
+	if (pressingOpposite) {
+		flipHoldTime += deltaTime;
+		if (flipHoldTime >= FLIP_CONST) {
+			facingRight = !facingRight;
+			setPixmap(pixmap().transformed(QTransform().scale(-1, 1)));
+			flipHoldTime = 0.0f;
+		}
+	}
+	else {
+		flipHoldTime = 0.0f;  // reset seulement si on va dans la bonne direction
+	}
 }
 
 void Player::jump() {
@@ -34,7 +58,9 @@ bool Player::isJumping() {
 
 void Player::updateJump(double deltaTime) {
 	fallVelocity += GRAVITY * deltaTime;
-	if (fallVelocity > BASE_FALL_VELOCITY) fallVelocity = BASE_FALL_VELOCITY;
+	if (fallVelocity > BASE_FALL_VELOCITY) {
+		fallVelocity = BASE_FALL_VELOCITY;
+	}
 }
 
 void Player::disableJump() {
@@ -47,7 +73,7 @@ void Player::enableJump() {
 
 void Player::ground() {
 	isGrounded = true;
-	jumpCount = 2;
+	jumpCount = 1;
 	dashCount = 1;
 }
 
@@ -58,7 +84,7 @@ void Player::setSpeedMultiplier(float multiplier) {
 float Player::getSpeedMultiplier() {
 	return speedMultiplier;
 	if (!dashing) dashCount = 1;
-	jumpCount = 2;
+	jumpCount = 1;
 }
 
 void Player::dash() {

@@ -1,8 +1,10 @@
 #pragma once
 #include "gameObject.h"
 #include "resourceManager.h"
+#include "timer.h"
 #include <QVector2D>
 #include <cmath>
+
 
 enum DashDirection {
 	NONE,
@@ -33,17 +35,24 @@ public:
 	bool isDashing();
 	void updateDash(double deltaTime);
 	void setDashDirection(DashDirection dashDirection);
+	void updateFlip(int x, double deltaTime);
 	QVector2D getFixedVelocity();
 
 	bool jumping = false;
 
 private:
+	const bool KEYBOARD_CONTROL = true;
 	const float BASE_SPEED = 200.0;
+	const float REVERSE_SPEED = 300.0f;
 	const float DASH_SPEED = 600.0;
 	const float JUMP_VELOCITY = -950.0f;
-	const float GRAVITY = 3000.0f;
+	const float GRAVITY = 4000.0f;
 	const float BASE_FALL_VELOCITY = 500.0f;
+	const float FLIP_CONST = 0.2f;
 	float speedMultiplier = 1.0f; // < 1 pour ralentir, > 1 pour accelerer
+
+	float facingRight = true;
+	float flipHoldTime = 0.0f;
 
 	double dashTimer = 0.0;
 	const double DASH_LIMIT = 0.3;
@@ -54,6 +63,6 @@ private:
 	bool jumpEnabled = true;
 	DashDirection dashDirection = NONE;
 
-	int jumpCount = 2;
+	int jumpCount = 1;
 	int dashCount = 1;
 };

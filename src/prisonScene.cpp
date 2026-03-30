@@ -1,5 +1,6 @@
 #include "./header/prisonScene.h"
 #include <QDebug>
+#include "debug.h"
 
 PrisonScene::PrisonScene() {
 	ResourceManager::getInstance().loadPrisonSceneResources();
@@ -17,10 +18,17 @@ PrisonScene::~PrisonScene() {
 }
 
 void PrisonScene::updateScene(double deltaTime) {
+	// section debug
+	QGraphicsView* view = views().first();  // récupère la Game view
+	clearDebug(view);
+	debugText(view, "fps: " + QString::number(1.0/deltaTime, 'f', 0), 10);
+	debugText(view, "pos_x: " + QString::number(player->x()), 30);
+
+
 	int dx = 0;
 	int dy = 1;
 	if (jon.isConnected()) {
-		inputs.reset();
+		//inputs.reset();
 		jon.RcvFromSerial(&inputs);
 	}
 	
@@ -99,7 +107,7 @@ void PrisonScene::updateScene(double deltaTime) {
 			return;
 		}
 	}
-
+	player->updateFlip(dx, deltaTime);
 	player->move(0, dy, deltaTime);
 
 	foreach(GameObject * wall, walls) {
@@ -108,7 +116,7 @@ void PrisonScene::updateScene(double deltaTime) {
 			player->ground();
 		}
 	}
-
+	player->updateFlip(dx, deltaTime);
 	player->move(dx, 0, deltaTime);
 
 	foreach(GameObject * wall, walls) {
@@ -185,41 +193,43 @@ void PrisonScene::loadMap() {
 }
 
 void PrisonScene::keyPressEvent(QKeyEvent* event) {
-	if (event->key() == Qt::Key_A) {
+	if (!KEYBOARD_INPUT) return; //ne regarde pas le clavier si utilise manette
+	if (event->isAutoRepeat()) event->ignore(); //mettre en premier pour eviter les autres check
+	if (event->key() == Qt::Key_Left) {
 		inputs.isLeftPressed = true;
 	}
-	if (event->key() == Qt::Key_D) {
+	if (event->key() == Qt::Key_Right) {
 		inputs.isRightPressed = true;
 	}
-	if (event->key() == Qt::Key_E) {
+	if (event->key() == Qt::Key_X) {
 		inputs.isDashPressed = true;
 	}
-	if (event->key() == Qt::Key_W) {
+	if (event->key() == Qt::Key_Up) {
 		inputs.isUpPressed = true;
 	}
-	if (event->key() == Qt::Key_S) {
+	if (event->key() == Qt::Key_Down) {
 		inputs.isDownPressed = true;
 	}
-	if (event->isAutoRepeat()) event->ignore();
+	
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = true;
 	}
 }
 
 void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
-	if (event->key() == Qt::Key_A) {
+	if (event->key() == Qt::Key_Left) {
 		inputs.isLeftPressed = false;
 	}
-	if (event->key() == Qt::Key_D) {
+	if (event->key() == Qt::Key_Right) {
 		inputs.isRightPressed = false;
 	}
-	if (event->key() == Qt::Key_E) {
+	if (event->key() == Qt::Key_X) {
 		inputs.isDashPressed = false;
 	}
-	if (event->key() == Qt::Key_W) {
+	if (event->key() == Qt::Key_Up) {
 		inputs.isUpPressed = false;
 	}
-	if (event->key() == Qt::Key_S) {
+	if (event->key() == Qt::Key_Down) {
 		inputs.isDownPressed = false;
 	}
 	if (event->key() == Qt::Key_Space) {
