@@ -43,6 +43,7 @@ void Player::update(double deltaTime, Inputs& inputs) {
 		updateGravity(deltaTime);
 	}
 
+	manageAcceleration(deltaTime);
 	move(deltaTime);
 	wasGroundedLastFrame = isGrounded;
 }
@@ -58,7 +59,7 @@ void Player::move(double deltaTime) {
 void Player::moveX(double deltaTime) {
 	if (!active) return;
 	lastPosition = pos();
-	moveBy(speedMultiplier * xVelocity * deltaTime,0);
+	moveBy(accelerationMultiplier * speedMultiplier * xVelocity * deltaTime,0);
 }
 
 void Player::moveY(double deltaTime) {
@@ -225,4 +226,29 @@ void Player::manageDashDirection(Inputs& inputs) {
 			setDashDirection(RIGHT);
 		}
 	}
+}
+
+void Player::manageAcceleration(double deltaTime) {
+	if (xVelocity == 0) {
+		accelerationMultiplier -= ACCELERATION_DELTA * deltaTime;
+		if (accelerationMultiplier < MIN_ACCELERATION) accelerationMultiplier = MIN_ACCELERATION;
+	}
+	else if (lastFrameXVelocity > 0 && xVelocity > 0) {
+		accelerationMultiplier += ACCELERATION_DELTA * deltaTime;
+		if (accelerationMultiplier > MAX_ACCELERATION) accelerationMultiplier = MAX_ACCELERATION;
+	}
+	else if (lastFrameXVelocity < 0 && xVelocity < 0) {
+		accelerationMultiplier += ACCELERATION_DELTA * deltaTime;
+		if (accelerationMultiplier > MAX_ACCELERATION) accelerationMultiplier = MAX_ACCELERATION;
+	}
+	else {
+		accelerationMultiplier -= ACCELERATION_DELTA * deltaTime;
+		if (accelerationMultiplier < MIN_ACCELERATION) accelerationMultiplier = MIN_ACCELERATION;
+	}
+
+	lastFrameXVelocity = xVelocity;
+}
+
+void Player::resetAcceleration() {
+	accelerationMultiplier = MIN_ACCELERATION;
 }

@@ -44,6 +44,8 @@ private:
 	void resolveCollisionX();
 	void resolveCollisionY();
 	void manageDashDirection(Inputs& inputs);
+	void manageAcceleration(double deltaTime);
+	void resetAcceleration();
 
 	const float BASE_SPEED = 200.0;
 	const float DASH_SPEED = 600.0;
@@ -72,4 +74,10 @@ private:
 	double coyoteTimer = 0.0;
 	const double COYOTE_TIME_LIMIT = 0.1;
 	bool wasGroundedLastFrame = false;
+
+	const float MAX_ACCELERATION = 2;
+	const float MIN_ACCELERATION = 1;
+	const float ACCELERATION_DELTA = 0.5; //0.5 * deltaTime -> 1 à 2 fois la vitesse en 2s
+	float accelerationMultiplier = 1;
+	float lastFrameXVelocity = 0.0;
 };
