@@ -24,6 +24,8 @@ void PrisonScene::updateScene(double deltaTime) {
 	clearDebug(view);
 	debugText(view, "fps: " + QString::number(1.0/deltaTime, 'f', 0), 10);
 	debugText(view, "pos_x: " + QString::number(player->x()), 30);
+	QString s = player->isOnGround() ? "true" : "false";
+	debugText(view, "Grounded: " + s, 50);
 
 	if (jon.isConnected()) {
 		//inputs.reset();

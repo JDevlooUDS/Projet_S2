@@ -106,6 +106,10 @@ bool Player::isJumping() {
 	return jumping;
 }
 
+bool Player::isOnGround() {
+	return isGrounded;
+}
+
 void Player::updateGravity(double deltaTime) {
 	fallVelocity += GRAVITY * deltaTime;
 	if (fallVelocity > BASE_FALL_VELOCITY) {
@@ -209,13 +213,11 @@ void Player::resolveCollisionY() {
 		if (collidesWithItem(wall)) {
 			if (yVelocity > 0) {
 				setY(lastPosition.y());
-				fallVelocity = 0;
 				resolved = true;
 				ground();
 			}
 			else if (yVelocity < 0) {		
 				setY(lastPosition.y());
-				fallVelocity = 0;
 			}
 		}
 	}

@@ -25,6 +25,7 @@ public:
 	void jump();
 	void move(double deltaTime);
 	bool isJumping();
+	bool isOnGround();
 	void updateGravity(double deltaTime);
 	void disableJump();
 	void enableJump();
