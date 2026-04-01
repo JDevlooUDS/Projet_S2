@@ -1,13 +1,28 @@
 TEMPLATE = vcapp
 TARGET = Jeu
-ressources.base = resources
-ressources.files += resources/sprites/placeHolderSprite.png resources/map/test_map.json resources/sprites/tilesets.png
-CONFIG += warn_on qt debug windows console
-HEADERS += ./header/gameObject.h ./header/game.h ./header/player.h ./header/inputs.h ./header/timer.h ./header/prisonScene.h ./header/sceneManager.h ./header/baseScene.h ./header/resourceManager.h ./header/tile.h ./header/wall.h ./header/Jon.h ./header/boost.h ./header/end.h ./header/trap.h ./header/debug.h
-SOURCES += main.cpp ./src/gameObject.cpp ./src/game.cpp ./src/player.cpp ./src/timer.cpp ./src/prisonScene.cpp ./src/sceneManager.cpp ./src/baseScene.cpp ./src/resourceManager.cpp ./src/tile.cpp ./src/wall.cpp ./src/Jon.cpp ./src/end.cpp ./src/boost.cpp ./src/trap.cpp ./src/debug.cpp
+
+SOUNDS = $$files($$PWD/resources/sounds/sfx/*.wav)
+MAPS = $$files($$PWD/resources/map/*.json)
+SPRITES = $$files($$PWD/resources/sprites/*png)
+
+resources.base = resources
+resources.files += $$SOUNDS $$MUSICS $$MAPS $$SPRITES
+CONFIG += warn_on qt debug windows console resources_big
+HEADERS += $$files($$PWD/header/*.h)
+SOURCES += main.cpp $$files($$PWD/src/*.cpp)
 INCLUDEPATH += ./header ./src ./map ./image
-map_folder.files = $$files($$PWD/map/*)
-map_folder.path = $$OUT_PWD/map
-INSTALLS += map_folder
-RESOURCES += ressources
-QT += widgets serialport
+
+
+music_files.path = $$OUT_PWD/resources/sounds/music
+music_files.files = $$files($$PWD/resources/sounds/music/*.wav)
+
+INSTALLS += music_files
+
+MY_SOURCE = $$PWD/resources
+MY_DEST = $$OUT_PWD/debug/resources
+
+QMAKE_POST_LINK += xcopy \"$$MY_SOURCE\" \"$$MY_DEST\" /E /I /Y /D
+
+
+RESOURCES += resources
+QT += widgets serialport multimedia

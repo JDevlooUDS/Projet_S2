@@ -15,6 +15,8 @@
 #include <QTimer>
 #include <QElapsedTimer>
 
+#include "audioManager.h"
+
 using namespace std;
 
 class Game : public QGraphicsView {
@@ -29,4 +31,6 @@ private:
 	QTimer* fps = nullptr;
 	QElapsedTimer elapsedTimer;
 	QRect cameraPos;
+	AudioManager audioManager;
+
 };
