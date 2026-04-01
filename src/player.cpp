@@ -1,15 +1,36 @@
 #include "../header/player.h"
 
+
 Player::Player() {
 	setPixmap(ResourceManager::getInstance().getPlayerSprite());
 	setFlag(QGraphicsItem::ItemIsFocusable);
 	setFocus();
 	hp = 3;
 	speed = BASE_SPEED;
+	reverseSpeed = REVERSE_SPEED;
 }
 
 Player::~Player() {
 
+}
+
+
+void Player::updateFlip(double deltaTime) {
+	if (!isGrounded || xVelocity == 0) return;  // accumule seulement, ne reset PAS si x==0
+
+	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
+
+	if (pressingOpposite) {
+		flipHoldTime += deltaTime;
+		if (flipHoldTime >= FLIP_CONST) {
+			facingRight = !facingRight;
+			setPixmap(pixmap().transformed(QTransform().scale(-1, 1)));
+			flipHoldTime = 0.0f;
+		}
+	}
+	else {
+		flipHoldTime = 0.0f;  // reset seulement si on va dans la bonne direction
+	}
 }
 
 void Player::update(double deltaTime, Inputs& inputs) {
@@ -44,6 +65,7 @@ void Player::update(double deltaTime, Inputs& inputs) {
 	}
 
 	manageAcceleration(deltaTime);
+	updateFlip(deltaTime);
 	move(deltaTime);
 	wasGroundedLastFrame = isGrounded;
 }
@@ -58,8 +80,14 @@ void Player::move(double deltaTime) {
 
 void Player::moveX(double deltaTime) {
 	if (!active) return;
+	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
 	lastPosition = pos();
+
+	if (pressingOpposite) xVelocity = xVelocity * (reverseSpeed / speed);
+
+	
 	moveBy(accelerationMultiplier * speedMultiplier * xVelocity * deltaTime,0);
+
 }
 
 void Player::moveY(double deltaTime) {
@@ -80,7 +108,9 @@ bool Player::isJumping() {
 
 void Player::updateGravity(double deltaTime) {
 	fallVelocity += GRAVITY * deltaTime;
-	if (fallVelocity > BASE_FALL_VELOCITY) fallVelocity = BASE_FALL_VELOCITY;
+	if (fallVelocity > BASE_FALL_VELOCITY) {
+		fallVelocity = BASE_FALL_VELOCITY;
+	}
 }
 
 void Player::disableJump() {
@@ -233,11 +263,11 @@ void Player::manageAcceleration(double deltaTime) {
 		accelerationMultiplier -= ACCELERATION_DELTA * deltaTime;
 		if (accelerationMultiplier < MIN_ACCELERATION) accelerationMultiplier = MIN_ACCELERATION;
 	}
-	else if (lastFrameXVelocity > 0 && xVelocity > 0) {
+	else if ((lastFrameXVelocity > 0 && xVelocity > 0) && isGrounded) {
 		accelerationMultiplier += ACCELERATION_DELTA * deltaTime;
 		if (accelerationMultiplier > MAX_ACCELERATION) accelerationMultiplier = MAX_ACCELERATION;
 	}
-	else if (lastFrameXVelocity < 0 && xVelocity < 0) {
+	else if ((lastFrameXVelocity < 0 && xVelocity < 0) && isGrounded) {
 		accelerationMultiplier += ACCELERATION_DELTA * deltaTime;
 		if (accelerationMultiplier > MAX_ACCELERATION) accelerationMultiplier = MAX_ACCELERATION;
 	}

@@ -1,5 +1,6 @@
 #include "./header/prisonScene.h"
 #include <QDebug>
+#include "debug.h"
 
 PrisonScene::PrisonScene() {
 	ResourceManager::getInstance().loadPrisonSceneResources();
@@ -18,8 +19,14 @@ PrisonScene::~PrisonScene() {
 }
 
 void PrisonScene::updateScene(double deltaTime) {
+	// section debug
+	QGraphicsView* view = views().first();  // récupère la Game view
+	clearDebug(view);
+	debugText(view, "fps: " + QString::number(1.0/deltaTime, 'f', 0), 10);
+	debugText(view, "pos_x: " + QString::number(player->x()), 30);
+
 	if (jon.isConnected()) {
-		inputs.reset();
+		//inputs.reset();
 		jon.RcvFromSerial(&inputs);
 	}
 
@@ -119,6 +126,8 @@ void PrisonScene::loadMap() {
 }
 
 void PrisonScene::keyPressEvent(QKeyEvent* event) {
+	if (!KEYBOARD_INPUT) return;
+	if (event->isAutoRepeat()) event->ignore();
 	if (event->key() == Qt::Key_A) {
 		inputs.isLeftPressed = true;
 	}
@@ -134,7 +143,7 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_S) {
 		inputs.isDownPressed = true;
 	}
-	if (event->isAutoRepeat()) event->ignore();
+	
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = true;
 	}

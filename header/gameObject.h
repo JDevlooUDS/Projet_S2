@@ -33,6 +33,7 @@ protected:
 	float xVelocity = 0;
 	float yVelocity = 0;
 	float speed = 0;
+	float reverseSpeed = 0;
 	bool active = false;
 	bool collides = false;
 	QPointF lastPosition;

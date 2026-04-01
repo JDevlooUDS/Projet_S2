@@ -14,6 +14,7 @@ Timer::~Timer() {
 }
 
 void Timer::activate() {
+	elapsedTime = 0.0;
 	startTime = clock();
 	active = true;
 }
