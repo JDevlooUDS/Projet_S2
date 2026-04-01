@@ -1,4 +1,5 @@
 #include "../header/game.h"
+#include <QDirIterator>
 
 Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -9,6 +10,13 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 	fps->start(16);
 	elapsedTimer.start();
 	setSceneRect(0, -1000, 1920, 50000);
+
+
+	if (!audioManager.init(this)) {
+		qDebug() << "error loading audio files\n";
+		return;
+	}
+	audioManager.updateMusic(MusicState::GAMEPLAY);
 }
 
 Game::~Game() {
