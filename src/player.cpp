@@ -41,7 +41,6 @@ void Player::update(double deltaTime, Inputs& inputs) {
 
 	if ((inputs.isSpacePressed)) {
 		jumpBufferTimer = JUMP_BUFFER_LIMIT;
-		
 	}
 	jumpBufferTimer -= deltaTime;
 	coyoteTimer -= deltaTime;
@@ -100,6 +99,7 @@ void Player::jump() {
  	fallVelocity = JUMP_VELOCITY;
 	isGrounded = false;
 	jumping = true;
+	if (dashing) dashing = false;
 }
 
 bool Player::isJumping() {
@@ -126,6 +126,8 @@ void Player::enableJump() {
 }
 
 void Player::ground() {
+	if (!jumping && !dashing) speed = BASE_SPEED;
+	
 	isGrounded = true;
 	jumping = false;
 	dashCount = 1;
@@ -141,10 +143,12 @@ float Player::getSpeedMultiplier() {
 
 void Player::dash() {
 	if (dashCount == 0) return;
-	speed = DASH_SPEED;
+	speed = speed * DASH_MULTIPLIER;
 	fallVelocity = DASH_SPEED;
+	jumping = false;
 	dashing = true;
 	dashCount--;
+	dashTimer = 0.0;
 }
 
 bool Player::isDashing() {
@@ -155,9 +159,9 @@ void Player::updateDash(double deltaTime) {
 	if (dashTimer >= DASH_LIMIT) {
 		dashing = false;
 		dashTimer = 0.0;
-		speed = BASE_SPEED;
 		fallVelocity = 0;
 		dashDirection = NONE;
+		if (!jumping) speed = BASE_SPEED;
 		return;
 	}
 	dashTimer += deltaTime;
@@ -222,6 +226,7 @@ void Player::resolveCollisionY() {
 		}
 	}
 	isGrounded = resolved;
+	if (wasGroundedLastFrame && yVelocity == 0) isGrounded = true;
 	if (!isGrounded && wasGroundedLastFrame) {
 		coyoteTimer = COYOTE_TIME_LIMIT;
 	}

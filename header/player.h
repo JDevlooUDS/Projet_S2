@@ -83,6 +83,7 @@ private:
 	DashDirection dashDirection = NONE;
 
 	int dashCount = 1;
+	const float DASH_MULTIPLIER = 1.5f;
 
 	double coyoteTimer = 0.0;
 	const double COYOTE_TIME_LIMIT = 0.1;
