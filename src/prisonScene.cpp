@@ -133,7 +133,13 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_A) {
 		inputs.isLeftPressed = true;
 	}
+	if (event->key() == Qt::Key_Left) {
+		inputs.isLeftPressed = true;
+	}
 	if (event->key() == Qt::Key_D) {
+		inputs.isRightPressed = true;
+	}
+	if (event->key() == Qt::Key_Right) {
 		inputs.isRightPressed = true;
 	}
 	if (event->key() == Qt::Key_E) {
@@ -142,10 +148,16 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_W) {
 		inputs.isUpPressed = true;
 	}
+	if (event->key() == Qt::Key_Up) {
+		inputs.isUpPressed = true;
+	}
 	if (event->key() == Qt::Key_S) {
 		inputs.isDownPressed = true;
 	}
-	
+	if (event->key() == Qt::Key_Down) {
+		inputs.isDownPressed = true;
+	}
+
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = true;
 	}
@@ -155,7 +167,13 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_A) {
 		inputs.isLeftPressed = false;
 	}
+	if (event->key() == Qt::Key_Left) {
+		inputs.isLeftPressed = false;
+	}
 	if (event->key() == Qt::Key_D) {
+		inputs.isRightPressed = false;
+	}
+	if (event->key() == Qt::Key_Right) {
 		inputs.isRightPressed = false;
 	}
 	if (event->key() == Qt::Key_E) {
@@ -164,7 +182,13 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_W) {
 		inputs.isUpPressed = false;
 	}
+	if (event->key() == Qt::Key_Up) {
+		inputs.isUpPressed = false;
+	}
 	if (event->key() == Qt::Key_S) {
+		inputs.isDownPressed = false;
+	}
+	if (event->key() == Qt::Key_Down) {
 		inputs.isDownPressed = false;
 	}
 	if (event->key() == Qt::Key_Space) {
