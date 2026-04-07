@@ -23,7 +23,7 @@ public:
 	void activate();
 	void deactivate();
 	void setCollision(bool collides);
-	virtual void update(double deltaTime, Inputs& inputs) = 0;
+	virtual void update(double deltaTime, const Inputs& inputs) = 0;
 	QPointF getLastPosition();
 
 	

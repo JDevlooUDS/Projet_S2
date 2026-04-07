@@ -33,11 +33,61 @@ void Player::updateFlip(double deltaTime) {
 	}
 }
 
-void Player::update(double deltaTime, Inputs& inputs) {
+void Player::update(double deltaTime, const Inputs& inputs) {
+	if (!active) return;
+	if (playerState == NORMAL) {
+		manageNormalState(deltaTime, inputs);
+	}
+	else if (playerState == DASH) {
+		manageDashState(deltaTime, inputs);
+	}
+}
+
+void Player::manageDashState(double deltaTime, const Inputs& inputs) {
+	if ((inputs.isSpacePressed)) {
+		jumpBufferTimer = JUMP_BUFFER_LIMIT;
+	}
+	jumpBufferTimer -= deltaTime;
+	coyoteTimer -= deltaTime;
+	if ((jumpBufferTimer > 0 && (isGrounded || coyoteTimer > 0)) && jumpEnabled) {
+		jump();
+		xVelocity = dashXVelocity;
+		dashCount = 1;
+		isJumpingFromDash = true;
+		coyoteTimer = 0;
+		jumpBufferTimer = 0;
+	}
+
+	if (dashTimer >= DASH_LIMIT) {
+		dashing = false;
+		playerState = NORMAL;
+	}
+	dashTimer += deltaTime;
+
+	moveDash(deltaTime);
+}
+
+void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
+	updateFlip(deltaTime);
+	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
+	if (pressingOpposite) speed = REVERSE_SPEED;
+	else speed = BASE_SPEED;
 	yVelocity = fallVelocity * 1;
-	xVelocity = 0;
-	if (inputs.isLeftPressed) xVelocity = -1 * speed;
-	if (inputs.isRightPressed) xVelocity = speed;
+	
+	if (isJumpingFromDash) {
+		xVelocity *= 1.0f - (0.1f * deltaTime);
+		if (xVelocity < BASE_SPEED) {
+			xVelocity = BASE_SPEED;
+			isJumpingFromDash = false;
+		}
+		if (inputs.isLeftPressed) xVelocity = -1 * abs(xVelocity);
+		if (inputs.isRightPressed) xVelocity = abs(xVelocity);
+	}
+	else {
+		xVelocity = 0;
+		if (inputs.isLeftPressed) xVelocity = -1 * speed;
+		if (inputs.isRightPressed) xVelocity = speed;
+	}
 
 	if ((inputs.isSpacePressed)) {
 		jumpBufferTimer = JUMP_BUFFER_LIMIT;
@@ -50,18 +100,10 @@ void Player::update(double deltaTime, Inputs& inputs) {
 		jumpBufferTimer = 0;
 	}
 
-	manageDashDirection(inputs);
-	
-
-	if (isDashing()) {
-		updateDash(deltaTime);
-		QVector2D playerVelocity = getFixedVelocity();
-		xVelocity = playerVelocity.x() * speed;
-		yVelocity = playerVelocity.y() * fallVelocity;
+	if (inputs.isDashPressed && dashCount > 0) {
+		dash(inputs);
 	}
-	else {
-		updateGravity(deltaTime);
-	}
+	updateGravity(deltaTime);
 
 	manageAcceleration(deltaTime);
 	updateFlip(deltaTime);
@@ -78,28 +120,39 @@ void Player::move(double deltaTime) {
 }
 
 void Player::moveX(double deltaTime) {
-	if (!active) return;
-	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
-	lastPosition = pos();
-
-	if (pressingOpposite) xVelocity = xVelocity * (reverseSpeed / speed);
-
-	
+	lastPosition = pos();	
 	moveBy(accelerationMultiplier * speedMultiplier * xVelocity * deltaTime,0);
 
 }
 
 void Player::moveY(double deltaTime) {
-	if (!active) return;
 	lastPosition = pos();
 	moveBy(0, yVelocity * deltaTime);
+}
+
+void Player::moveDash(double deltaTime) {
+	moveDashX(deltaTime);
+	resolveCollisionX();
+	moveDashY(deltaTime);
+	resolveCollisionY();
+}
+
+void Player::moveDashX(double deltaTime) {
+	lastPosition = pos();
+	moveBy(accelerationMultiplier * dashXVelocity * speedMultiplier * deltaTime, 0);
+}
+
+void Player::moveDashY(double deltaTime) {
+	lastPosition = pos();
+	moveBy(0, dashYVelocity * deltaTime);
 }
 
 void Player::jump() {
  	fallVelocity = JUMP_VELOCITY;
 	isGrounded = false;
 	jumping = true;
-	if (dashing) dashing = false;
+	playerState = NORMAL;
+	dashing = false;
 }
 
 bool Player::isJumping() {
@@ -126,7 +179,7 @@ void Player::enableJump() {
 }
 
 void Player::ground() {
-	if (!jumping && !dashing) speed = BASE_SPEED;
+	if (!jumping && !dashing) isJumpingFromDash = false;
 	
 	isGrounded = true;
 	jumping = false;
@@ -141,12 +194,14 @@ float Player::getSpeedMultiplier() {
 	return speedMultiplier;
 }
 
-void Player::dash() {
+void Player::dash(const Inputs& inputs) {
 	if (dashCount == 0) return;
-	speed = speed * DASH_MULTIPLIER;
-	fallVelocity = DASH_SPEED;
+	playerState = DASH;
+	manageDashDirection(inputs);
+ 	QVector2D direction = getFixedVelocity();
+ 	dashXVelocity = direction.x() * BASE_SPEED * DASH_MULTIPLIER;
+	dashYVelocity = direction.y() * BASE_SPEED * DASH_MULTIPLIER;
 	jumping = false;
-	dashing = true;
 	dashCount--;
 	dashTimer = 0.0;
 }
@@ -174,23 +229,23 @@ void Player::setDashDirection(DashDirection dashDirection) {
 QVector2D Player::getFixedVelocity() {
 	switch (dashDirection) {
 		case UP:
-			return QVector2D(0.0,-1.0);
+			return QVector2D(0.0,-1.0).normalized();
 		case UP_RIGHT:
-			return QVector2D(1.0, -1.0);
+			return QVector2D(1.0, -1.0).normalized();
 		case RIGHT:
-			return QVector2D(1.0,0.0);
+			return QVector2D(1.0,0.0).normalized();
 		case DOWN_RIGHT:
-			return QVector2D(1.0,1.0);
+			return QVector2D(1.0,1.0).normalized();
 		case DOWN:
-			return QVector2D(0.0,1.0);
+			return QVector2D(0.0,1.0).normalized();
 		case DOWN_LEFT:
-			return QVector2D(-1.0,1.0);
+			return QVector2D(-1.0,1.0).normalized();
 		case LEFT:
-			return QVector2D(-1.0,0.0);
+			return QVector2D(-1.0,0.0).normalized();
 		case UP_LEFT:
-			return QVector2D(-1.0,-1.0);
+			return QVector2D(-1.0,-1.0).normalized();
 		default:
-			return QVector2D(0,0);
+			return QVector2D(0,0).normalized();
 	}
 }
 
@@ -226,43 +281,41 @@ void Player::resolveCollisionY() {
 		}
 	}
 	isGrounded = resolved;
-	if (wasGroundedLastFrame && yVelocity == 0) isGrounded = true;
+	if (wasGroundedLastFrame && yVelocity == 0) ground();
 	if (!isGrounded && wasGroundedLastFrame) {
 		coyoteTimer = COYOTE_TIME_LIMIT;
 	}
 }
 
-void Player::manageDashDirection(Inputs& inputs) {
-	if (inputs.isDashPressed) {
-		dash();
-		if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(RIGHT);
-		}
-		else if (!inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(DOWN);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(LEFT);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
-			setDashDirection(UP);
-		}
-		else if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
-			setDashDirection(UP_RIGHT);
-		}
-		else if (inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(DOWN_RIGHT);
-		}
-		else if (!inputs.isRightPressed && inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
-			setDashDirection(DOWN_LEFT);
-		}
-		else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && inputs.isUpPressed) {
-			setDashDirection(UP_LEFT);
-		}
-		else {
-			setDashDirection(RIGHT);
-		}
+void Player::manageDashDirection(const Inputs& inputs) {
+	if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+		setDashDirection(RIGHT);
 	}
+	else if (!inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+		setDashDirection(DOWN);
+	}
+	else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
+		setDashDirection(LEFT);
+	}
+	else if (!inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
+		setDashDirection(UP);
+	}
+	else if (inputs.isRightPressed && !inputs.isDownPressed && !inputs.isLeftPressed && inputs.isUpPressed) {
+		setDashDirection(UP_RIGHT);
+	}
+	else if (inputs.isRightPressed && inputs.isDownPressed && !inputs.isLeftPressed && !inputs.isUpPressed) {
+		setDashDirection(DOWN_RIGHT);
+	}
+	else if (!inputs.isRightPressed && inputs.isDownPressed && inputs.isLeftPressed && !inputs.isUpPressed) {
+		setDashDirection(DOWN_LEFT);
+	}
+	else if (!inputs.isRightPressed && !inputs.isDownPressed && inputs.isLeftPressed && inputs.isUpPressed) {
+		setDashDirection(UP_LEFT);
+	}
+	else {
+		setDashDirection(RIGHT);
+	}
+	
 }
 
 void Player::manageAcceleration(double deltaTime) {

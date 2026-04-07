@@ -9,7 +9,7 @@ public:
     ~Trap();
     void applyEffect(Player* player);
     void updateEffect(double deltaTime);
-    void update(double deltaTime, Inputs& inputs) override;
+    void update(double deltaTime, const Inputs& inputs) override;
 
 private:
     float slowFactor;

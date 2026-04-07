@@ -18,4 +18,4 @@ void Trap::updateEffect(double deltaTime) {
     // animation ou autres
 }
 
-void Trap::update(double deltaTime, Inputs& inputs) {}
+void Trap::update(double deltaTime, const Inputs& inputs) {}
