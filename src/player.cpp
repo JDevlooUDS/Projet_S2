@@ -2,16 +2,33 @@
 
 
 Player::Player() {
-	setPixmap(ResourceManager::getInstance().getPlayerSprite());
+	idleAnimation = ResourceManager::getInstance().getIdleAnimation();
+	jumpAnimation = ResourceManager::getInstance().getJumpAnimation();
+	dashAnimation = ResourceManager::getInstance().getDashAnimation();
+	runAnimation = ResourceManager::getInstance().getRunAnimation();
+
+	for (int i = 0; i < AFTER_IMAGE_MAX; i++) {
+		QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
+		item->setVisible(false);
+		afterImages.push_back(item);
+	}
+
+
+
 	setFlag(QGraphicsItem::ItemIsFocusable);
 	setFocus();
 	hp = 3;
 	speed = BASE_SPEED;
 	reverseSpeed = REVERSE_SPEED;
+	dashXVelocity = 0;
+	dashYVelocity = 0;
 }
 
 Player::~Player() {
-
+	for (int i = 0; i < AFTER_IMAGE_MAX; i++) {
+		delete afterImages[i];
+		afterImages[i] = nullptr;
+	}
 }
 
 
@@ -41,6 +58,8 @@ void Player::update(double deltaTime, const Inputs& inputs) {
 	else if (playerState == DASH) {
 		manageDashState(deltaTime, inputs);
 	}
+
+	manageAnimation(deltaTime);
 }
 
 void Player::manageDashState(double deltaTime, const Inputs& inputs) {
@@ -63,12 +82,35 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 		playerState = NORMAL;
 	}
 	dashTimer += deltaTime;
+	
+	afterImageTimer += deltaTime;
+	if (afterImageTimer >= AFTER_IMAGE_SPEED) {
+		afterImageTimer = 0.0f;
+		if (afterImageIndex >= afterImages.size()) afterImageIndex = 0;
+		QGraphicsPixmapItem* item = afterImages[afterImageIndex];
+		item->setPixmap(pixmap());
+		item->setPos(pos());
+		item->setOpacity(0.7);
+		item->setVisible(true);
+		afterImageIndex++;
+	}
+
+	for (QGraphicsPixmapItem* ghost : afterImages) {
+		if (ghost->isVisible()) {
+			ghost->setOpacity(ghost->opacity() - (1.0f*deltaTime));
+			if (ghost->opacity() <= 0) ghost->setVisible(false);
+		}
+	}
+	
 
 	moveDash(deltaTime);
 }
 
 void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
 	updateFlip(deltaTime);
+	for (QGraphicsPixmapItem* ghost : afterImages) {
+		ghost->setVisible(false);
+	}
 	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
 	if (pressingOpposite) speed = REVERSE_SPEED;
 	else speed = BASE_SPEED;
@@ -103,7 +145,10 @@ void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
 	if (inputs.isDashPressed && dashCount > 0) {
 		dash(inputs);
 	}
-	updateGravity(deltaTime);
+	if (!dashing) updateGravity(deltaTime);
+
+	if (xVelocity != 0 && !dashing && !jumping) setAnimation(RUN);
+	if (xVelocity == 0 && !dashing && !jumping) setAnimation(IDLE);
 
 	manageAcceleration(deltaTime);
 	updateFlip(deltaTime);
@@ -153,6 +198,7 @@ void Player::jump() {
 	jumping = true;
 	playerState = NORMAL;
 	dashing = false;
+	setAnimation(JUMP);
 }
 
 bool Player::isJumping() {
@@ -197,12 +243,21 @@ float Player::getSpeedMultiplier() {
 void Player::dash(const Inputs& inputs) {
 	if (dashCount == 0) return;
 	playerState = DASH;
+	dashing = true;
 	manageDashDirection(inputs);
  	QVector2D direction = getFixedVelocity();
- 	dashXVelocity = direction.x() * BASE_SPEED * DASH_MULTIPLIER;
+	float targetSpeed;
+	if (abs(xVelocity) <= REVERSE_SPEED) {
+		targetSpeed = BASE_SPEED * DASH_MULTIPLIER;
+	}
+	else {
+		targetSpeed = abs(xVelocity) * WAVE_DASH_MULTIPLIER;
+	}
+ 	dashXVelocity = direction.x() * targetSpeed;
 	dashYVelocity = direction.y() * BASE_SPEED * DASH_MULTIPLIER;
 	jumping = false;
 	dashCount--;
+	setAnimation(DASH_ANIM);
 	dashTimer = 0.0;
 }
 
@@ -341,4 +396,60 @@ void Player::manageAcceleration(double deltaTime) {
 
 void Player::resetAcceleration() {
 	accelerationMultiplier = MIN_ACCELERATION;
+}
+
+float Player::getXVelocity() {
+	return xVelocity;
+}
+
+void Player::setAnimation(const AnimationState state) {
+	if (animationState == state) return;
+	animationState = state;
+	animationIndex = 0;
+	animationTimer = 0.0f;
+}
+
+void Player::manageAnimation(double deltaTime) {
+	animationTimer += deltaTime;
+
+	if (animationTimer >= ANIMATION_SPEED) {
+		animationIndex++;
+		animationTimer = 0.0f;
+	}
+
+	switch (animationState) {
+	case IDLE:
+		if (animationIndex >= idleAnimation.size()) animationIndex = 0;
+		setPixmap(idleAnimation[animationIndex]);
+		break;
+
+	case JUMP:
+		if (animationIndex >= jumpAnimation.size()) animationIndex = jumpAnimation.size() - 1;
+		setPixmap(jumpAnimation[animationIndex]);
+		break;
+
+	case RUN:
+		if (animationIndex >= runAnimation.size()) animationIndex = 0;
+		setPixmap(runAnimation[animationIndex]);
+		break;
+
+	case DASH_ANIM:
+		if (animationIndex >= dashAnimation.size()) animationIndex = dashAnimation.size() - 1;
+		setPixmap(dashAnimation[animationIndex]);
+		break;
+	}
+}
+
+QRectF Player::boundingRect() const {
+	return QRectF(0,0,48,48);
+}
+
+QPainterPath Player::shape() const {
+	QPainterPath path;
+	path.addRect(boundingRect());
+	return path;
+}
+
+vector<QGraphicsPixmapItem*> Player::getAfterImages() {
+	return afterImages;
 }

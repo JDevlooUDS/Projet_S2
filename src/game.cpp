@@ -29,7 +29,13 @@ void Game::gameLoop() {
 	BaseScene* currentScene = static_cast<BaseScene*>(scene());
 	currentScene->updateScene(deltaTime);
 	if (PrisonScene* prisonScene = dynamic_cast<PrisonScene*>(currentScene)) {
-		centerOn(prisonScene->getPlayer());
+		QPointF target = prisonScene->getPlayer()->pos();
+		QPointF current = mapToScene(viewport()->rect().center());
+
+		double smoothing = 8.0f;
+
+		QPointF newCenter = current + (target - current) * smoothing * deltaTime;
+		centerOn(newCenter);
 	}
 }
 

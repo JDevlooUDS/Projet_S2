@@ -11,6 +11,11 @@ PrisonScene::PrisonScene() {
 	addItem(player);
 	player->setPos(300, 0);
 	player->setWalls(walls);
+
+	vector<QGraphicsPixmapItem*> ghosts = player->getAfterImages();
+	for (QGraphicsPixmapItem* ghost : ghosts) {
+		addItem(ghost);
+	}
 }
 
 PrisonScene::~PrisonScene() {
@@ -26,6 +31,9 @@ void PrisonScene::updateScene(double deltaTime) {
 	debugText(view, "pos_x: " + QString::number(player->x()), 30);
 	QString s = player->isOnGround() ? "true" : "false";
 	debugText(view, "Grounded: " + s, 50);
+	float velocity = player->getXVelocity();
+	QString speed = QString::number(velocity);
+	debugText(view, "X Speed :" + speed, 70);
 
 	if (jon.isConnected()) {
 		//inputs.reset();
@@ -129,7 +137,8 @@ void PrisonScene::loadMap() {
 
 void PrisonScene::keyPressEvent(QKeyEvent* event) {
 	if (!KEYBOARD_INPUT) return;
-	if (event->isAutoRepeat()) event->ignore();
+	if (event->isAutoRepeat()) return;
+	event->accept();
 	if (event->key() == Qt::Key_A) {
 		inputs.isLeftPressed = true;
 	}
@@ -164,6 +173,8 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 }
 
 void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
+	if (event->isAutoRepeat()) return;
+	event->accept();
 	if (event->key() == Qt::Key_A) {
 		inputs.isLeftPressed = false;
 	}

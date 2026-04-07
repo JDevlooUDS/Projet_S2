@@ -10,15 +10,24 @@ class ResourceManager {
 public:
 	static ResourceManager& getInstance();
 	bool loadPrisonSceneResources();
-	QPixmap& getPlayerSprite();
 	vector<Tile> getTiles();
+	vector<QPixmap> getRunAnimation();
+	vector<QPixmap> getJumpAnimation();
+	vector<QPixmap> getIdleAnimation();
+	vector<QPixmap> getDashAnimation();
 
 private:
 	ResourceManager();
 	~ResourceManager();
+	bool loadPlayerSprites();
 
 	const int TILE_SIZE = 32;
 	QPixmap playerSprite;
 	vector<Tile> prisonMap;
 	vector<QPixmap> tiles;
+	vector<QPixmap> runAnimation;
+	vector<QPixmap> dashAnimation;
+	vector<QPixmap> jumpAnimation;
+	vector<QPixmap> idleAnimation;
+
 };
