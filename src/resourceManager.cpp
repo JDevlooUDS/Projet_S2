@@ -16,6 +16,7 @@ ResourceManager& ResourceManager::getInstance() {
 }
 
 bool ResourceManager::loadPrisonSceneResources() {
+	if (!loadPlayerSprites()) return false;
 	playerSprite.load(":/sprites/placeHolderSprite.png");
 	if (playerSprite.isNull()) return false;
 
@@ -78,10 +79,71 @@ bool ResourceManager::loadPrisonSceneResources() {
 	return true;
 }
 
-QPixmap& ResourceManager::getPlayerSprite() {
-	return playerSprite;
+bool ResourceManager::loadPlayerSprites() {
+	QPixmap sheet;
+	sheet.load(":/sprites/Run_Voltron.png");
+
+	if (sheet.isNull()) return false;
+
+	int frameQuantity = sheet.width() / 48;
+
+	for (int i = 0; i < frameQuantity; i++) {
+		QPixmap frame = sheet.copy(i * 48, 0, 48,48);
+		runAnimation.push_back(frame);
+	}
+
+	sheet.load(":/sprites/dash.png");
+	if (sheet.isNull()) return false;
+
+	frameQuantity = sheet.width() / 48;
+
+	for (int i = 0; i < frameQuantity; i++) {
+		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
+		dashAnimation.push_back(frame);
+	}
+
+	sheet.load(":/sprites/jump.png");
+	if (sheet.isNull()) return false;
+
+	frameQuantity = sheet.width() / 48;
+
+	for (int i = 0; i < frameQuantity; i++) {
+		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
+		jumpAnimation.push_back(frame);
+	}
+
+	sheet.load(":/sprites/placeHolderSprite.png");
+	if (sheet.isNull()) return false;
+
+	frameQuantity = sheet.width() / 48;
+
+	for (int i = 0; i < frameQuantity; i++) {
+		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
+		idleAnimation.push_back(frame);
+	}
+
+	return true;
 }
 
 vector<Tile> ResourceManager::getTiles() {
 	return prisonMap;
+}
+
+vector<QPixmap> ResourceManager::getRunAnimation() {
+	
+	return runAnimation;
+}
+vector<QPixmap> ResourceManager::getJumpAnimation() {
+	vector<QPixmap> sprites;
+	return jumpAnimation;
+}
+
+vector<QPixmap> ResourceManager::getIdleAnimation() {
+	vector<QPixmap> sprites;
+	return idleAnimation;
+}
+
+vector<QPixmap> ResourceManager::getDashAnimation() {
+	vector<QPixmap> sprites;
+	return dashAnimation;
 }

@@ -23,6 +23,13 @@ enum PlayerState {
 	DASH
 };
 
+enum AnimationState {
+	IDLE,
+	RUN,
+	DASH_ANIM,
+	JUMP
+};
+
 class Player : public GameObject {
 public:
 	Player();
@@ -45,6 +52,10 @@ public:
 	QVector2D getFixedVelocity();
 	void setWalls(vector<GameObject*> walls);
 	void update(double deltaTime, const Inputs& inputs) override;
+	float getXVelocity();
+	QRectF boundingRect() const override;
+	QPainterPath shape() const override;
+	vector<QGraphicsPixmapItem*> getAfterImages();
 
 
 private:
@@ -63,16 +74,18 @@ private:
 	void manageDashState(double deltaTime, const Inputs& inputs);
 	void manageNormalState(double deltaTime, const Inputs& inputs);
 
+	void manageAnimation(double deltaTime);
+	void setAnimation(const AnimationState state);
+
 
 	const bool KEYBOARD_CONTROL = true;
 
-	const float BASE_SPEED = 200.0;
-	const float REVERSE_SPEED = 350.0f;
-	const float DASH_SPEED = 600.0;
-	const float JUMP_VELOCITY = -950.0f;
+	const float BASE_SPEED = 300.0;
+	const float REVERSE_SPEED = 450.0f;
+	const float JUMP_VELOCITY = -750.0f;
 
-	const float GRAVITY = 4000.0f;
-	const float BASE_FALL_VELOCITY = 500.0f;
+	const float GRAVITY = 3000.0f;
+	const float BASE_FALL_VELOCITY = 1000.0f;
 	const float FLIP_CONST = 0.2f;
 	float speedMultiplier = 1.0f; // < 1 pour ralentir, > 1 pour accelerer
 
@@ -82,7 +95,7 @@ private:
 	vector<GameObject*> walls;
 
 	double dashTimer = 0.0;
-	const double DASH_LIMIT = 0.3;
+	const double DASH_LIMIT = 0.2;
 	bool dashing = false;
 	bool isJumpingFromDash = false;
 
@@ -97,6 +110,7 @@ private:
 
 	int dashCount = 1;
 	const float DASH_MULTIPLIER = 4.0f;
+	const float WAVE_DASH_MULTIPLIER = 1.5f;
 	float dashXVelocity;
 	float dashYVelocity;
 
@@ -111,4 +125,19 @@ private:
 	float lastFrameXVelocity = 0.0;
 
 	PlayerState playerState = NORMAL;
+
+	AnimationState animationState = IDLE;
+	vector<QPixmap> runAnimation;
+	vector<QPixmap> idleAnimation;
+	vector<QPixmap> jumpAnimation;
+	vector<QPixmap> dashAnimation;
+	int animationIndex = 0;
+	double animationTimer = 0.0f;
+	const double ANIMATION_SPEED = 0.1f;
+
+	vector<QGraphicsPixmapItem*> afterImages;
+	int const AFTER_IMAGE_MAX = 5;
+	int afterImageIndex = 0;
+	double afterImageTimer = 0.0f;
+	const double AFTER_IMAGE_SPEED = 0.05f;
 };
