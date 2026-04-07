@@ -72,12 +72,12 @@ void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
 	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
 	if (pressingOpposite) speed = REVERSE_SPEED;
 	else speed = BASE_SPEED;
-	yVelocity = fallVelocity * 1;
+	yVelocity = fallVelocity;
 	
 	if (isJumpingFromDash) {
 		xVelocity *= 1.0f - (0.1f * deltaTime);
-		if (xVelocity < BASE_SPEED) {
-			xVelocity = BASE_SPEED;
+		if (abs(xVelocity) < BASE_SPEED) {
+			xVelocity = (xVelocity > 0) ? BASE_SPEED : -BASE_SPEED;
 			isJumpingFromDash = false;
 		}
 		if (inputs.isLeftPressed) xVelocity = -1 * abs(xVelocity);
