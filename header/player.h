@@ -18,6 +18,11 @@ enum DashDirection {
 	UP_LEFT
 };
 
+enum PlayerState {
+	NORMAL,
+	DASH
+};
+
 class Player : public GameObject {
 public:
 	Player();
@@ -32,30 +37,37 @@ public:
 	void ground();
 	void setSpeedMultiplier(float multiplier);
 	float getSpeedMultiplier();
-	void dash();
+	void dash(const Inputs& inputs);
 	bool isDashing();
 	void updateDash(double deltaTime);
 	void setDashDirection(DashDirection dashDirection);
 	void updateFlip(double deltaTime);
 	QVector2D getFixedVelocity();
 	void setWalls(vector<GameObject*> walls);
-	void update(double deltaTime, Inputs& inputs) override;
+	void update(double deltaTime, const Inputs& inputs) override;
 
 
 private:
 	void moveX(double deltaTime);
 	void moveY(double deltaTime);
+	void moveDash(double deltaTime);
+	void moveDashX(double deltaTime);
+	void moveDashY(double deltaTime);
+
 	void resolveCollisionX();
 	void resolveCollisionY();
-	void manageDashDirection(Inputs& inputs);
+	void manageDashDirection(const Inputs& inputs);
 	void manageAcceleration(double deltaTime);
 	void resetAcceleration();
+
+	void manageDashState(double deltaTime, const Inputs& inputs);
+	void manageNormalState(double deltaTime, const Inputs& inputs);
 
 
 	const bool KEYBOARD_CONTROL = true;
 
 	const float BASE_SPEED = 200.0;
-	const float REVERSE_SPEED = 300.0f;
+	const float REVERSE_SPEED = 350.0f;
 	const float DASH_SPEED = 600.0;
 	const float JUMP_VELOCITY = -950.0f;
 
@@ -72,6 +84,7 @@ private:
 	double dashTimer = 0.0;
 	const double DASH_LIMIT = 0.3;
 	bool dashing = false;
+	bool isJumpingFromDash = false;
 
 	double jumpBufferTimer = 0.0;
 	const double JUMP_BUFFER_LIMIT = 0.1;
@@ -83,7 +96,9 @@ private:
 	DashDirection dashDirection = NONE;
 
 	int dashCount = 1;
-	const float DASH_MULTIPLIER = 1.5f;
+	const float DASH_MULTIPLIER = 4.0f;
+	float dashXVelocity;
+	float dashYVelocity;
 
 	double coyoteTimer = 0.0;
 	const double COYOTE_TIME_LIMIT = 0.1;
@@ -94,4 +109,6 @@ private:
 	const float ACCELERATION_DELTA = 0.5; //0.5 * deltaTime -> 1 à 2 fois la vitesse en 2s
 	float accelerationMultiplier = 1;
 	float lastFrameXVelocity = 0.0;
+
+	PlayerState playerState = NORMAL;
 };

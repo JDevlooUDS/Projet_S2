@@ -13,4 +13,4 @@ void Boost::applyEffect(Player* player) {
     player->enableJump();
 }
 
-void Boost::update(double deltaTime, Inputs& inputs) {}
+void Boost::update(double deltaTime, const Inputs& inputs) {}

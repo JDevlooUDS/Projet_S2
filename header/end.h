@@ -5,5 +5,5 @@ class End : public GameObject {
 public:
     End();
     ~End();
-    void update(double deltaTime, Inputs& inputs) override;
+    void update(double deltaTime, const Inputs& inputs) override;
 };

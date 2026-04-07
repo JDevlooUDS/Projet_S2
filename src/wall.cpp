@@ -6,4 +6,4 @@ Wall::Wall() {
 
 Wall::~Wall() {}
 
-void Wall::update(double deltaTime, Inputs& inputs) {}
+void Wall::update(double deltaTime, const Inputs& inputs) {}
