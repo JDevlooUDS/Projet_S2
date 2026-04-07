@@ -33,7 +33,7 @@ bool ResourceManager::loadPrisonSceneResources() {
 		}
 	}
 
-	QFile file(":/map/test_map.json");
+	QFile file(":/map/test_map3.json");
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
 	}
@@ -65,7 +65,7 @@ bool ResourceManager::loadPrisonSceneResources() {
 				QJsonArray layerArray = layer.value("objects").toArray();
 				for (int j = 0; j < layerArray.size(); j++) {
 					QJsonObject item = layerArray[j].toObject();
-					Tile tile(item.value("x").toInt(),item.value("y").toInt(),item.value("height").toInt(),item.value("width").toInt(),collides,tiles[item.value("gid").toInt()], name);
+					Tile tile(item.value("x").toInt(),item.value("y").toInt(),item.value("height").toInt(),item.value("width").toInt(),collides,tiles[item.value("gid").toInt() - 1], name);
 					prisonMap.push_back(tile);
 				}
 			}
