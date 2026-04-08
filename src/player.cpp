@@ -500,7 +500,6 @@ bool Player::isAlive() {
 TODO:
 
 BUGFIX:
-	Crash quand je ferme le jeu en lien avec la mémoire
 
 
 AUTRE:

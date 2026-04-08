@@ -21,9 +21,11 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 }
 
 Game::~Game() {
+	AudioManager::getInstance().clean();
 }
 
 void Game::gameLoop() {
+	if (!scene()) return;
 	qint64 deltaTimeMs = elapsedTimer.restart();
 	double deltaTime = deltaTimeMs / 1000.0;
 

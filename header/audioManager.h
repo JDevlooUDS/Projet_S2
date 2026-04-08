@@ -40,10 +40,11 @@ public:
 
     void playButtonBackSFX();
     void playButtonSelectSFX();
+    void clean();
 
 private:
-    QMediaPlayer* musicPlayer;
-    QAudioOutput* audioOutput;
+    QMediaPlayer* musicPlayer = nullptr;
+    QAudioOutput* audioOutput = nullptr;
 
 
     QSoundEffect gameOverSFX;
