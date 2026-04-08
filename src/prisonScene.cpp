@@ -4,7 +4,7 @@
 
 PrisonScene::PrisonScene() {
 	ResourceManager::getInstance().loadPrisonSceneResources();
-	setSceneRect(0, 0, 1920, 1080);
+	setSceneRect(0, 0, 1220, 680);
 	player = new Player();
 	player->activate();
 	loadMap();
@@ -15,6 +15,12 @@ PrisonScene::PrisonScene() {
 	vector<QGraphicsPixmapItem*> ghosts = player->getAfterImages();
 	for (QGraphicsPixmapItem* ghost : ghosts) {
 		addItem(ghost);
+	}
+
+	QPixmap filled = ResourceManager::getInstance().getFilledhealth();
+	for (int i = 0; i < 3; i++) {
+		healths.push_back(filled);
+
 	}
 }
 
@@ -86,7 +92,6 @@ void PrisonScene::updateScene(double deltaTime) {
 
 	foreach(End* end, endZones) {
 		if (end->collidesWithItem(player)) {
-			// arret timer?
 			showEnd();
 			return;
 		}
@@ -95,10 +100,13 @@ void PrisonScene::updateScene(double deltaTime) {
 	foreach(Hole* hole, holes) {
 		if (hole->collidesWithItem(player)) {
 			player->damage();
+			int hp = player->getHp();
+			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
 		}
 	}
 
 	player->update(deltaTime, inputs);
+	this->update();
 }
 
 void PrisonScene::showEnd() {
@@ -328,6 +336,20 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 	}
 }
 
+void PrisonScene::drawForeground(QPainter* painter, const QRectF& rect) {
+	painter->save();
+
+	painter->setWorldTransform(QTransform());
+
+	for (int i = 0; i < 3; i++) {
+		painter->drawPixmap(i*50 + 12, 12, healths[i]);
+	}
+
+	painter->setFont(QFont("Arial", 10));
+	painter->drawText(20,60,QString("Temps (s) : %1").arg(timer));
+
+	painter->restore();
+}
 
 QGraphicsItem* PrisonScene::getPlayer() {
 	return player;

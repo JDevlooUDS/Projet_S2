@@ -24,6 +24,7 @@ protected:
 	void loadMap();
 	void keyPressEvent(QKeyEvent* event) override;
 	void keyReleaseEvent(QKeyEvent* event) override;
+	void drawForeground(QPainter* painter, const QRectF& rect) override;
 
 private:
 	void showEnd();
@@ -54,6 +55,8 @@ private:
 	MenuButton* selectedButton = nullptr;
 
 	bool debug = false;
+
+	vector<QPixmap> healths;
 
 
 };
