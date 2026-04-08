@@ -60,6 +60,7 @@ void Player::update(double deltaTime, const Inputs& inputs) {
 	}
 
 	manageAnimation(deltaTime);
+	if (isGrounded) lastGroundPosition = pos();
 }
 
 void Player::manageDashState(double deltaTime, const Inputs& inputs) {
@@ -229,7 +230,7 @@ void Player::ground() {
 	
 	isGrounded = true;
 	jumping = false;
-	dashCount = 1;
+	if (!dashing) dashCount = 1;
 }
 
 void Player::setSpeedMultiplier(float multiplier) {
@@ -446,10 +447,52 @@ QRectF Player::boundingRect() const {
 
 QPainterPath Player::shape() const {
 	QPainterPath path;
-	path.addRect(boundingRect());
+	const int WIDTH = 48;
+	const int HEIGHT = 48;
+	int startX = WIDTH - 9;
+	int endX = WIDTH - 12 - 9;
+	path.addRect(14,0,20,48);
 	return path;
 }
 
 vector<QGraphicsPixmapItem*> Player::getAfterImages() {
 	return afterImages;
 }
+
+void Player::damage() {
+	hp--;
+	if (hp <= 0) {
+		isDead = true;
+	}
+	resetAcceleration();
+	if (pos().x() > lastGroundPosition.x()) {
+		setPos(lastGroundPosition.x() - 64, lastGroundPosition.y());
+
+	}
+	else {
+		setPos(lastGroundPosition.x() + 64, lastGroundPosition.y());
+	}
+	xVelocity = 0;
+
+	
+}
+
+
+
+/*
+
+TODO:
+	Ajouter le timer
+	Ajouter les vies
+	Gérer acceleration en fonction des dégats // bonne règles de perte ou de gain d'accélération.
+	Ajouter les SFX
+	
+BUGFIX:
+	double dash si on part du sol
+
+
+AUTRE:
+	Ajouter une fonction pour l'accelerometre // petit boost de vitesse quand tu shake...
+	Ajouter du random pour le capteurs de muons
+
+*/

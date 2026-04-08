@@ -57,6 +57,8 @@ public:
 	QPainterPath shape() const override;
 	vector<QGraphicsPixmapItem*> getAfterImages();
 
+	void damage() override;
+
 
 private:
 	void moveX(double deltaTime);
@@ -100,7 +102,7 @@ private:
 	bool isJumpingFromDash = false;
 
 	double jumpBufferTimer = 0.0;
-	const double JUMP_BUFFER_LIMIT = 0.1;
+	const double JUMP_BUFFER_LIMIT = 0.2;
 
 	float fallVelocity = BASE_FALL_VELOCITY;
 	bool isGrounded = true;
@@ -140,4 +142,7 @@ private:
 	int afterImageIndex = 0;
 	double afterImageTimer = 0.0f;
 	const double AFTER_IMAGE_SPEED = 0.05f;
+
+	bool isDead = false;
+	QPointF lastGroundPosition;
 };

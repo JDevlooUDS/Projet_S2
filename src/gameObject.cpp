@@ -14,8 +14,8 @@ void GameObject::move(double deltaTime) {
 	moveBy(speed * xVelocity * deltaTime, speed * yVelocity * deltaTime);
 }
 
-void GameObject::damage(int damage) {
-	hp -= damage;
+void GameObject::damage() {
+	hp -= 1;
 }
 
 void GameObject::draw(ostream& os) {
