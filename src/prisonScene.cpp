@@ -25,6 +25,7 @@ PrisonScene::~PrisonScene() {
 
 void PrisonScene::updateScene(double deltaTime) {
 	// section debug
+	if (!running) return;
 	QGraphicsView* view = views().first();  // récupère la Game view
 	clearDebug(view);
 	debugText(view, "fps: " + QString::number(1.0/deltaTime, 'f', 0), 10);
@@ -38,10 +39,18 @@ void PrisonScene::updateScene(double deltaTime) {
 	QString health = QString::number(hp);
 	debugText(view, "Health : " + health, 90);
 
+	if (!player->isAlive()) {
+		showDeath();
+		running = false;
+		return;
+	}
+
 	if (jon.isConnected()) {
 		//inputs.reset();
 		jon.RcvFromSerial(&inputs);
 	}
+
+	timer += deltaTime;
 
 	// pieges et boosts
 	bool touchingTrap = false;
@@ -83,7 +92,14 @@ void PrisonScene::updateScene(double deltaTime) {
 }
 
 void PrisonScene::showEnd() {
-	QGraphicsRectItem* overlay = new QGraphicsRectItem(660, 340, 600, 400);
+	QGraphicsView* view = views().first();
+	QPointF center = view->mapToScene(view->viewport()->rect().center());
+	
+	qreal width = 600;
+	qreal height = 400;
+	
+	QGraphicsRectItem* overlay = new QGraphicsRectItem(0, 0, width, height);
+	overlay->setPos(center.x() - width/2, center.y() - height/2);
 	overlay->setBrush(QBrush(QColor(0, 0, 0, 180)));
 	overlay->setZValue(10);
 	addItem(overlay);
@@ -92,22 +108,97 @@ void PrisonScene::showEnd() {
 	QGraphicsTextItem* title = new QGraphicsTextItem("Ahh ouais beau gosse");
 	title->setDefaultTextColor(Qt::yellow);
 	title->setFont(QFont("Arial", 36, QFont::Bold));
-	title->setPos(700, 370);
+
+	qreal titleX = overlay->pos().x() + (width / 2) - (title->boundingRect().width()/2);
+	qreal titleY = overlay->pos().y() + 50;
+
+	title->setPos(titleX, titleY);
 	title->setZValue(11);
 	addItem(title);
 
 	// temps
-	double finalTime = 0.0; // pour l'exemple
+	double finalTime = timer;
 	QString timeText = QString("Temps : %1 secondes").arg(finalTime, 0, 'f', 2);
 	QGraphicsTextItem* timeDisplay = new QGraphicsTextItem(timeText);
 	timeDisplay->setDefaultTextColor(Qt::white);
 	timeDisplay->setFont(QFont("Arial", 24));
-	timeDisplay->setPos(730, 460);
+
+	qreal timeX = overlay->pos().x() + (width / 2) - (timeDisplay->boundingRect().width() / 2);
+	qreal timeY = titleY + 50;
+	timeDisplay->setPos(timeX, timeY);
 	timeDisplay->setZValue(11);
 	addItem(timeDisplay);
 
-	// bouton rejouer
-	// ...
+	// bouton replay
+	replay = new MenuButton("Rejouer!", 200, 50);
+
+	qreal replayX = overlay->pos().x() + (width / 4) - (replay->boundingRect().width() / 2);
+	qreal replayY = overlay->pos().y() + 200;
+	replay->setPos(replayX, replayY);
+	replay->setZValue(11);
+	addItem(replay);
+
+	connect(replay, &MenuButton::clicked, this, &PrisonScene::replayGame);
+
+	// bouton retour au menu
+	returnMenu = new MenuButton("retourner au menu!", 200, 50);
+
+	qreal returnMenuX = overlay->pos().x() + ((width / 4) * 3) - (returnMenu->boundingRect().width() / 2);
+	qreal returnMenuY = overlay->pos().y() + 200;
+	returnMenu->setPos(returnMenuX, returnMenuY);
+	returnMenu->setZValue(11);
+	addItem(returnMenu);
+
+	connect(returnMenu, &MenuButton::clicked, this, &PrisonScene::goToMenu);
+}
+
+void PrisonScene::showDeath() {
+	QGraphicsView* view = views().first();
+	QPointF center = view->mapToScene(view->viewport()->rect().center());
+
+	qreal width = 600;
+	qreal height = 400;
+
+	QGraphicsRectItem* overlay = new QGraphicsRectItem(0, 0, width, height);
+	overlay->setPos(center.x() - width / 2, center.y() - height / 2);
+	overlay->setBrush(QBrush(QColor(0, 0, 0, 180)));
+	overlay->setZValue(10);
+	addItem(overlay);
+
+	// message
+	QGraphicsTextItem* title = new QGraphicsTextItem("Womp womp skill issue");
+	title->setDefaultTextColor(Qt::yellow);
+	title->setFont(QFont("Arial", 36, QFont::Bold));
+
+	qreal titleX = overlay->pos().x() + (width / 2) - (title->boundingRect().width() / 2);
+	qreal titleY = overlay->pos().y() + 50;
+
+	title->setPos(titleX, titleY);
+	title->setZValue(11);
+	addItem(title);
+
+	// bouton replay
+	replay = new MenuButton("Rejouer!", 200, 50);
+
+	qreal replayX = overlay->pos().x() + (width / 4) - (replay->boundingRect().width() / 2);
+	qreal replayY = overlay->pos().y() + 200;
+	replay->setPos(replayX,replayY);
+	replay->setZValue(11);
+	addItem(replay);
+
+	connect(replay, &MenuButton::clicked, this, &PrisonScene::replayGame);
+
+	// bouton retour au menu
+	returnMenu = new MenuButton("retourner au menu!", 200, 50);
+
+	qreal returnMenuX = overlay->pos().x() + ((width / 4) * 3) - (returnMenu->boundingRect().width() / 2);
+	qreal returnMenuY = overlay->pos().y() + 200;
+	returnMenu->setPos(returnMenuX, returnMenuY);
+	returnMenu->setZValue(11);
+	addItem(returnMenu);
+
+	connect(returnMenu, &MenuButton::clicked, this, &PrisonScene::goToMenu);
+
 }
 
 void PrisonScene::loadMap() {
@@ -221,4 +312,12 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 
 QGraphicsItem* PrisonScene::getPlayer() {
 	return player;
+}
+
+void PrisonScene::replayGame() {
+	emit changeScene(Prison);
+}
+
+void PrisonScene::goToMenu() {
+	emit changeScene(Menu);
 }

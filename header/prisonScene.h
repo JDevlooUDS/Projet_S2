@@ -11,6 +11,7 @@
 #include "Jon.h"
 #include "hole.h"
 #include "debug.h"
+#include "menuButton.h"
 
 class PrisonScene : public BaseScene {
 public:
@@ -26,6 +27,10 @@ protected:
 
 private:
 	void showEnd();
+	void showDeath();
+
+	void replayGame();
+	void goToMenu();
 
 	Player* player = nullptr;
 	bool playerCollides = false;
@@ -35,6 +40,14 @@ private:
 	vector<End*> endZones;
 	vector<Hole*> holes;
 	Jon jon;
+	bool running = true; // temporaire permanent
+
+	double timer = 0.0;
 
 	const bool KEYBOARD_INPUT = true; // regarde le clavier seulement si vrai
+
+	MenuButton* replay = nullptr;
+	MenuButton* returnMenu = nullptr;
+
+
 };

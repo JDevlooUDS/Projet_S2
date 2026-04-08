@@ -5,7 +5,8 @@
 #include <string>
 
 enum SceneType {
-	Prison
+	Prison,
+	Menu
 };
 
 class BaseScene : public QGraphicsScene {

@@ -3,14 +3,20 @@
 
 SceneManager::SceneManager(Game* game) {
 	this->game = game;
-	connect(&prisonScene, &BaseScene::changeScene, this, &SceneManager::setScene);
 }
 SceneManager::~SceneManager() {}
 
 void SceneManager::setScene(SceneType sceneType) {
 	switch (sceneType) {
 		case Prison:
-			game->setScene(&prisonScene);
+			prisonScene = new PrisonScene();
+			connect(prisonScene, &BaseScene::changeScene, this, &SceneManager::setScene);
+			game->setScene(prisonScene);
+			break;
+		case Menu:
+			menuScene = new BaseScene(); // changer pour MenuScene quand créer
+			connect(menuScene, &BaseScene::changeScene, this, &SceneManager::setScene);
+			game->setScene(menuScene);
 			break;
 	}
 }

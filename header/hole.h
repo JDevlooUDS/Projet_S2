@@ -9,8 +9,6 @@ public:
 	~Hole();
 	void update(double deltaTime, const Inputs& inputs) override;
 
-	void applyEffect(Player* player);
-
 private:
 
 };
