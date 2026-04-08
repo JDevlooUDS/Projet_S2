@@ -13,6 +13,8 @@ class MenuButton : public QObject, public QGraphicsRectItem {
 public:
 	MenuButton(QString text, qreal witdh, qreal height, QGraphicsItem* parent = nullptr);
 	~MenuButton();
+	void select();
+	void unSelect();
 
 signals:
 	void clicked();

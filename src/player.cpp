@@ -486,17 +486,15 @@ bool Player::isAlive() {
 /*
 
 TODO:
-	Ajouter les boutons pour rejouer/retourner au menu
-	ajouter la gestion de bouton pour la manette
 	ajouter le HUD
 	Gérer l'orientation du personnage en X --> gauche/droite
 	Gérer acceleration en fonction des dégats // bonne règles de perte ou de gain d'accélération.
+	Ajouter une fonction pour l'accelerometre // petit boost de vitesse quand tu shake...
 	Ajouter les SFX
 
 
 AUTRE:
 	trouver une facons d'enlever le scroll
-	Ajouter une fonction pour l'accelerometre // petit boost de vitesse quand tu shake...
 	Ajouter du random pour le capteurs de muons
-
+	Ajouter les menus
 */

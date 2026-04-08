@@ -19,36 +19,46 @@ PrisonScene::PrisonScene() {
 }
 
 PrisonScene::~PrisonScene() {
-	delete player;
-	player = nullptr;
+
 }
 
 void PrisonScene::updateScene(double deltaTime) {
-	// section debug
-	if (!running) return;
-	QGraphicsView* view = views().first();  // récupère la Game view
-	clearDebug(view);
-	debugText(view, "fps: " + QString::number(1.0/deltaTime, 'f', 0), 10);
-	debugText(view, "pos_x: " + QString::number(player->x()), 30);
-	QString s = player->isOnGround() ? "true" : "false";
-	debugText(view, "Grounded: " + s, 50);
-	float velocity = player->getXVelocity();
-	QString speed = QString::number(velocity);
-	debugText(view, "X Speed :" + speed, 70);
-	int hp = player->getHp();
-	QString health = QString::number(hp);
-	debugText(view, "Health : " + health, 90);
-
-	if (!player->isAlive()) {
-		showDeath();
-		running = false;
-		return;
-	}
+	if (debug) displayDebugInfo(deltaTime);
+	else clearDebug(views().first());
 
 	if (jon.isConnected()) {
 		//inputs.reset();
 		jon.RcvFromSerial(&inputs);
 	}
+
+	if (gameEndMenu) {
+		if (inputs.isRightPressed) {
+			selectedButton->unSelect();
+			selectedButton = returnMenu;
+			selectedButton->select();
+		}
+		if (inputs.isLeftPressed) {
+			selectedButton->unSelect();
+			selectedButton = replay;
+			selectedButton->select();
+		}
+
+		if (inputs.isSpacePressed) emit selectedButton->clicked();
+
+		return;
+	}
+
+	if (!player->isAlive()) {
+		showDeath();
+		return;
+	}
+
+	if (inputs.isDebugPressed) {
+		debug = !debug;
+		inputs.isDebugPressed = false;
+	}
+
+	
 
 	timer += deltaTime;
 
@@ -150,6 +160,9 @@ void PrisonScene::showEnd() {
 	addItem(returnMenu);
 
 	connect(returnMenu, &MenuButton::clicked, this, &PrisonScene::goToMenu);
+	gameEndMenu = true;
+	selectedButton = replay;
+	selectedButton->select();
 }
 
 void PrisonScene::showDeath() {
@@ -198,6 +211,10 @@ void PrisonScene::showDeath() {
 	addItem(returnMenu);
 
 	connect(returnMenu, &MenuButton::clicked, this, &PrisonScene::goToMenu);
+
+	gameEndMenu = true;
+	selectedButton = replay;
+	selectedButton->select();
 
 }
 
@@ -268,7 +285,6 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_Down) {
 		inputs.isDownPressed = true;
 	}
-
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = true;
 	}
@@ -307,6 +323,9 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = false;
 	}
+	if (event->key() == Qt::Key_Q) {
+		inputs.isDebugPressed = true;
+	}
 }
 
 
@@ -320,4 +339,20 @@ void PrisonScene::replayGame() {
 
 void PrisonScene::goToMenu() {
 	emit changeScene(Menu);
+}
+
+void PrisonScene::displayDebugInfo(double deltaTime) {
+	// section debug
+	QGraphicsView* view = views().first();  // récupère la Game view
+	clearDebug(view);
+	debugText(view, "fps: " + QString::number(1.0 / deltaTime, 'f', 0), 10);
+	debugText(view, "pos_x: " + QString::number(player->x()), 30);
+	QString s = player->isOnGround() ? "true" : "false";
+	debugText(view, "Grounded: " + s, 50);
+	float velocity = player->getXVelocity();
+	QString speed = QString::number(velocity);
+	debugText(view, "X Speed :" + speed, 70);
+	int hp = player->getHp();
+	QString health = QString::number(hp);
+	debugText(view, "Health : " + health, 90);
 }
