@@ -52,6 +52,8 @@ void Player::updateFlip(double deltaTime) {
 
 void Player::update(double deltaTime, const Inputs& inputs) {
 	if (!active) return;
+	if (inputs.isAccelerated) accelBonus = ACCEL_BONUS;
+	else accelBonus = 1.0f;
 	if (playerState == NORMAL) {
 		manageNormalState(deltaTime, inputs);
 	}
@@ -177,7 +179,8 @@ void Player::move(double deltaTime) {
 
 void Player::moveX(double deltaTime) {
 	lastPosition = pos();	
-	moveBy(accelerationMultiplier * speedMultiplier * xVelocity * deltaTime,0);
+	float multiplier = accelBonus * accelerationMultiplier * speedMultiplier;
+	moveBy(multiplier * xVelocity * deltaTime,0);
 
 }
 
@@ -195,7 +198,8 @@ void Player::moveDash(double deltaTime) {
 
 void Player::moveDashX(double deltaTime) {
 	lastPosition = pos();
-	moveBy(accelerationMultiplier * dashXVelocity * speedMultiplier * deltaTime, 0);
+	float multiplier = accelBonus * accelerationMultiplier * speedMultiplier;
+	moveBy(multiplier * dashXVelocity * deltaTime, 0);
 }
 
 void Player::moveDashY(double deltaTime) {
@@ -496,7 +500,6 @@ bool Player::isAlive() {
 /*
 
 TODO:
-	Gérer acceleration en fonction des dégats // bonne règles de perte ou de gain d'accélération.
 	Ajouter une fonction pour l'accelerometre // petit boost de vitesse quand tu shake...
 	Ajouter les SFX
 
@@ -505,4 +508,5 @@ AUTRE:
 	trouver une facons d'enlever le scroll
 	Ajouter du random pour le capteurs de muons
 	Ajouter les menus
+	Améliorer les règles de gain/perte d'accélération.
 */

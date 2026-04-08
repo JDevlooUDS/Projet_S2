@@ -56,9 +56,8 @@ public:
 	QRectF boundingRect() const override;
 	QPainterPath shape() const override;
 	vector<QGraphicsPixmapItem*> getAfterImages();
-
 	bool isAlive();
-
+	void resetAcceleration();
 	void damage() override;
 
 
@@ -73,7 +72,6 @@ private:
 	void resolveCollisionY();
 	void manageDashDirection(const Inputs& inputs);
 	void manageAcceleration(double deltaTime);
-	void resetAcceleration();
 
 	void manageDashState(double deltaTime, const Inputs& inputs);
 	void manageNormalState(double deltaTime, const Inputs& inputs);
@@ -147,4 +145,7 @@ private:
 
 	bool isDead = false;
 	QPointF lastGroundPosition;
+
+	const float ACCEL_BONUS = 1.2f;
+	float accelBonus = 1;
 };

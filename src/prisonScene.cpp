@@ -73,6 +73,7 @@ void PrisonScene::updateScene(double deltaTime) {
 	foreach(Trap * trap, traps) {
 		if (trap->collidesWithItem(player)) {
 			trap->applyEffect(player);
+			player->resetAcceleration();
 			touchingTrap = true;
 		}
 	}

@@ -110,6 +110,8 @@ bool Jon::RcvFromSerial(Inputs* inputs)
             else inputs->isSpacePressed = false;
             if (lastB2) inputs->isDashPressed = true;
             else inputs->isDashPressed = false;
+            if (lastX > 20 || lastY > 20 || lastZ > 20) inputs->isAccelerated = true;
+            else inputs->isAccelerated = false;
 
             return true;
         }
