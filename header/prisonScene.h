@@ -12,6 +12,7 @@
 #include "hole.h"
 #include "debug.h"
 #include "menuButton.h"
+#include "audioManager.h"
 
 class PrisonScene : public BaseScene {
 public:

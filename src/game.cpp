@@ -13,11 +13,11 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 	setSceneRect(0, -1000, 1920, 50000);
 
 
-	if (!audioManager.init(this)) {
+	if (!AudioManager::getInstance().init(this)) {
 		qDebug() << "error loading audio files\n";
 		return;
 	}
-	audioManager.updateMusic(MusicState::GAMEPLAY);
+	AudioManager::getInstance().updateMusic(MusicState::GAMEPLAY);
 }
 
 Game::~Game() {

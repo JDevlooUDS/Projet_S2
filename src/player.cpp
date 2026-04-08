@@ -24,12 +24,7 @@ Player::Player() {
 	dashYVelocity = 0;
 }
 
-Player::~Player() {
-	for (int i = 0; i < AFTER_IMAGE_MAX; i++) {
-		delete afterImages[i];
-		afterImages[i] = nullptr;
-	}
-}
+Player::~Player() {}
 
 
 void Player::updateFlip(double deltaTime) {
@@ -214,6 +209,7 @@ void Player::jump() {
 	playerState = NORMAL;
 	dashing = false;
 	setAnimation(JUMP);
+	AudioManager::getInstance().playJumpSFX();
 }
 
 bool Player::isJumping() {
@@ -475,8 +471,10 @@ vector<QGraphicsPixmapItem*> Player::getAfterImages() {
 
 void Player::damage() {
 	hp--;
+	AudioManager::getInstance().playLoseLifeSFX();
 	if (hp <= 0) {
 		isDead = true;
+		//AudioManager::getInstance().playDeathSFX();
 	}
 	resetAcceleration();
 	if (pos().x() > lastGroundPosition.x()) {
@@ -500,13 +498,15 @@ bool Player::isAlive() {
 /*
 
 TODO:
-	Ajouter une fonction pour l'accelerometre // petit boost de vitesse quand tu shake...
-	Ajouter les SFX
+
+BUGFIX:
+	Crash quand je ferme le jeu en lien avec la mémoire
 
 
 AUTRE:
-	trouver une facons d'enlever le scroll
+	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
 	Ajouter du random pour le capteurs de muons
 	Ajouter les menus
 	Améliorer les règles de gain/perte d'accélération.
+	manque de son
 */

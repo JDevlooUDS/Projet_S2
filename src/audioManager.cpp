@@ -14,6 +14,11 @@ AudioManager::~AudioManager()
     delete audioOutput;
 }
 
+AudioManager& AudioManager::getInstance() {
+    static AudioManager instance;
+    return instance;
+}
+
 bool AudioManager::init(QGraphicsView* parent)
 {
     audioOutput = new QAudioOutput(parent);
@@ -43,13 +48,13 @@ bool AudioManager::loadAudio()
     buttonBackSFX.setSource(QUrl("qrc:/sounds/sfx/btnback.wav"));
     buttonSelectSFX.setSource(QUrl("qrc:/sounds/sfx/btnselect.wav"));
 
-    gameOverSFX.setVolume(0.8f);
-    countdownSFX.setVolume(0.8f);
-    jumpSFX.setVolume(0.8f);
-    loseLifeSFX.setVolume(0.8f);
-    deathSFX.setVolume(0.8f);
-    buttonBackSFX.setVolume(0.8f);
-    buttonSelectSFX.setVolume(0.8f);
+    gameOverSFX.setVolume(0.5f);
+    countdownSFX.setVolume(0.5f);
+    jumpSFX.setVolume(0.5f);
+    loseLifeSFX.setVolume(0.5f);
+    deathSFX.setVolume(0.5f);
+    buttonBackSFX.setVolume(0.5f);
+    buttonSelectSFX.setVolume(0.5f);
     return true;
 }
 

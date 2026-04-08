@@ -4,6 +4,7 @@
 #include "timer.h"
 #include <QVector2D>
 #include <cmath>
+#include "audioManager.h"
 
 
 enum DashDirection {

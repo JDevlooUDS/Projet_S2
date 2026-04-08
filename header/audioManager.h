@@ -21,6 +21,8 @@ public:
     AudioManager();
     ~AudioManager();
 
+    static AudioManager& getInstance();
+
     bool init(QGraphicsView* parent);
     bool loadAudio();
 
