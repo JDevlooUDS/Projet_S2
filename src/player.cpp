@@ -486,7 +486,6 @@ bool Player::isAlive() {
 /*
 
 TODO:
-	ajouter le HUD
 	Gérer l'orientation du personnage en X --> gauche/droite
 	Gérer acceleration en fonction des dégats // bonne règles de perte ou de gain d'accélération.
 	Ajouter une fonction pour l'accelerometre // petit boost de vitesse quand tu shake...

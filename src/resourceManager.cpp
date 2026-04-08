@@ -20,6 +20,13 @@ bool ResourceManager::loadPrisonSceneResources() {
 	playerSprite.load(":/sprites/placeHolderSprite.png");
 	if (playerSprite.isNull()) return false;
 
+	QPixmap health;
+	health.load(":/sprites/health.png");
+	if (health.isNull()) return false;
+	filledHealth = health.copy(0,0,32,32);
+	emptyHealth = health.copy(32,0,32,32);
+	if (filledHealth.isNull() || emptyHealth.isNull()) return false;
+
 	QPixmap tileSet(":/sprites/tilesets.png");
 	int height = tileSet.height() / TILE_SIZE;
 	int width = tileSet.width() / TILE_SIZE;
@@ -146,4 +153,12 @@ vector<QPixmap> ResourceManager::getIdleAnimation() {
 vector<QPixmap> ResourceManager::getDashAnimation() {
 	vector<QPixmap> sprites;
 	return dashAnimation;
+}
+
+QPixmap ResourceManager::getFilledhealth() {
+	return filledHealth;
+}
+
+QPixmap ResourceManager::getEmptyHealth() {
+	return emptyHealth;
 }

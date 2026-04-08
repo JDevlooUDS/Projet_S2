@@ -15,6 +15,8 @@ public:
 	vector<QPixmap> getJumpAnimation();
 	vector<QPixmap> getIdleAnimation();
 	vector<QPixmap> getDashAnimation();
+	QPixmap getFilledhealth();
+	QPixmap getEmptyHealth();
 
 private:
 	ResourceManager();
@@ -29,5 +31,7 @@ private:
 	vector<QPixmap> dashAnimation;
 	vector<QPixmap> jumpAnimation;
 	vector<QPixmap> idleAnimation;
+	QPixmap filledHealth;
+	QPixmap emptyHealth;
 
 };
