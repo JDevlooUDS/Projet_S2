@@ -15,5 +15,6 @@ public slots:
 
 private:
 	Game* game;
-	PrisonScene prisonScene;
+	PrisonScene* prisonScene = nullptr;
+	BaseScene* menuScene = nullptr;
 };

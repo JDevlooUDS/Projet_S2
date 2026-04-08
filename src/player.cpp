@@ -477,21 +477,25 @@ void Player::damage() {
 	
 }
 
+bool Player::isAlive() {
+	return !isDead;
+}
+
 
 
 /*
 
 TODO:
-	Ajouter le timer
-	Ajouter les vies
+	Ajouter les boutons pour rejouer/retourner au menu
+	ajouter la gestion de bouton pour la manette
+	ajouter le HUD
+	Gérer l'orientation du personnage en X --> gauche/droite
 	Gérer acceleration en fonction des dégats // bonne règles de perte ou de gain d'accélération.
 	Ajouter les SFX
-	
-BUGFIX:
-	double dash si on part du sol
 
 
 AUTRE:
+	trouver une facons d'enlever le scroll
 	Ajouter une fonction pour l'accelerometre // petit boost de vitesse quand tu shake...
 	Ajouter du random pour le capteurs de muons
 

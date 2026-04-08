@@ -57,6 +57,8 @@ public:
 	QPainterPath shape() const override;
 	vector<QGraphicsPixmapItem*> getAfterImages();
 
+	bool isAlive();
+
 	void damage() override;
 
 
