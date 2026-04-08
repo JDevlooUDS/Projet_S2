@@ -112,7 +112,7 @@ bool ResourceManager::loadPlayerSprites() {
 		jumpAnimation.push_back(frame);
 	}
 
-	sheet.load(":/sprites/placeHolderSprite.png");
+	sheet.load(":/sprites/idle.png");
 	if (sheet.isNull()) return false;
 
 	frameQuantity = sheet.width() / 48;
