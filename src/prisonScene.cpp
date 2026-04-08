@@ -56,6 +56,7 @@ void PrisonScene::updateScene(double deltaTime) {
 
 	if (!player->isAlive()) {
 		showDeath();
+		AudioManager::getInstance().playGameOverSFX();
 		return;
 	}
 

@@ -31,6 +31,4 @@ private:
 	QTimer* fps = nullptr;
 	QElapsedTimer elapsedTimer;
 	QRect cameraPos;
-	AudioManager audioManager;
-
 };

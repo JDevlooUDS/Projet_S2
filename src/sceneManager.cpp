@@ -4,7 +4,10 @@
 SceneManager::SceneManager(Game* game) {
 	this->game = game;
 }
-SceneManager::~SceneManager() {}
+SceneManager::~SceneManager() {
+	if (prisonScene != nullptr) delete prisonScene;
+	if (menuScene != nullptr) delete menuScene;
+}
 
 void SceneManager::setScene(SceneType sceneType) {
 	switch (sceneType) {
