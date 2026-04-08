@@ -6,6 +6,7 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setFocusPolicy(Qt::StrongFocus);
 	fps = new QTimer(this);
+	fps->setTimerType(Qt::PreciseTimer);
 	QObject::connect(fps, &QTimer::timeout, this, &Game::gameLoop);
 	fps->start(16);
 	elapsedTimer.start();

@@ -9,6 +9,7 @@
 #include "end.h"
 #include "resourceManager.h"
 #include "Jon.h"
+#include "hole.h"
 #include "debug.h"
 
 class PrisonScene : public BaseScene {
@@ -29,10 +30,10 @@ private:
 	Player* player = nullptr;
 	bool playerCollides = false;
 	vector<GameObject*> walls;
-	vector<GameObject*> grass;
 	vector<Trap*> traps;
 	vector<Boost*> boosts;
 	vector<End*> endZones;
+	vector<Hole*> holes;
 	Jon jon;
 
 	const bool KEYBOARD_INPUT = true; // regarde le clavier seulement si vrai

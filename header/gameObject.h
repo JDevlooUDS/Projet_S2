@@ -13,7 +13,7 @@ public:
 	GameObject();
 	~GameObject();
 	virtual void move(double deltaTime);
-	void damage(int damage);
+	virtual void damage();
 	bool isActive();
 	void draw(ostream& os);
 	void setHp(int hp);

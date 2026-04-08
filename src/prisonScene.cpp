@@ -34,6 +34,9 @@ void PrisonScene::updateScene(double deltaTime) {
 	float velocity = player->getXVelocity();
 	QString speed = QString::number(velocity);
 	debugText(view, "X Speed :" + speed, 70);
+	int hp = player->getHp();
+	QString health = QString::number(hp);
+	debugText(view, "Health : " + health, 90);
 
 	if (jon.isConnected()) {
 		//inputs.reset();
@@ -67,6 +70,12 @@ void PrisonScene::updateScene(double deltaTime) {
 			// arret timer?
 			showEnd();
 			return;
+		}
+	}
+
+	foreach(Hole* hole, holes) {
+		if (hole->collidesWithItem(player)) {
+			player->damage();
 		}
 	}
 
@@ -110,9 +119,6 @@ void PrisonScene::loadMap() {
 			item = new Wall();
 			walls.push_back(item);
 		}
-		else if (s == "grass") {
-			continue;
-		}
 		else if (s == "trap") {
 			Trap* trap = new Trap(0.4f);
 			traps.push_back(trap);
@@ -127,6 +133,11 @@ void PrisonScene::loadMap() {
 			End* end = new End();
 			endZones.push_back(end);
 			item = end;
+		}
+		else if (s == "holes") {
+			Hole* hole = new Hole();
+			holes.push_back(hole);
+			item = hole;
 		}
 		item->setPos(tile.getXPosition(), tile.getYPosition());
 		item->setPixmap(tile.getPixmap());

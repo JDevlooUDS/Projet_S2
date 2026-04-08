@@ -34,7 +34,7 @@ bool ResourceManager::loadPrisonSceneResources() {
 		}
 	}
 
-	QFile file(":/map/test_map3.json");
+	QFile file(":/map/test_map4.json");
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
 	}
