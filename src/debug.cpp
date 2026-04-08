@@ -11,8 +11,5 @@ void debugText(QGraphicsView* view, const QString& info, int y, int x) {
 }
 
 void clearDebug(QGraphicsView* view) {
-    for (auto label : debugLabels) {
-        delete label;
-    }
     debugLabels.clear();
 }

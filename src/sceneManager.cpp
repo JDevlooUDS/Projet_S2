@@ -5,11 +5,13 @@ SceneManager::SceneManager(Game* game) {
 	this->game = game;
 }
 SceneManager::~SceneManager() {
-	if (prisonScene != nullptr) delete prisonScene;
-	if (menuScene != nullptr) delete menuScene;
 }
 
 void SceneManager::setScene(SceneType sceneType) {
+
+	QGraphicsScene* oldScene = game->scene();
+	if (oldScene) oldScene->deleteLater();
+
 	switch (sceneType) {
 		case Prison:
 			prisonScene = new PrisonScene();

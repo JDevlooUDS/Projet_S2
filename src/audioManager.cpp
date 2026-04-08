@@ -10,8 +10,14 @@ AudioManager::AudioManager()
 
 AudioManager::~AudioManager()
 {
-    delete musicPlayer;
-    delete audioOutput;
+    if (musicPlayer != nullptr) {
+        delete musicPlayer;
+        musicPlayer = nullptr;
+    }
+    if (audioOutput != nullptr) {
+        delete audioOutput;
+        audioOutput = nullptr;
+    }
 }
 
 AudioManager& AudioManager::getInstance() {
@@ -134,4 +140,15 @@ void AudioManager::playButtonBackSFX()
 void AudioManager::playButtonSelectSFX()
 {
     buttonSelectSFX.play();
+}
+
+void AudioManager::clean() {
+    if (musicPlayer != nullptr) {
+        delete musicPlayer;
+        musicPlayer = nullptr;
+    }
+    if (audioOutput != nullptr) {
+        delete audioOutput;
+        audioOutput = nullptr;
+    }
 }
