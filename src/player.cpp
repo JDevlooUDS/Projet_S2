@@ -61,6 +61,13 @@ void Player::update(double deltaTime, const Inputs& inputs) {
 
 	manageAnimation(deltaTime);
 	if (isGrounded) lastGroundPosition = pos();
+	if (xVelocity < 0 || dashXVelocity < 0) {
+		setTransform(QTransform());
+		setTransform(QTransform().translate(24,0).scale(-1, 1).translate(-24,0));
+	}
+	if (xVelocity > 0 || dashXVelocity > 0) {
+		setTransform(QTransform());
+	}
 }
 
 void Player::manageDashState(double deltaTime, const Inputs& inputs) {
@@ -72,6 +79,7 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 	if ((jumpBufferTimer > 0 && (isGrounded || coyoteTimer > 0)) && jumpEnabled) {
 		jump();
 		xVelocity = dashXVelocity;
+		dashXVelocity = 0;
 		dashCount = 1;
 		isJumpingFromDash = true;
 		coyoteTimer = 0;
@@ -81,6 +89,7 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 	if (dashTimer >= DASH_LIMIT) {
 		dashing = false;
 		playerState = NORMAL;
+		dashXVelocity = 0;
 	}
 	dashTimer += deltaTime;
 	
@@ -100,6 +109,7 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 		if (ghost->isVisible()) {
 			ghost->setOpacity(ghost->opacity() - (1.0f*deltaTime));
 			if (ghost->opacity() <= 0) ghost->setVisible(false);
+			ghost->setTransform(transform());
 		}
 	}
 	
@@ -108,13 +118,13 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 }
 
 void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
-	updateFlip(deltaTime);
+	//updateFlip(deltaTime);
 	for (QGraphicsPixmapItem* ghost : afterImages) {
 		ghost->setVisible(false);
 	}
-	bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
-	if (pressingOpposite) speed = REVERSE_SPEED;
-	else speed = BASE_SPEED;
+	//bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
+	//if (pressingOpposite) speed = REVERSE_SPEED;
+	//else speed = BASE_SPEED;
 	yVelocity = fallVelocity;
 	
 	if (isJumpingFromDash) {
@@ -486,7 +496,6 @@ bool Player::isAlive() {
 /*
 
 TODO:
-	Gérer l'orientation du personnage en X --> gauche/droite
 	Gérer acceleration en fonction des dégats // bonne règles de perte ou de gain d'accélération.
 	Ajouter une fonction pour l'accelerometre // petit boost de vitesse quand tu shake...
 	Ajouter les SFX
