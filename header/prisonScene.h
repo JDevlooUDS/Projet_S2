@@ -32,6 +32,8 @@ private:
 	void replayGame();
 	void goToMenu();
 
+	void displayDebugInfo(double deltaTime);
+
 	Player* player = nullptr;
 	bool playerCollides = false;
 	vector<GameObject*> walls;
@@ -40,7 +42,7 @@ private:
 	vector<End*> endZones;
 	vector<Hole*> holes;
 	Jon jon;
-	bool running = true; // temporaire permanent
+	bool gameEndMenu = false;
 
 	double timer = 0.0;
 
@@ -48,6 +50,10 @@ private:
 
 	MenuButton* replay = nullptr;
 	MenuButton* returnMenu = nullptr;
+
+	MenuButton* selectedButton = nullptr;
+
+	bool debug = false;
 
 
 };
