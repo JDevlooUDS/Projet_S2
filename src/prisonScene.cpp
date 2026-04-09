@@ -51,11 +51,14 @@ void PrisonScene::updateScene(double deltaTime) {
 
 		if (inputs.isSpacePressed) emit selectedButton->clicked();
 
+		update();
 		return;
 	}
 
 	if (!player->isAlive()) {
 		showDeath();
+		player->deactivate();
+		update();
 		AudioManager::getInstance().playGameOverSFX();
 		return;
 	}
@@ -95,6 +98,7 @@ void PrisonScene::updateScene(double deltaTime) {
 	foreach(End* end, endZones) {
 		if (end->collidesWithItem(player)) {
 			showEnd();
+			update();
 			return;
 		}
 	}
@@ -108,7 +112,7 @@ void PrisonScene::updateScene(double deltaTime) {
 	}
 
 	player->update(deltaTime, inputs);
-	this->update();
+	update();
 }
 
 void PrisonScene::showEnd() {
@@ -369,14 +373,14 @@ void PrisonScene::displayDebugInfo(double deltaTime) {
 	// section debug
 	QGraphicsView* view = views().first();  // récupère la Game view
 	clearDebug(view);
-	debugText(view, "fps: " + QString::number(1.0 / deltaTime, 'f', 0), 10);
-	debugText(view, "pos_x: " + QString::number(player->x()), 30);
+	debugText(view, "fps: " + QString::number(1.0 / deltaTime, 'f', 0), 10, 500);
+	debugText(view, "pos_x: " + QString::number(player->x()), 30, 500);
 	QString s = player->isOnGround() ? "true" : "false";
-	debugText(view, "Grounded: " + s, 50);
+	debugText(view, "Grounded: " + s, 50, 500);
 	float velocity = player->getXVelocity();
 	QString speed = QString::number(velocity);
-	debugText(view, "X Speed :" + speed, 70);
+	debugText(view, "X Speed :" + speed, 70, 500);
 	int hp = player->getHp();
 	QString health = QString::number(hp);
-	debugText(view, "Health : " + health, 90);
+	debugText(view, "Health : " + health, 90, 500);
 }
