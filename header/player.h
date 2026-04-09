@@ -142,7 +142,7 @@ private:
 	int const AFTER_IMAGE_MAX = 5;
 	int afterImageIndex = 0;
 	double afterImageTimer = 0.0f;
-	const double AFTER_IMAGE_SPEED = 0.05f;
+	const double AFTER_IMAGE_SPEED = 0.02f;
 
 	bool isDead = false;
 	QPointF lastGroundPosition;

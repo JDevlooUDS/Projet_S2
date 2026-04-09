@@ -10,11 +10,13 @@
 #include "../include/json.hpp"
 #include "QDebug"
 #include <QString>
+#include <QObject>
 
 using json = nlohmann::json;
 
-class Jon
+class Jon : public QObject
 {
+    Q_OBJECT
 private:
     QSerialPort* arduino;
     bool connected = false;
@@ -33,6 +35,10 @@ public:
         bool V1, bool V2, bool V3); // ponctuel
 
     bool RcvFromSerial(Inputs* inputs);
-
     bool isConnected();
+    bool openPort();
+    static Jon& getInstance();
+    void clean();
+public slots:
+    void disconnect();
 };

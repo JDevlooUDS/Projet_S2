@@ -11,6 +11,35 @@ Jon::Jon()
     arduino->setParity(QSerialPort::NoParity);
     arduino->setStopBits(QSerialPort::OneStop);
     arduino->setFlowControl(QSerialPort::NoFlowControl);
+    openPort();
+
+    connect(arduino, &QSerialPort::errorOccurred, this, &Jon::disconnect);
+            
+}
+
+Jon::~Jon()
+{
+    if (arduino != nullptr) {
+        arduino->close();
+        delete arduino;
+        arduino = nullptr;
+    }
+}
+
+Jon& Jon::getInstance() {
+    static Jon instance;
+    return instance;
+}
+
+void Jon::clean() {
+    if (arduino != nullptr) {
+        arduino->close();
+        delete arduino;
+        arduino = nullptr;
+    }
+}
+
+bool Jon::openPort() {
     if (arduino->open(QIODevice::ReadWrite)) {
         connected = true;
         qDebug() << "Arduino connected!";
@@ -19,11 +48,7 @@ Jon::Jon()
         connected = false;
         qDebug() << "Arduino NOT connected:" << arduino->errorString();
     }
-}
-
-Jon::~Jon()
-{
-    delete arduino;
+    return connected;
 }
 
 // Envoi continu : bar seulement, max 20 fois/sec
@@ -76,7 +101,6 @@ bool Jon::RcvFromSerial(Inputs* inputs)
 {
     static QString serialBuffer;
     serialBuffer += arduino->readAll();
-
     size_t pos;
     while ((pos = serialBuffer.indexOf('\n')) != -1)
     {
@@ -123,4 +147,8 @@ bool Jon::RcvFromSerial(Inputs* inputs)
 
 bool Jon::isConnected() {
     return connected;
+}
+
+void Jon::disconnect() {
+    connected = false;
 }

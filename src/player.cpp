@@ -499,16 +499,27 @@ bool Player::isAlive() {
 
 TODO:
 	Afficher un éclair quand on détecte un muons
-
+	Rajouter un menu pause
 	FAIT TON CALISSE DE CADENASSAGE GIN120
+	Ajouter du random pour le capteurs de muons
+	Ralentir le joueur quand il change de coté
+	Ajouter le volume modulaire avec l'encodeur rotatif
+	Rajouter un bouton spécifique pour sélectionner les boutons
+	
+	
+	
+	Ajouter un classement
 
 BUGFIX:
-
+	traverse les murs quand dash et que xVelocity == 0
 
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
-	Ajouter du random pour le capteurs de muons
 	Ajouter les menus
 	Améliorer les règles de gain/perte d'accélération.
 	manque de son
+
+
+IDÉE: 
+	Spikes tu prend une vie tu continue avec vitesse minimum invincible 1s
 */

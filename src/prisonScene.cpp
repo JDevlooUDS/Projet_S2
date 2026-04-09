@@ -11,11 +11,16 @@ PrisonScene::PrisonScene() {
 	addItem(player);
 	player->setPos(300, 0);
 	player->setWalls(walls);
+	if (!Jon::getInstance().isConnected()) {
+		while (!Jon::getInstance().openPort());
+	}
+	
+	Jon::getInstance().SendToSerial(false, false, false, true ,true, true);
 
 	vector<QGraphicsPixmapItem*> ghosts = player->getAfterImages();
 	for (QGraphicsPixmapItem* ghost : ghosts) {
 		addItem(ghost);
-	}
+ 	}
 
 	QPixmap filled = ResourceManager::getInstance().getFilledhealth();
 	for (int i = 0; i < 3; i++) {
@@ -32,9 +37,12 @@ void PrisonScene::updateScene(double deltaTime) {
 	if (debug) displayDebugInfo(deltaTime);
 	else clearDebug(views().first());
 
-	if (jon.isConnected()) {
+	if (Jon::getInstance().isConnected()) {
 		//inputs.reset();
-		jon.RcvFromSerial(&inputs);
+		Jon::getInstance().RcvFromSerial(&inputs);
+	}
+	else {
+		while (!Jon::getInstance().openPort());
 	}
 
 	if (gameEndMenu) {
@@ -71,6 +79,7 @@ void PrisonScene::updateScene(double deltaTime) {
 	
 
 	timer += deltaTime;
+	Jon::getInstance().SendTime(timer);
 
 	// pieges et boosts
 	bool touchingTrap = false;
@@ -106,6 +115,15 @@ void PrisonScene::updateScene(double deltaTime) {
 	foreach(Hole* hole, holes) {
 		if (hole->collidesWithItem(player)) {
 			player->damage();
+			if (player->getHp() == 2) {
+				Jon::getInstance().SendToSerial(false, false, true, true, true, false);
+			}
+			if (player->getHp() == 1) {
+				Jon::getInstance().SendToSerial(false, true, true, true, false, false);
+			}
+			if (player->getHp() == 0) {
+				Jon::getInstance().SendToSerial(true, true, true, false, false, false);
+			}
 			int hp = player->getHp();
 			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
 		}
@@ -258,6 +276,7 @@ void PrisonScene::loadMap() {
 		}
 		else if (s == "holes") {
 			Hole* hole = new Hole();
+			hole->setVisible(false);
 			holes.push_back(hole);
 			item = hole;
 		}

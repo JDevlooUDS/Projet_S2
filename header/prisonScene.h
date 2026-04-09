@@ -43,7 +43,6 @@ private:
 	vector<Boost*> boosts;
 	vector<End*> endZones;
 	vector<Hole*> holes;
-	Jon jon;
 	bool gameEndMenu = false;
 
 	double timer = 0.0;
