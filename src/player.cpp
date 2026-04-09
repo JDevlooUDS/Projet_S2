@@ -498,6 +498,9 @@ bool Player::isAlive() {
 /*
 
 TODO:
+	Afficher un éclair quand on détecte un muons
+
+	FAIT TON CALISSE DE CADENASSAGE GIN120
 
 BUGFIX:
 
