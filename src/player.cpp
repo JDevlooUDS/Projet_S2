@@ -503,7 +503,6 @@ int Player::getAccelerationMapped() {
 
 TODO:
 	Ralentir le joueur quand il change de coté
-	Rajouter un menu pause
 	
 	FAIT TON CALISSE DE CADENASSAGE GIN120	
 	

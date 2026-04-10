@@ -30,6 +30,9 @@ protected:
 private:
 	void showEnd();
 	void showDeath();
+	void showPause();
+
+	void cleanPause();
 
 	void replayGame();
 	void goToMenu();
@@ -50,13 +53,23 @@ private:
 	const bool KEYBOARD_INPUT = true; // regarde le clavier seulement si vrai
 
 	MenuButton* replay = nullptr;
+	MenuButton* settings = nullptr;
 	MenuButton* returnMenu = nullptr;
-
+	vector<MenuButton*> pauseButtons;
+	vector<MenuButton*>::iterator it;
 	MenuButton* selectedButton = nullptr;
 
 	bool debug = false;
 
 	vector<QPixmap> healths;
 
+
+	bool pause = false;
+	double changeSelectTimer = 0.0;
+	const double CHANGE_SELECT_LIMIT = 0.2;
+
+	QGraphicsRectItem* overlay = nullptr;
+	QGraphicsTextItem* title = nullptr;
+	QGraphicsTextItem* timeDisplay = nullptr;
 
 };
