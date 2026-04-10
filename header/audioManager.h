@@ -42,6 +42,8 @@ public:
     void playButtonSelectSFX();
     void clean();
 
+    void setVolume(float volume);
+
 private:
     QMediaPlayer* musicPlayer = nullptr;
     QAudioOutput* audioOutput = nullptr;

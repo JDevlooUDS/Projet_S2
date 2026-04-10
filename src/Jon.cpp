@@ -134,8 +134,16 @@ bool Jon::RcvFromSerial(Inputs* inputs)
             else inputs->isSpacePressed = false;
             if (lastB2) inputs->isDashPressed = true;
             else inputs->isDashPressed = false;
-            if (lastX > 20 || lastY > 20 || lastZ > 20) inputs->isAccelerated = true;
+            if (abs(lastX) > 50 || abs(lastY) > 50 || abs(lastZ) > 50) inputs->isAccelerated = true;
             else inputs->isAccelerated = false;
+            if (lastB3) inputs->isSelectPressed = true;
+            else inputs->isSelectPressed = false;
+            if (lastB4) inputs->isPausePressed = true;
+            else inputs->isPausePressed = false;
+            inputs->volume = lastV; // à tester les valeurs
+            int nombre = rand() % 60;
+            if (nombre == 59) inputs->muon = true;
+            else inputs->muon = false;
 
             return true;
         }
