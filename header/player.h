@@ -60,6 +60,7 @@ public:
 	bool isAlive();
 	void resetAcceleration();
 	void damage() override;
+	int getAccelerationMapped();
 
 
 private:
