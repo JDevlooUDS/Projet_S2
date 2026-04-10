@@ -12,7 +12,7 @@ PrisonScene::PrisonScene() {
 	player->setPos(300, 0);
 	player->setWalls(walls);
 	if (!Jon::getInstance().isConnected()) {
-		while (!Jon::getInstance().openPort());
+		//while (!Jon::getInstance().openPort());
 	}
 	
 	Jon::getInstance().SendToSerial(false, false, false, true ,true, true);
@@ -40,9 +40,12 @@ void PrisonScene::updateScene(double deltaTime) {
 	if (Jon::getInstance().isConnected()) {
 		//inputs.reset();
 		Jon::getInstance().RcvFromSerial(&inputs);
+		Jon::getInstance().SendTime(timer);
+		Jon::getInstance().SendBar(player->getAccelerationMapped());
+
 	}
 	else {
-		while (!Jon::getInstance().openPort());
+		//while (!Jon::getInstance().openPort());
 	}
 
 	if (gameEndMenu) {
@@ -57,7 +60,7 @@ void PrisonScene::updateScene(double deltaTime) {
 			selectedButton->select();
 		}
 
-		if (inputs.isSpacePressed) emit selectedButton->clicked();
+		if (inputs.isSelectPressed) emit selectedButton->clicked();
 
 		update();
 		return;
@@ -76,10 +79,9 @@ void PrisonScene::updateScene(double deltaTime) {
 		inputs.isDebugPressed = false;
 	}
 
-	
-
+	inputs.volume = 0.5f;
+	AudioManager::getInstance().setVolume(inputs.volume);
 	timer += deltaTime;
-	Jon::getInstance().SendTime(timer);
 
 	// pieges et boosts
 	bool touchingTrap = false;
@@ -115,14 +117,16 @@ void PrisonScene::updateScene(double deltaTime) {
 	foreach(Hole* hole, holes) {
 		if (hole->collidesWithItem(player)) {
 			player->damage();
-			if (player->getHp() == 2) {
-				Jon::getInstance().SendToSerial(false, false, true, true, true, false);
-			}
-			if (player->getHp() == 1) {
-				Jon::getInstance().SendToSerial(false, true, true, true, false, false);
-			}
-			if (player->getHp() == 0) {
-				Jon::getInstance().SendToSerial(true, true, true, false, false, false);
+			if (Jon::getInstance().isConnected()) {
+				if (player->getHp() == 2) {
+					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
+				}
+				if (player->getHp() == 1) {
+					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
+				}
+				if (player->getHp() == 0) {
+					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
+				}
 			}
 			int hp = player->getHp();
 			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
@@ -320,6 +324,7 @@ void PrisonScene::keyPressEvent(QKeyEvent* event) {
 	}
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = true;
+		inputs.isSelectPressed = true;
 	}
 }
 
@@ -355,6 +360,7 @@ void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
 	}
 	if (event->key() == Qt::Key_Space) {
 		inputs.isSpacePressed = false;
+		inputs.isSelectPressed = false;
 	}
 	if (event->key() == Qt::Key_Q) {
 		inputs.isDebugPressed = true;
@@ -381,10 +387,12 @@ QGraphicsItem* PrisonScene::getPlayer() {
 }
 
 void PrisonScene::replayGame() {
+	AudioManager::getInstance().playButtonSelectSFX();
 	emit changeScene(Prison);
 }
 
 void PrisonScene::goToMenu() {
+	AudioManager::getInstance().playButtonSelectSFX();
 	emit changeScene(Menu);
 }
 

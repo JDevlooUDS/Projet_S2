@@ -493,27 +493,28 @@ bool Player::isAlive() {
 	return !isDead;
 }
 
+int Player::getAccelerationMapped() {
+	int map = round(accelerationMultiplier * 10);
+	return map;
+}
 
 
 /*
 
 TODO:
-	Afficher un éclair quand on détecte un muons
-	Rajouter un menu pause
-	FAIT TON CALISSE DE CADENASSAGE GIN120
-	Ajouter du random pour le capteurs de muons
 	Ralentir le joueur quand il change de coté
-	Ajouter le volume modulaire avec l'encodeur rotatif
-	Rajouter un bouton spécifique pour sélectionner les boutons
+	Rajouter un menu pause
 	
+	FAIT TON CALISSE DE CADENASSAGE GIN120	
 	
-	
+	Afficher un éclair quand on détecte un muons
 	Ajouter un classement
 
 BUGFIX:
 	traverse les murs quand dash et que xVelocity == 0
 
 AUTRE:
+	Tester les valeurs que je recois de l'encodeur
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
 	Ajouter les menus
 	Améliorer les règles de gain/perte d'accélération.

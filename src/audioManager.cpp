@@ -152,3 +152,15 @@ void AudioManager::clean() {
         audioOutput = nullptr;
     }
 }
+
+void AudioManager::setVolume(float volume) {
+    audioOutput->setVolume(volume);
+
+    gameOverSFX.setVolume(volume);
+    countdownSFX.setVolume(volume);
+    jumpSFX.setVolume(volume);
+    loseLifeSFX.setVolume(volume);
+    deathSFX.setVolume(volume);
+    buttonBackSFX.setVolume(volume);
+    buttonSelectSFX.setVolume(volume);
+}

@@ -11,6 +11,10 @@ struct Inputs {
 	bool isDownPressed = false;
 	bool isDebugPressed = false;
 	bool isAccelerated = false;
+	bool isSelectPressed = false;
+	bool isPausePressed = false;
+	float volume = 0.0f;
+	bool muon = false;
 
 
 	void reset() {
@@ -21,5 +25,9 @@ struct Inputs {
 		isDashPressed = false;
 		isDebugPressed = false;
 		isAccelerated = false;
+		isSelectPressed = false;
+		isPausePressed = false;
+		volume = 0.0f;
+		muon = false;
 	}
 };
