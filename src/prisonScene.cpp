@@ -150,7 +150,7 @@ void PrisonScene::updateScene(double deltaTime) {
 			int hp = player->getHp();
 			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
 			player->resetAcceleration();
-
+			player->setInvinsible();
 		}
 	}
 

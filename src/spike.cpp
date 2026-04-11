@@ -4,4 +4,4 @@ Spike::Spike() {}
 
 Spike::~Spike() {}
 
-void update(double deltaTime, const Inputs& inputs) {}
+void Spike::update(double deltaTime, const Inputs& inputs) {}
