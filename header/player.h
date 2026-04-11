@@ -80,6 +80,7 @@ private:
 
 	void manageAnimation(double deltaTime);
 	void setAnimation(const AnimationState state);
+	void setInvinsible();
 
 
 	const bool KEYBOARD_CONTROL = true;
@@ -150,4 +151,10 @@ private:
 
 	const float ACCEL_BONUS = 1.2f;
 	float accelBonus = 1;
+
+	bool invinsible = false;
+	double invinsibilityTimer = 0.0;
+	const double INVINSIBILITY_LIMIT = 1.0;
+	const double FLICKER_LIMIT = 0.1;
+	double flickerTimer = 0.0;
 };

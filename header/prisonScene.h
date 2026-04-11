@@ -13,6 +13,7 @@
 #include "debug.h"
 #include "menuButton.h"
 #include "audioManager.h"
+#include "spike.h"
 
 class PrisonScene : public BaseScene {
 public:
@@ -46,6 +47,7 @@ private:
 	vector<Boost*> boosts;
 	vector<End*> endZones;
 	vector<Hole*> holes;
+	vector<Spike*> spikes;
 	bool gameEndMenu = false;
 
 	double timer = 0.0;
