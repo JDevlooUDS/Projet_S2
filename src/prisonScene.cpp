@@ -43,7 +43,7 @@ void PrisonScene::updateScene(double deltaTime) {
 
 	}
 	else {
-		while (!Jon::getInstance().openPort());
+		//while (!Jon::getInstance().openPort());
 	}
 
 	if (gameEndMenu) {

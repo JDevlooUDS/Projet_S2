@@ -161,7 +161,5 @@ void Jon::disconnect(QSerialPort::SerialPortError error) {
         qDebug() << "Controller disconnected\n";
         connected = false;
         arduino->close();
-        arduino->deleteLater();
-        arduino = nullptr;
     }
 }
