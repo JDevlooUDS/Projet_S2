@@ -61,6 +61,7 @@ public:
 	void resetAcceleration();
 	void damage() override;
 	int getAccelerationMapped();
+	void setInvinsible();
 
 
 private:
@@ -80,7 +81,6 @@ private:
 
 	void manageAnimation(double deltaTime);
 	void setAnimation(const AnimationState state);
-	void setInvinsible();
 
 
 	const bool KEYBOARD_CONTROL = true;
