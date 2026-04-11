@@ -12,9 +12,7 @@ Jon::Jon()
     arduino->setStopBits(QSerialPort::OneStop);
     arduino->setFlowControl(QSerialPort::NoFlowControl);
     openPort();
-
-    connect(arduino, &QSerialPort::errorOccurred, this, &Jon::disconnect);
-            
+    connect(arduino, &QSerialPort::errorOccurred, this, &Jon::disconnect);   
 }
 
 Jon::~Jon()
@@ -41,6 +39,8 @@ void Jon::clean() {
 
 bool Jon::openPort() {
     if (arduino->open(QIODevice::ReadWrite)) {
+        serialBuffer.clear();
+        arduino->clear();
         connected = true;
         qDebug() << "Arduino connected!";
     }
@@ -99,7 +99,6 @@ bool Jon::SendToSerial(bool R1, bool R2, bool R3,
 
 bool Jon::RcvFromSerial(Inputs* inputs)
 {
-    static QString serialBuffer;
     serialBuffer += arduino->readAll();
     size_t pos;
     while ((pos = serialBuffer.indexOf('\n')) != -1)
@@ -140,7 +139,7 @@ bool Jon::RcvFromSerial(Inputs* inputs)
             else inputs->isSelectPressed = false;
             if (lastB4) inputs->isPausePressed = true;
             else inputs->isPausePressed = false;
-            inputs->volume = lastV; // à tester les valeurs
+            inputs->volume = lastV/100; // à tester les valeurs
             int nombre = rand() % 60;
             if (nombre == 59) inputs->muon = true;
             else inputs->muon = false;
@@ -157,6 +156,12 @@ bool Jon::isConnected() {
     return connected;
 }
 
-void Jon::disconnect() {
-    connected = false;
+void Jon::disconnect(QSerialPort::SerialPortError error) {
+    if (error == QSerialPort::ResourceError || error == QSerialPort::DeviceNotFoundError) {
+        qDebug() << "Controller disconnected\n";
+        connected = false;
+        arduino->close();
+        arduino->deleteLater();
+        arduino = nullptr;
+    }
 }

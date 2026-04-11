@@ -37,14 +37,13 @@ void PrisonScene::updateScene(double deltaTime) {
 	else clearDebug(views().first());
 
 	if (Jon::getInstance().isConnected()) {
-		//inputs.reset();
 		Jon::getInstance().RcvFromSerial(&inputs);
 		Jon::getInstance().SendTime(timer);
 		Jon::getInstance().SendBar(player->getAccelerationMapped());
 
 	}
 	else {
-		//while (!Jon::getInstance().openPort());
+		while (!Jon::getInstance().openPort());
 	}
 
 	if (gameEndMenu) {
@@ -67,8 +66,9 @@ void PrisonScene::updateScene(double deltaTime) {
 
 	
 
-	if (inputs.isPausePressed) {
+	if (inputs.isPausePressed && pauseTimer >= TOGGLE_PAUSE_LIMIT) {
 		pause = !pause;
+		pauseTimer = 0.0;
 		if (pause) {
 			showPause();
 		}
@@ -77,6 +77,7 @@ void PrisonScene::updateScene(double deltaTime) {
 		}
 		inputs.isPausePressed = false;
 	}
+	pauseTimer += deltaTime;
 
 	if (pause) {
 		if (changeSelectTimer < CHANGE_SELECT_LIMIT) {
@@ -119,7 +120,6 @@ void PrisonScene::updateScene(double deltaTime) {
 		inputs.isDebugPressed = false;
 	}
 
-	inputs.volume = 0.5f;
 	AudioManager::getInstance().setVolume(inputs.volume);
 	timer += deltaTime;
 

@@ -68,6 +68,9 @@ private:
 	double changeSelectTimer = 0.0;
 	const double CHANGE_SELECT_LIMIT = 0.2;
 
+	double pauseTimer = 0.0;
+	const double TOGGLE_PAUSE_LIMIT = 0.2;
+
 	QGraphicsRectItem* overlay = nullptr;
 	QGraphicsTextItem* title = nullptr;
 	QGraphicsTextItem* timeDisplay = nullptr;
