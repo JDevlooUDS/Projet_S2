@@ -512,6 +512,8 @@ AUTRE:
 	Améliorer les règles de gain/perte d'accélération.
 	manque de son
 
+	Si je suis motivé ajouter détection automatique du port de communication et gérer débranchement rebranchement de la manette
+
 
 IDÉE: 
 	Spikes tu prend une vie tu continue avec vitesse minimum invincible 1s
