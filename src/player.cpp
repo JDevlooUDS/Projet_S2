@@ -322,12 +322,7 @@ void Player::setWalls(vector<GameObject*> walls) {
 void Player::resolveCollisionX() {
 	for (GameObject* wall : walls) {
 		if (collidesWithItem(wall)) {
-			if (xVelocity > 0) {
-				setX(lastPosition.x());
-			}
-			else if (xVelocity < 0) {
-				setX(lastPosition.x());
-			}
+			setX(lastPosition.x());
 		}
 	}
 }
@@ -503,6 +498,7 @@ int Player::getAccelerationMapped() {
 
 TODO:
 	Ralentir le joueur quand il change de coté
+	Menu option pour changer le son
 	
 	FAIT TON CALISSE DE CADENASSAGE GIN120	
 	
@@ -510,7 +506,7 @@ TODO:
 	Ajouter un classement
 
 BUGFIX:
-	traverse les murs quand dash et que xVelocity == 0
+	
 
 AUTRE:
 	Tester les valeurs que je recois de l'encodeur
