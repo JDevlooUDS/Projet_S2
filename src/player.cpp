@@ -489,7 +489,7 @@ bool Player::isAlive() {
 }
 
 int Player::getAccelerationMapped() {
-	int map = round(accelerationMultiplier * 10);
+	int map = round((accelerationMultiplier - 1) * 100);
 	return map;
 }
 
@@ -500,8 +500,6 @@ TODO:
 	Ralentir le joueur quand il change de coté
 	Menu option pour changer le son
 	
-	FAIT TON CALISSE DE CADENASSAGE GIN120	
-	
 	Afficher un éclair quand on détecte un muons
 	Ajouter un classement
 
@@ -509,7 +507,6 @@ BUGFIX:
 	
 
 AUTRE:
-	Tester les valeurs que je recois de l'encodeur
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
 	Ajouter les menus
 	Améliorer les règles de gain/perte d'accélération.

@@ -11,6 +11,7 @@
 #include "QDebug"
 #include <QString>
 #include <QObject>
+#include <QThread>
 
 using json = nlohmann::json;
 
@@ -20,6 +21,7 @@ class Jon : public QObject
 private:
     QSerialPort* arduino;
     bool connected = false;
+    QString serialBuffer = "";
 
     int   lastJoyX = 500, lastJoyY = 0;
     bool  lastB1 = false, lastB2 = false, lastB3 = false, lastB4 = false;
@@ -40,5 +42,5 @@ public:
     static Jon& getInstance();
     void clean();
 public slots:
-    void disconnect();
+    void disconnect(QSerialPort::SerialPortError error);
 };
