@@ -65,6 +65,18 @@ void Player::update(double deltaTime, const Inputs& inputs) {
 	if (xVelocity > 0 || dashXVelocity > 0) {
 		setTransform(QTransform());
 	}
+
+	if (invinsibilityTimer >= INVINSIBILITY_LIMIT) {
+		invinsible = false;
+		setVisible(true);
+	}
+	if (invinsible && flickerTimer >= FLICKER_LIMIT) {
+		setVisible(!isVisible());
+		flickerTimer = 0.0;
+	}
+	flickerTimer += deltaTime;
+	invinsibilityTimer += deltaTime;
+
 }
 
 void Player::manageDashState(double deltaTime, const Inputs& inputs) {
@@ -465,6 +477,7 @@ vector<QGraphicsPixmapItem*> Player::getAfterImages() {
 }
 
 void Player::damage() {
+	if (invinsible) return;
 	hp--;
 	AudioManager::getInstance().playLoseLifeSFX();
 	if (hp <= 0) {
@@ -491,6 +504,12 @@ bool Player::isAlive() {
 int Player::getAccelerationMapped() {
 	int map = round((accelerationMultiplier - 1) * 100);
 	return map;
+}
+
+void Player::setInvinsible() {
+	if (invinsible) return;
+	invinsible = true;
+	invinsibilityTimer = 0.0;
 }
 
 

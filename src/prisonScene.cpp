@@ -125,11 +125,32 @@ void PrisonScene::updateScene(double deltaTime) {
 
 	// pieges et boosts
 	bool touchingTrap = false;
-	foreach(Trap * trap, traps) {
+	foreach(Trap* trap, traps) {
 		if (trap->collidesWithItem(player)) {
 			trap->applyEffect(player);
 			player->resetAcceleration();
 			touchingTrap = true;
+		}
+	}
+
+	foreach(Spike* spike, spikes) {
+		if (spike->collidesWithItem(player)) {
+			player->damage();
+			if (Jon::getInstance().isConnected()) {
+				if (player->getHp() == 2) {
+					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
+				}
+				if (player->getHp() == 1) {
+					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
+				}
+				if (player->getHp() == 0) {
+					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
+				}
+			}
+			int hp = player->getHp();
+			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
+			player->resetAcceleration();
+
 		}
 	}
 
