@@ -17,6 +17,8 @@ public:
 	vector<QPixmap> getDashAnimation();
 	QPixmap getFilledhealth();
 	QPixmap getEmptyHealth();
+	vector<QPixmap> getFallingStarAnimation();
+
 
 	QPointF playerSpawnPoint;
 
@@ -33,6 +35,7 @@ private:
 	vector<QPixmap> dashAnimation;
 	vector<QPixmap> jumpAnimation;
 	vector<QPixmap> idleAnimation;
+	vector<QPixmap> fallingStarAnimation;
 	QPixmap filledHealth;
 	QPixmap emptyHealth;
 };

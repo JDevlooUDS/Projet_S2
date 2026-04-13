@@ -471,11 +471,7 @@ QRectF Player::boundingRect() const {
 
 QPainterPath Player::shape() const {
 	QPainterPath path;
-	const int WIDTH = 48;
-	const int HEIGHT = 48;
-	int startX = WIDTH - 9;
-	int endX = WIDTH - 12 - 9;
-	path.addRect(14,0,20,48);
+	path.addRect(14,0,20,46);
 	return path;
 }
 
@@ -524,10 +520,13 @@ void Player::setInvinsible() {
 /*
 
 TODO:
-	Ralentir le joueur quand il change de coté
-	Menu option pour changer le son
+	LUNDI 13 AVRIL:
+		Ralentir le joueur quand il change de coté
+		Menu option pour changer le son
+
+
 	
-	Afficher un éclair quand on détecte un muons
+	
 	Ajouter un classement
 
 BUGFIX:
@@ -540,8 +539,4 @@ AUTRE:
 	manque de son
 
 	Si je suis motivé ajouter détection automatique du port de communication et gérer débranchement rebranchement de la manette
-
-
-IDÉE: 
-	Spikes tu prend une vie tu continue avec vitesse minimum invincible 1s
 */

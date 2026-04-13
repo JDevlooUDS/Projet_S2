@@ -926,6 +926,30 @@
         }, 
         {
          "draworder":"topdown",
+         "id":5,
+         "name":"end",
+         "objects":[
+                {
+                 "gid":6,
+                 "height":32,
+                 "id":81,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1536,
+                 "y":384
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":3,
          "name":"holes",
          "objects":[
@@ -998,8 +1022,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":81,
+ "nextlayerid":6,
+ "nextobjectid":82,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.12.0",
