@@ -14,6 +14,7 @@
 #include "menuButton.h"
 #include "audioManager.h"
 #include "spike.h"
+#include "fallingStar.h"
 
 class PrisonScene : public BaseScene {
 public:
@@ -76,5 +77,7 @@ private:
 	QGraphicsRectItem* overlay = nullptr;
 	QGraphicsTextItem* title = nullptr;
 	QGraphicsTextItem* timeDisplay = nullptr;
+
+	vector<FallingStar*> fallingStars;
 
 };

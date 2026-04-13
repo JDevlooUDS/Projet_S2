@@ -26,6 +26,13 @@ PrisonScene::PrisonScene() {
 	for (int i = 0; i < 3; i++) {
 		healths.push_back(filled);
 	}
+
+	for (int i = 0; i < 3; i++) {
+		FallingStar* star = new FallingStar();
+		star->deactivate();
+		addItem(star);
+		fallingStars.push_back(star);
+	}
 }
 
 PrisonScene::~PrisonScene() {
@@ -45,6 +52,9 @@ void PrisonScene::updateScene(double deltaTime) {
 	else {
 		//while (!Jon::getInstance().openPort());
 	}
+
+	if (rand() % 10 == 1) inputs.muon = true;
+	else inputs.muon = false;
 
 	if (gameEndMenu) {
 		if (inputs.isRightPressed) {
@@ -192,6 +202,32 @@ void PrisonScene::updateScene(double deltaTime) {
 			}
 			int hp = player->getHp();
 			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
+		}
+	}
+
+	if (inputs.muon) {
+		foreach(FallingStar* star, fallingStars) {
+			if (!star->isActive()) {
+				QGraphicsView* view = views().first();
+				int height = view->viewport()->rect().height();
+				int width = view->viewport()->rect().width();
+
+				qreal starY = rand() % height;
+				qreal starX = rand() % width;
+
+				QPointF starPos = view->mapToScene(starX, starY);
+
+				star->activate();
+				star->setVisible(true);
+				star->setPos(starPos);
+				break;
+			}
+		}
+	}
+
+	foreach(FallingStar* star, fallingStars) {
+		if (star->isActive()) {
+			star->update(deltaTime, inputs);
 		}
 	}
 
