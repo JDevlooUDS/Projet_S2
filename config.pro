@@ -9,6 +9,7 @@ resources.base = resources
 resources.files += $$SOUNDS $$MUSICS $$MAPS $$SPRITES
 CONFIG += warn_on qt debug windows console resources_big
 HEADERS += $$files($$PWD/header/*.h)
+
 SOURCES += main.cpp $$files($$PWD/src/*.cpp)
 INCLUDEPATH += ./header ./src ./map ./image
 
