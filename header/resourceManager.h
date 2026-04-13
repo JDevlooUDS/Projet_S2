@@ -18,6 +18,8 @@ public:
 	QPixmap getFilledhealth();
 	QPixmap getEmptyHealth();
 
+	QPointF playerSpawnPoint;
+
 private:
 	ResourceManager();
 	~ResourceManager();
@@ -33,5 +35,4 @@ private:
 	vector<QPixmap> idleAnimation;
 	QPixmap filledHealth;
 	QPixmap emptyHealth;
-
 };

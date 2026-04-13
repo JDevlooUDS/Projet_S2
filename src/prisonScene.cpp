@@ -9,7 +9,7 @@ PrisonScene::PrisonScene() {
 	player->activate();
 	loadMap();
 	addItem(player);
-	player->setPos(300, 0);
+	player->setPos(ResourceManager::getInstance().playerSpawnPoint);
 	player->setWalls(walls);
 	if (!Jon::getInstance().isConnected()) {
 		//while (!Jon::getInstance().openPort());

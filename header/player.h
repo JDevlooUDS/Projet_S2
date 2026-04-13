@@ -86,12 +86,12 @@ private:
 
 	const bool KEYBOARD_CONTROL = true;
 
-	const float BASE_SPEED = 300.0;
-	const float REVERSE_SPEED = 450.0f;
+	const float BASE_SPEED = 300.0; 
+	const float REVERSE_SPEED = 450.0f; //pas utilisé?
 	const float JUMP_VELOCITY = -750.0f;
 
 	const float GRAVITY = 3000.0f;
-	const float BASE_FALL_VELOCITY = 1000.0f;
+	const float BASE_FALL_VELOCITY = 500.0f;
 	const float FLIP_CONST = 0.2f;
 	float speedMultiplier = 1.0f; // < 1 pour ralentir, > 1 pour accelerer
 
@@ -101,7 +101,7 @@ private:
 	vector<GameObject*> walls;
 
 	double dashTimer = 0.0;
-	const double DASH_LIMIT = 0.2;
+	const double DASH_LIMIT = 0.25; //longeur dash
 	bool dashing = false;
 	bool isJumpingFromDash = false;
 
@@ -115,8 +115,8 @@ private:
 	DashDirection dashDirection = NONE;
 
 	int dashCount = 1;
-	const float DASH_MULTIPLIER = 4.0f;
-	const float WAVE_DASH_MULTIPLIER = 1.5f;
+	const float DASH_MULTIPLIER = 1.8f; //vitesse dash%
+	const float WAVE_DASH_MULTIPLIER = 1.2f;
 	float dashXVelocity;
 	float dashYVelocity;
 
