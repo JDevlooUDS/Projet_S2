@@ -62,6 +62,7 @@ public:
 	void damage() override;
 	int getAccelerationMapped();
 	void setInvinsible();
+	void replace();
 
 
 private:

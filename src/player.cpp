@@ -491,7 +491,10 @@ void Player::damage() {
 		isDead = true;
 		//AudioManager::getInstance().playDeathSFX();
 	}
-	resetAcceleration();
+	resetAcceleration();	
+}
+
+void Player::replace() {
 	if (pos().x() > lastGroundPosition.x()) {
 		setPos(lastGroundPosition.x() - 64, lastGroundPosition.y());
 
@@ -500,8 +503,6 @@ void Player::damage() {
 		setPos(lastGroundPosition.x() + 64, lastGroundPosition.y());
 	}
 	xVelocity = 0;
-
-	
 }
 
 bool Player::isAlive() {

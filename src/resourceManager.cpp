@@ -41,7 +41,7 @@ bool ResourceManager::loadPrisonSceneResources() {
 		}
 	}
 
-	QFile file(":/map/test_map5.json");
+	QFile file(":/map/test_map4.json");
 	//QFile file("C:/Users/capro/OneDrive - USherbrooke/S2/P3/Jeuv4/Projet_S2/resources/map/test_map5.json"); // absolute path juste pour tester vite
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
