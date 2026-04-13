@@ -520,13 +520,10 @@ void Player::setInvinsible() {
 /*
 
 TODO:
-	LUNDI 13 AVRIL:
-		Menu option pour changer le son
-
-
-	
-	
 	Ajouter un classement
+
+	
+	
 
 BUGFIX:
 	le bouton retour du menu pause ne register pas des fois
