@@ -529,7 +529,7 @@ TODO:
 	Ajouter un classement
 
 BUGFIX:
-	
+	le bouton retour du menu pause ne register pas des fois
 
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
