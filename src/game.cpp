@@ -10,7 +10,7 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 	QObject::connect(fps, &QTimer::timeout, this, &Game::gameLoop);
 	fps->start(16);
 	elapsedTimer.start();
-	setSceneRect(0, -1000, 1920, 50000);
+	setSceneRect(0, -9000, 19920, 50000); // plus grand pis c chill
 
 
 	if (!AudioManager::getInstance().init(this)) {

@@ -9,7 +9,7 @@
 
 ResourceManager::ResourceManager() {}
 ResourceManager::~ResourceManager() {}
-
+//
 ResourceManager& ResourceManager::getInstance() {
 	static ResourceManager instance;
 	return instance;
@@ -41,7 +41,8 @@ bool ResourceManager::loadPrisonSceneResources() {
 		}
 	}
 
-	QFile file(":/map/test_map4.json");
+	QFile file(":/map/test_map5.json");
+	//QFile file("C:/Users/capro/OneDrive - USherbrooke/S2/P3/Jeuv4/Projet_S2/resources/map/test_map5.json"); // absolute path juste pour tester vite
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
 	}
@@ -61,6 +62,18 @@ bool ResourceManager::loadPrisonSceneResources() {
 				QJsonObject layer = array[i].toObject();
 				QString name = layer.value("name").toString();
 
+				if (name == "player") {
+					QJsonArray objects = layer.value("objects").toArray();
+					if (!objects.isEmpty()) {
+						QJsonObject obj = objects[0].toObject();
+						playerSpawnPoint = QPointF(
+							obj.value("x").toDouble(),
+							obj.value("y").toDouble()
+						);
+					}
+					continue;
+				}
+
 				bool collides = false;
 				QJsonArray properties = layer.value("properties").toArray();
 				for (int j = 0; j < properties.size(); j++) {
@@ -69,11 +82,20 @@ bool ResourceManager::loadPrisonSceneResources() {
 						collides = property.value("value").toBool();
 					}
 				}
-				
+
 				QJsonArray layerArray = layer.value("objects").toArray();
 				for (int j = 0; j < layerArray.size(); j++) {
 					QJsonObject item = layerArray[j].toObject();
-					Tile tile(item.value("x").toInt(),item.value("y").toInt(),item.value("height").toInt(),item.value("width").toInt(),collides,tiles[item.value("gid").toInt() - 1], name);
+					if (!item.contains("gid")) continue;
+					Tile tile(
+						item.value("x").toInt(),
+						item.value("y").toInt(),
+						item.value("height").toInt(),
+						item.value("width").toInt(),
+						collides,
+						tiles[item.value("gid").toInt() - 1],
+						name
+					);
 					prisonMap.push_back(tile);
 				}
 			}
