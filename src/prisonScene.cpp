@@ -178,6 +178,7 @@ void PrisonScene::updateScene(double deltaTime) {
 	foreach(Hole* hole, holes) {
 		if (hole->collidesWithItem(player)) {
 			player->damage();
+			player->replace();
 			if (Jon::getInstance().isConnected()) {
 				if (player->getHp() == 2) {
 					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
@@ -443,6 +444,12 @@ void PrisonScene::loadMap() {
 			holes.push_back(hole);
 			item = hole;
 		}
+		else if (s == "spikes") {
+			Spike* spike = new Spike();
+			spikes.push_back(spike);
+			item = spike;
+		}
+		else continue;
 		item->setPos(tile.getXPosition(), tile.getYPosition());
 		item->setPixmap(tile.getPixmap());
 		item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, tile.isCollide());
