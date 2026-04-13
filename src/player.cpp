@@ -412,7 +412,7 @@ void Player::manageAcceleration(double deltaTime) {
 		if (accelerationMultiplier > MAX_ACCELERATION) accelerationMultiplier = MAX_ACCELERATION;
 	}
 	else {
-		accelerationMultiplier -= ACCELERATION_DELTA * deltaTime;
+		accelerationMultiplier -= ACCELERATION_DELTA;
 		if (accelerationMultiplier < MIN_ACCELERATION) accelerationMultiplier = MIN_ACCELERATION;
 	}
 
@@ -521,7 +521,6 @@ void Player::setInvinsible() {
 
 TODO:
 	LUNDI 13 AVRIL:
-		Ralentir le joueur quand il change de coté
 		Menu option pour changer le son
 
 
@@ -535,8 +534,4 @@ BUGFIX:
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
 	Ajouter les menus
-	Améliorer les règles de gain/perte d'accélération.
-	manque de son
-
-	Si je suis motivé ajouter détection automatique du port de communication et gérer débranchement rebranchement de la manette
 */

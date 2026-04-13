@@ -38,6 +38,8 @@ private:
 
 	void replayGame();
 	void goToMenu();
+	void clickContinue();
+	void clickSettings();
 
 	void displayDebugInfo(double deltaTime);
 
@@ -58,6 +60,7 @@ private:
 	MenuButton* replay = nullptr;
 	MenuButton* settings = nullptr;
 	MenuButton* returnMenu = nullptr;
+	MenuButton* continueButton = nullptr;
 	vector<MenuButton*> pauseButtons;
 	vector<MenuButton*>::iterator it;
 	MenuButton* selectedButton = nullptr;

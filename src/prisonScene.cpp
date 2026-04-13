@@ -53,8 +53,10 @@ void PrisonScene::updateScene(double deltaTime) {
 		//while (!Jon::getInstance().openPort());
 	}
 
+	/*
 	if (rand() % 10 == 1) inputs.muon = true;
 	else inputs.muon = false;
+	*/
 
 	if (gameEndMenu) {
 		if (inputs.isRightPressed) {
@@ -377,11 +379,24 @@ void PrisonScene::showPause() {
 	title->setZValue(11);
 	addItem(title);
 
+	//bouton continuer
+
+	continueButton = new MenuButton("Continuer", 200, 50);
+
+	qreal continueX = overlay->pos().x() + (width / 2) - (continueButton->boundingRect().width() / 2);
+	qreal continueY = title->pos().y() + 75;
+
+	continueButton->setPos(continueX, continueY);
+	continueButton->setZValue(11);
+	addItem(continueButton);
+	
+	connect(continueButton, &MenuButton::clicked, this, &PrisonScene::clickContinue);
+
 	// bouton replay
 	replay = new MenuButton("Rejouer!", 200, 50);
 
 	qreal replayX = overlay->pos().x() + (width / 2) - (replay->boundingRect().width() / 2);
-	qreal replayY = title->pos().y() + 50;
+	qreal replayY = continueButton->pos().y() + 75;
 	replay->setPos(replayX, replayY);
 	replay->setZValue(11);
 	addItem(replay);
@@ -397,7 +412,7 @@ void PrisonScene::showPause() {
 	settings->setZValue(11);
 	addItem(settings);
 
-	connect(settings, &MenuButton::clicked, this, &PrisonScene::replayGame);
+	connect(settings, &MenuButton::clicked, this, &PrisonScene::clickSettings);
 
 	// bouton retour au menu
 	returnMenu = new MenuButton("retourner au menu!", 200, 50);
@@ -410,15 +425,21 @@ void PrisonScene::showPause() {
 
 	connect(returnMenu, &MenuButton::clicked, this, &PrisonScene::goToMenu);
 
+	pauseButtons.push_back(continueButton);
 	pauseButtons.push_back(replay);
 	pauseButtons.push_back(settings);
 	pauseButtons.push_back(returnMenu);
 	it = pauseButtons.begin();
-	selectedButton = replay;
+	selectedButton = *it;
 	selectedButton->select();
 }
 
 void PrisonScene::cleanPause() {
+	if (continueButton != nullptr) {
+		removeItem(continueButton);
+		delete continueButton;
+		continueButton = nullptr;
+	}
 	if (replay != nullptr) {
 		removeItem(replay);
 		delete replay;
@@ -599,6 +620,14 @@ void PrisonScene::replayGame() {
 void PrisonScene::goToMenu() {
 	AudioManager::getInstance().playButtonSelectSFX();
 	emit changeScene(Menu);
+}
+
+void PrisonScene::clickContinue() {
+	inputs.isPausePressed = true;
+}
+
+void PrisonScene::clickSettings() {
+	
 }
 
 void PrisonScene::displayDebugInfo(double deltaTime) {
