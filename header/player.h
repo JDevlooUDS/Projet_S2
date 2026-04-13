@@ -155,7 +155,7 @@ private:
 
 	bool invinsible = false;
 	double invinsibilityTimer = 0.0;
-	const double INVINSIBILITY_LIMIT = 1.0;
+	const double INVINSIBILITY_LIMIT = 1.5;
 	const double FLICKER_LIMIT = 0.1;
 	double flickerTimer = 0.0;
 };
