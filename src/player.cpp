@@ -178,6 +178,7 @@ void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
 
 	if (xVelocity != 0 && !dashing && !jumping) setAnimation(RUN);
 	if (xVelocity == 0 && !dashing && !jumping) setAnimation(IDLE);
+	if (!dashing && !jumping && !isGrounded) setAnimation(FALL);
 
 	manageAcceleration(deltaTime);
 	updateFlip(deltaTime);
@@ -474,7 +475,12 @@ void Player::manageAnimation(double deltaTime) {
 		if (animationIndex >= dashAnimation.size()) animationIndex = dashAnimation.size() - 1;
 		setPixmap(dashAnimation[animationIndex]);
 		break;
+	case FALL:
+		setPixmap(jumpAnimation[jumpAnimation.size() - 1]);
+		break;
 	}
+	
+
 }
 
 QRectF Player::boundingRect() const {
@@ -603,7 +609,6 @@ void Player::manageCollision() {
 /*
 
 TODO:
-	Ajouter une fall animation
 	Ajouter le background
 	Ajouter les menus
 	Ajouter un classement

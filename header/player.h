@@ -34,7 +34,8 @@ enum AnimationState {
 	IDLE,
 	RUN,
 	DASH_ANIM,
-	JUMP
+	JUMP,
+	FALL
 };
 
 class Player : public GameObject {
