@@ -10,12 +10,12 @@
 #include <chrono>
 #include "timer.h"
 #include <QGraphicsView>
-#include "prisonScene.h"
 #include "baseScene.h"
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include "audioManager.h"
+#include <QKeyEvent>
 
 using namespace std;
 
@@ -27,8 +27,14 @@ public:
 
 public slots:
 	void gameLoop();
+	void setVolume(int volume);
+
+protected:
+	void keyPressEvent(QKeyEvent* event) override;
+	void keyReleaseEvent(QKeyEvent* event) override;
 private:
 	QTimer* fps = nullptr;
 	QElapsedTimer elapsedTimer;
 	QRect cameraPos;
+	Inputs inputs;
 };
