@@ -538,6 +538,8 @@ TODO:
 	WaveDash seulement dans le soap 
 	Redonner le dash dans le truc qui rallenti
 
+	Mettre les voix de Alexis si je les recois
+
 BUGFIX:
 	double dash
 
