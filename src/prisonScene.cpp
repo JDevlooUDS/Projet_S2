@@ -83,8 +83,9 @@ void PrisonScene::updateScene(double deltaTime, const Inputs& inputs) {
 
 	
 
-	if (inputs.isPausePressed && pauseTimer >= TOGGLE_PAUSE_LIMIT) {
+	if ((inputs.isPausePressed || cancelPause) && pauseTimer >= TOGGLE_PAUSE_LIMIT) {
 		pause = !pause;
+		cancelPause = false;
 		pauseTimer = 0.0;
 		if (pause) {
 			showPause(inputs);
@@ -528,7 +529,7 @@ void PrisonScene::goToMenu() {
 }
 
 void PrisonScene::clickContinue() {
-	pause = true;
+	cancelPause = true;
 }
 
 void PrisonScene::clickSettings() {

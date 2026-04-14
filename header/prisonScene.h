@@ -96,4 +96,6 @@ private:
 
 	int lastFrameHp;
 
+	bool cancelPause = false;
+
 };

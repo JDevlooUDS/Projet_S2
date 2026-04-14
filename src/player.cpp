@@ -603,6 +603,7 @@ void Player::manageCollision() {
 /*
 
 TODO:
+	Ajouter une fall animation
 	Ajouter le background
 	Ajouter les menus
 	Ajouter un classement
