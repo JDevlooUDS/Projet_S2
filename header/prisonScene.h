@@ -56,7 +56,7 @@ private:
 
 	double timer = 0.0;
 
-	const bool KEYBOARD_INPUT = true; // regarde le clavier seulement si vrai
+	const bool KEYBOARD_INPUT = true;
 
 	MenuButton* replay = nullptr;
 	MenuButton* settings = nullptr;

@@ -86,12 +86,14 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 	}
 	jumpBufferTimer -= deltaTime;
 	coyoteTimer -= deltaTime;
+	if (!inBoost) inBoostBuffer += deltaTime;
+	else inBoostBuffer = 0.0;
 	if ((jumpBufferTimer > 0 && (isGrounded || coyoteTimer > 0)) && jumpEnabled) {
 		jump();
 		xVelocity = dashXVelocity;
 		dashXVelocity = 0;
 		dashCount = 1;
-		isJumpingFromDash = true;
+		if (inBoost || inBoostBuffer < BOOST_BUFFER_LIMIT) isJumpingFromDash = true;
 		coyoteTimer = 0;
 		jumpBufferTimer = 0;
 	}
@@ -137,13 +139,9 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 }
 
 void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
-	//updateFlip(deltaTime);
 	for (QGraphicsPixmapItem* ghost : afterImages) {
 		ghost->setVisible(false);
 	}
-	//bool pressingOpposite = (xVelocity > 0 && !facingRight) || (xVelocity < 0 && facingRight);
-	//if (pressingOpposite) speed = REVERSE_SPEED;
-	//else speed = BASE_SPEED;
 	yVelocity = fallVelocity;
 	
 	if (isJumpingFromDash) {
@@ -529,15 +527,20 @@ void Player::setInvinsible() {
 	invinsibilityTimer = 0.0;
 }
 
+void Player::resetDash() {
+	dashCount = 1;
+}
+
+void Player::setInBoost(bool inBoost) {
+	this->inBoost = inBoost;
+}
+
 
 /*
 
 TODO:
 	Ajouter les menus
 	Ajouter un classement
-	WaveDash seulement dans le soap 
-	Redonner le dash dans le truc qui rallenti
-
 	Mettre les voix de Alexis si je les recois
 
 BUGFIX:
@@ -546,7 +549,5 @@ BUGFIX:
 
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
-	Ajouter les menus
 	manque de son
-
 */
