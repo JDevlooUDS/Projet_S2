@@ -26,6 +26,14 @@ PrisonScene::PrisonScene() {
 	for (int i = 0; i < 3; i++) {
 		healths.push_back(filled);
 	}
+
+	for (int i = 0; i < 3; i++) {
+		FallingStar* star = new FallingStar();
+		star->deactivate();
+		addItem(star);
+		fallingStars.push_back(star);
+	}
+	inputs.volume = 0.5f;
 }
 
 PrisonScene::~PrisonScene() {
@@ -58,7 +66,12 @@ void PrisonScene::updateScene(double deltaTime) {
 			selectedButton->select();
 		}
 
-		if (inputs.isSelectPressed) emit selectedButton->clicked();
+		selectTimer += deltaTime;
+
+		if (selectTimer >= SELECT_SPEED) {
+			if (inputs.isSelectPressed && selectedButton != nullptr) emit selectedButton->clicked();
+			selectTimer = 0.0;
+		}
 
 		update();
 		return;
@@ -101,7 +114,12 @@ void PrisonScene::updateScene(double deltaTime) {
 			changeSelectTimer = 0.0;
 		}
 
-		if (inputs.isSelectPressed) emit selectedButton->clicked();
+		selectTimer += deltaTime;
+
+		if (selectTimer >= SELECT_SPEED) {
+			if (inputs.isSelectPressed && selectedButton != nullptr) emit selectedButton->clicked();
+			selectTimer = 0.0;
+		}
 
 		update();
 		return;
@@ -195,6 +213,32 @@ void PrisonScene::updateScene(double deltaTime) {
 			}
 			int hp = player->getHp();
 			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
+		}
+	}
+
+	if (inputs.muon) {
+		foreach(FallingStar* star, fallingStars) {
+			if (!star->isActive()) {
+				QGraphicsView* view = views().first();
+				int height = view->viewport()->rect().height();
+				int width = view->viewport()->rect().width();
+
+				qreal starY = rand() % height;
+				qreal starX = rand() % width;
+
+				QPointF starPos = view->mapToScene(starX, starY);
+
+				star->activate();
+				star->setVisible(true);
+				star->setPos(starPos);
+				break;
+			}
+		}
+	}
+
+	foreach(FallingStar* star, fallingStars) {
+		if (star->isActive()) {
+			star->update(deltaTime, inputs);
 		}
 	}
 
@@ -344,11 +388,24 @@ void PrisonScene::showPause() {
 	title->setZValue(11);
 	addItem(title);
 
+	//bouton continuer
+
+	continueButton = new MenuButton("Continuer", 200, 50);
+
+	qreal continueX = overlay->pos().x() + (width / 2) - (continueButton->boundingRect().width() / 2);
+	qreal continueY = title->pos().y() + 75;
+
+	continueButton->setPos(continueX, continueY);
+	continueButton->setZValue(11);
+	addItem(continueButton);
+	
+	connect(continueButton, &MenuButton::clicked, this, &PrisonScene::clickContinue);
+
 	// bouton replay
 	replay = new MenuButton("Rejouer!", 200, 50);
 
 	qreal replayX = overlay->pos().x() + (width / 2) - (replay->boundingRect().width() / 2);
-	qreal replayY = title->pos().y() + 50;
+	qreal replayY = continueButton->pos().y() + 75;
 	replay->setPos(replayX, replayY);
 	replay->setZValue(11);
 	addItem(replay);
@@ -364,7 +421,7 @@ void PrisonScene::showPause() {
 	settings->setZValue(11);
 	addItem(settings);
 
-	connect(settings, &MenuButton::clicked, this, &PrisonScene::replayGame);
+	connect(settings, &MenuButton::clicked, this, &PrisonScene::clickSettings);
 
 	// bouton retour au menu
 	returnMenu = new MenuButton("retourner au menu!", 200, 50);
@@ -377,15 +434,47 @@ void PrisonScene::showPause() {
 
 	connect(returnMenu, &MenuButton::clicked, this, &PrisonScene::goToMenu);
 
+	//slider de son
+	QSlider* volume = new QSlider(Qt::Horizontal);
+	volume->setRange(0,100);
+	volume->setValue(inputs.volume * 100);
+	slider = addWidget(volume);
+	qreal volumeX = overlay->pos().x() + (width / 2) - (slider->boundingRect().width() / 2);
+	qreal volumeY = title->pos().y() + 75;
+	slider->setPos(volumeX, volumeY);
+	slider->setVisible(false);
+	
+	connect(volume, &QSlider::valueChanged, this, [=](int value) {
+		inputs.volume = value / 100.0f;
+		AudioManager::getInstance().setVolume(inputs.volume);
+	});
+
+	//bouton retour
+	backButton = new MenuButton("Retour", 200, 50);
+	qreal backX = overlay->pos().x() + (width / 2) - (backButton->boundingRect().width() / 2);
+	qreal backY = slider->pos().y() + 75;
+	backButton->setPos(backX, backY);
+	backButton->setZValue(1);
+	backButton->setVisible(false);
+	addItem(backButton);
+
+	connect(backButton, &MenuButton::clicked, this, &PrisonScene::clickSettings);
+
+	pauseButtons.push_back(continueButton);
 	pauseButtons.push_back(replay);
 	pauseButtons.push_back(settings);
 	pauseButtons.push_back(returnMenu);
 	it = pauseButtons.begin();
-	selectedButton = replay;
+	selectedButton = *it;
 	selectedButton->select();
 }
 
 void PrisonScene::cleanPause() {
+	if (continueButton != nullptr) {
+		removeItem(continueButton);
+		delete continueButton;
+		continueButton = nullptr;
+	}
 	if (replay != nullptr) {
 		removeItem(replay);
 		delete replay;
@@ -401,6 +490,16 @@ void PrisonScene::cleanPause() {
 		delete settings;
 		settings = nullptr;
 	}
+	if (backButton != nullptr) {
+		removeItem(backButton);
+		delete backButton;
+		backButton = nullptr;
+	}
+	if (slider != nullptr) {
+		removeItem(slider);
+		slider->deleteLater();
+		slider = nullptr;
+	}
 
 	selectedButton = nullptr;
 
@@ -415,6 +514,7 @@ void PrisonScene::cleanPause() {
 		title = nullptr;
 	}
 	pauseButtons.clear();
+	toggleSettings = false;
 }
 
 void PrisonScene::loadMap() {
@@ -566,6 +666,33 @@ void PrisonScene::replayGame() {
 void PrisonScene::goToMenu() {
 	AudioManager::getInstance().playButtonSelectSFX();
 	emit changeScene(Menu);
+}
+
+void PrisonScene::clickContinue() {
+	inputs.isPausePressed = true;
+}
+
+void PrisonScene::clickSettings() {
+	toggleSettings = !toggleSettings;
+	if (toggleSettings) {
+		replay->setVisible(false);
+		settings->setVisible(false);
+		returnMenu->setVisible(false);
+		continueButton->setVisible(false);
+		slider->setVisible(true);
+		backButton->setVisible(true);
+		selectedButton = backButton;
+	}
+	else {
+		replay->setVisible(true);
+		settings->setVisible(true);
+		returnMenu->setVisible(true);
+		continueButton->setVisible(true);
+		selectedButton = *it;
+		selectedButton->select();
+		slider->setVisible(false);
+		backButton->setVisible(false);
+	}
 }
 
 void PrisonScene::displayDebugInfo(double deltaTime) {

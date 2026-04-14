@@ -116,10 +116,9 @@ bool Jon::RcvFromSerial(Inputs* inputs)
             lastB2 = j.value("b2", lastB2);
             lastB3 = j.value("b3", lastB3);
             lastB4 = j.value("b4", lastB4);
-            lastX = j.value("X", lastX);
-            lastY = j.value("Y", lastY);
-            lastZ = j.value("Z", lastZ);
+            lastAcce = j.value("Acce", lastAcce);
             lastV = j.value("v", lastV);
+            lastSeuil = j.value("seuil", lastSeuil);
 
             if (lastJoyX > 800) inputs->isLeftPressed = true;
             else inputs->isLeftPressed = false;
@@ -133,15 +132,14 @@ bool Jon::RcvFromSerial(Inputs* inputs)
             else inputs->isSpacePressed = false;
             if (lastB2) inputs->isDashPressed = true;
             else inputs->isDashPressed = false;
-            if (abs(lastX) > 50 || abs(lastY) > 50 || abs(lastZ) > 50) inputs->isAccelerated = true;
+            if (abs(lastAcce) > 200) inputs->isAccelerated = true;
             else inputs->isAccelerated = false;
             if (lastB3) inputs->isSelectPressed = true;
             else inputs->isSelectPressed = false;
             if (lastB4) inputs->isPausePressed = true;
             else inputs->isPausePressed = false;
             inputs->volume = lastV/100; // à tester les valeurs
-            int nombre = rand() % 60;
-            if (nombre == 59) inputs->muon = true;
+            if (lastSeuil) inputs->muon = true;
             else inputs->muon = false;
 
             return true;

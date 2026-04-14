@@ -419,7 +419,7 @@ void Player::manageAcceleration(double deltaTime) {
 		if (accelerationMultiplier > MAX_ACCELERATION) accelerationMultiplier = MAX_ACCELERATION;
 	}
 	else {
-		accelerationMultiplier -= ACCELERATION_DELTA * deltaTime;
+		accelerationMultiplier -= ACCELERATION_DELTA;
 		if (accelerationMultiplier < MIN_ACCELERATION) accelerationMultiplier = MIN_ACCELERATION;
 	}
 
@@ -478,11 +478,7 @@ QRectF Player::boundingRect() const {
 
 QPainterPath Player::shape() const {
 	QPainterPath path;
-	const int WIDTH = 48;
-	const int HEIGHT = 48;
-	int startX = WIDTH - 9;
-	int endX = WIDTH - 12 - 9;
-	path.addRect(14,0,20,48);
+	path.addRect(14,0,20,46);
 	return path;
 }
 
@@ -531,24 +527,13 @@ void Player::setInvinsible() {
 /*
 
 TODO:
-	Ralentir le joueur quand il change de cot�
-	Menu option pour changer le son
-	
-	Afficher un �clair quand on d�tecte un muons
 	Ajouter un classement
 
-BUGFIX:
-	
+
 
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
 	Ajouter les menus
-	Am�liorer les r�gles de gain/perte d'acc�l�ration.
 	manque de son
 
-	Si je suis motiv� ajouter d�tection automatique du port de communication et g�rer d�branchement rebranchement de la manette
-
-
-ID�E: 
-	Spikes tu prend une vie tu continue avec vitesse minimum invincible 1s
 */

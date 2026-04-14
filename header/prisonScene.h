@@ -14,6 +14,9 @@
 #include "menuButton.h"
 #include "audioManager.h"
 #include "spike.h"
+#include "fallingStar.h"
+#include "QSlider"
+#include "QGraphicsProxyWidget"
 
 class PrisonScene : public BaseScene {
 public:
@@ -37,8 +40,10 @@ private:
 
 	void replayGame();
 	void goToMenu();
-
+	void clickContinue();
+	void clickSettings();
 	void displayDebugInfo(double deltaTime);
+
 
 	Player* player = nullptr;
 	bool playerCollides = false;
@@ -57,10 +62,18 @@ private:
 	MenuButton* replay = nullptr;
 	MenuButton* settings = nullptr;
 	MenuButton* returnMenu = nullptr;
+	MenuButton* continueButton = nullptr;
+	MenuButton* backButton = nullptr;
 	vector<MenuButton*> pauseButtons;
 	vector<MenuButton*>::iterator it;
+	QGraphicsProxyWidget* slider = nullptr;
+
 	MenuButton* selectedButton = nullptr;
 
+	double selectTimer = 0.0;
+	const double SELECT_SPEED = 0.08;
+
+	bool toggleSettings = false;
 	bool debug = false;
 
 	vector<QPixmap> healths;
@@ -76,5 +89,7 @@ private:
 	QGraphicsRectItem* overlay = nullptr;
 	QGraphicsTextItem* title = nullptr;
 	QGraphicsTextItem* timeDisplay = nullptr;
+
+	vector<FallingStar*> fallingStars;
 
 };

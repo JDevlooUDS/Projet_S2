@@ -30,8 +30,8 @@ bool ResourceManager::loadPrisonSceneResources() {
 	QPixmap health;
 	health.load(":/sprites/health.png");
 	if (health.isNull()) return false;
-	filledHealth = health.copy(0,0,32,32);
-	emptyHealth = health.copy(32,0,32,32);
+	filledHealth = health.copy(0,0, TILE_SIZE, TILE_SIZE);
+	emptyHealth = health.copy(TILE_SIZE,0, TILE_SIZE, TILE_SIZE);
 	if (filledHealth.isNull() || emptyHealth.isNull()) return false;
 
 	auto loadTileSet = [&](const QString& path) -> bool {
@@ -180,6 +180,17 @@ bool ResourceManager::loadPrisonSceneResources() {
 		}
 	}
 
+	QPixmap fallingStarTileSet;
+	fallingStarTileSet.load(":/sprites/falling_star.png");
+	if (fallingStarTileSet.isNull()) {
+		qDebug() << "Failed to load falling_star.png\n";
+		return false;
+	}
+	for (int i = 0; i < (480 / TILE_SIZE); i++) {
+		QPixmap sprite = fallingStarTileSet.copy(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
+		fallingStarAnimation.push_back(sprite);
+	}
+
 	return true;
 }
 
@@ -258,4 +269,8 @@ QPixmap ResourceManager::getFilledhealth() {
 
 QPixmap ResourceManager::getEmptyHealth() {
 	return emptyHealth;
+}
+
+vector<QPixmap> ResourceManager::getFallingStarAnimation() {
+	return fallingStarAnimation;
 }
