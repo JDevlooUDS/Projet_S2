@@ -17,7 +17,7 @@ MenuButton::MenuButton(QString text, qreal witdh, qreal height, QGraphicsItem* p
 MenuButton::~MenuButton() {}
 
 void MenuButton::select() {
-	setBrush(QBrush(QColor(220, 220, 220)));
+	setBrush(QBrush(Qt::yellow));
 }
 
 void MenuButton::unSelect() {
@@ -25,7 +25,7 @@ void MenuButton::unSelect() {
 }
 
 void MenuButton::hoverEnterEvent(QGraphicsSceneHoverEvent* event) {
-	setBrush(QBrush(QColor(220, 220, 220)));
+	setBrush(QBrush(Qt::yellow));
 	setCursor(Qt::PointingHandCursor);
 	QGraphicsRectItem::hoverEnterEvent(event);
 }

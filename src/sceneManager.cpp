@@ -1,5 +1,4 @@
 #include "../header/sceneManager.h"
-#include "sceneManager.h"
 
 SceneManager::SceneManager(Game* game) {
 	this->game = game;
@@ -20,9 +19,10 @@ void SceneManager::setScene(SceneType sceneType) {
 			game->setScene(prisonScene);
 			break;
 		case Menu:
-			menuScene = new BaseScene(); // changer pour MenuScene quand créer
+			menuScene = new MainMenu();
 			connect(menuScene, &BaseScene::changeScene, this, &SceneManager::setScene);
 			game->setScene(menuScene);
+			menuScene->init();
 			break;
 	}
 }

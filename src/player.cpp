@@ -613,9 +613,12 @@ TODO:
 	Ajouter les menus
 	Ajouter un classement
 	Mettre les voix de Alexis si je les recois
+	Ajouter les checkpoints de temps avec indice sur mécanique
 
 BUGFIX:
 	Le personnage passe parfois au sol quand waveDash dans boost
+	Le personnage commence en tombant dans le vide puis faut reset
+	Le personnage préserve un wavedash apres avoir wavedash
 
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
