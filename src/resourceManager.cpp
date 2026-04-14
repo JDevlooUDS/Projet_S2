@@ -16,6 +16,13 @@ ResourceManager& ResourceManager::getInstance() {
 }
 
 bool ResourceManager::loadPrisonSceneResources() {
+	tiles.clear();
+	prisonMap.clear();
+	runAnimation.clear();
+	dashAnimation.clear();
+	jumpAnimation.clear();
+	idleAnimation.clear();
+
 	if (!loadPlayerSprites()) return false;
 	playerSprite.load(":/sprites/placeHolderSprite.png");
 	if (playerSprite.isNull()) return false;
