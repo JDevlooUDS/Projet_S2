@@ -164,3 +164,7 @@ void AudioManager::setVolume(float volume) {
     buttonBackSFX.setVolume(volume);
     buttonSelectSFX.setVolume(volume);
 }
+
+int AudioManager::getVolume() {
+    return audioOutput->volume() * 100;
+}

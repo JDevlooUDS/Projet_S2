@@ -21,6 +21,7 @@ void SceneManager::setScene(SceneType sceneType) {
 		case Menu:
 			menuScene = new MainMenu();
 			connect(menuScene, &BaseScene::changeScene, this, &SceneManager::setScene);
+			connect(menuScene, &MainMenu::setVolume, game, &Game::setVolume);
 			game->setScene(menuScene);
 			menuScene->init();
 			break;

@@ -2,6 +2,7 @@
 
 
 MainMenu::MainMenu() {
+	AudioManager::getInstance().updateMusic(MusicState::MENU);
 	setSceneRect(0,0,1920,1080);
 }
 
@@ -87,23 +88,121 @@ void MainMenu::init() {
 	addItem(exit);
 
 	connect(exit, &MenuButton::clicked, this, &MainMenu::exitClicked);
+
+	//slider
+	QSlider* volume = new QSlider(Qt::Horizontal);
+	volume->setRange(0, 100);
+	volume->setValue(AudioManager::getInstance().getVolume());
+	slider = addWidget(volume);
+	qreal volumeX = (width/2) - (slider->boundingRect().width() / 2);
+	qreal volumeY = title->pos().y() + 75;
+	slider->setZValue(11);
+	slider->setPos(volumeX, volumeY);
+	slider->setVisible(false);
+
+	connect(volume, &QSlider::valueChanged, this, [=](int value) {
+		emit setVolume(value);
+	});
+
+	//bouton retour
+	back = new MenuButton("Retour", 400, 100);
+	qreal backX = (width/2) - (back->boundingRect().width() / 2);
+	qreal backY = slider->pos().y() + 75;
+	back->setPos(backX, backY);
+	back->setZValue(11);
+	back->setVisible(false);
+	addItem(back);
+
+	connect(back, &MenuButton::clicked, this, &MainMenu::settingsClicked);
+
+
+	buttons.push_back(tutorial);
+	buttons.push_back(play);
+	buttons.push_back(leaderboard);
+	buttons.push_back(settings);
+	buttons.push_back(exit);
+	it = buttons.begin();
+	selectedButton = *it;
+	selectedButton->select();
 }
 
 void MainMenu::updateScene(double deltaTime, const Inputs& inputs) {
 	QPointF target(1920 / 2, 1080 / 2);
 	QGraphicsView* view = views().first();
 	view->centerOn(target);
+
+	changeSelectTimer += deltaTime;
+
+	if (changeSelectTimer >= CHANGE_SELECT_LIMIT) {
+		if (inputs.isUpPressed) {
+			if (it == buttons.begin()) return;
+			it--;
+			selectedButton->unSelect();
+			selectedButton = *it;
+			selectedButton->select();
+			changeSelectTimer = 0.0;
+		}
+		if (inputs.isDownPressed) {
+			if (it == buttons.end() - 1) return;
+			it++;
+			selectedButton->unSelect();
+			selectedButton = *it;
+			selectedButton->select();
+			changeSelectTimer = 0.0;
+		}
+	}
+
+	selectTimer += deltaTime;
+
+	if (selectTimer >= SELECT_SPEED) {
+		if (inputs.isSelectPressed && selectedButton != nullptr) emit selectedButton->clicked();
+		selectTimer = 0.0;
+	}
+
 }
 
 void MainMenu::playClicked() {
+	AudioManager::getInstance().playButtonSelectSFX();
 	emit changeScene(Prison);
 }
 
-void MainMenu::tutoClicked() {}
+void MainMenu::tutoClicked() {
+	AudioManager::getInstance().playButtonSelectSFX();
+}
 
-void MainMenu::leaderboardClicked() {}
+void MainMenu::leaderboardClicked() {
+	AudioManager::getInstance().playButtonSelectSFX();
+}
 
-void MainMenu::settingsClicked() {}
+void MainMenu::settingsClicked() {
+	AudioManager::getInstance().playButtonSelectSFX();
+	toggleSettings = !toggleSettings;
+	if (toggleSettings) {
+		selectedButton->unSelect();
+		tutorial->setVisible(false);
+		play->setVisible(false);
+		leaderboard->setVisible(false);
+		settings->setVisible(false);
+		exit->setVisible(false);
+		back->setVisible(true);
+		slider->setVisible(true);
+		selectedButton = back;
+		selectedButton->select();
+	}
+	else {
+		selectedButton->unSelect();
+		tutorial->setVisible(true);
+		play->setVisible(true);
+		leaderboard->setVisible(true);
+		settings->setVisible(true);
+		exit->setVisible(true);
+		selectedButton = tutorial;
+		it = buttons.begin();
+		selectedButton->select();
+		back->setVisible(false);
+		slider->setVisible(false);
+	}
+}
 
 void MainMenu::exitClicked() {
 	QApplication::quit();
