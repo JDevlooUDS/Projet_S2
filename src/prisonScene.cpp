@@ -54,11 +54,6 @@ void PrisonScene::updateScene(double deltaTime) {
 		//while (!Jon::getInstance().openPort());
 	}
 
-	/*
-	if (rand() % 10 == 1) inputs.muon = true;
-	else inputs.muon = false;
-	*/
-
 	if (gameEndMenu) {
 		if (inputs.isRightPressed) {
 			selectedButton->unSelect();

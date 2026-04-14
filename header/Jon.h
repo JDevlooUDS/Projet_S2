@@ -24,8 +24,8 @@ private:
     QString serialBuffer = "";
 
     int   lastJoyX = 500, lastJoyY = 0;
-    bool  lastB1 = false, lastB2 = false, lastB3 = false, lastB4 = false;
-    float lastX = 0.0, lastY = 0.0, lastZ = 0.0, lastV = 0.0;
+    bool  lastB1 = false, lastB2 = false, lastB3 = false, lastB4 = false, lastSeuil = false;
+    float lastAcce, lastV = 0.0;
 
 public:
     Jon();

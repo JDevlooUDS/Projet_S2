@@ -18,6 +18,7 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 		return;
 	}
 	AudioManager::getInstance().updateMusic(MusicState::GAMEPLAY);
+	setBackgroundBrush(Qt::gray);
 }
 
 Game::~Game() {
