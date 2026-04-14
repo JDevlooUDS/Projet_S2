@@ -2,6 +2,9 @@
 #include <QDirIterator>
 
 Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
+	setViewport(new QOpenGLWidget());
+	setRenderHint(QPainter::Antialiasing);
+	setRenderHint(QPainter::SmoothPixmapTransform);
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setFocusPolicy(Qt::StrongFocus);

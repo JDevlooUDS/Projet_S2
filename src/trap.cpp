@@ -21,3 +21,7 @@ void Trap::updateEffect(double deltaTime) {
 }
 
 void Trap::update(double deltaTime, const Inputs& inputs) {}
+
+int Trap::type() const {
+    return Type;
+}

@@ -4,13 +4,12 @@
 
 PrisonScene::PrisonScene() {
 	ResourceManager::getInstance().loadPrisonSceneResources();
-	setSceneRect(0, 0, 1220, 680);
+	setSceneRect(0, 0, 16000, 1600);
 	player = new Player();
 	player->activate();
 	loadMap();
 	addItem(player);
 	player->setPos(ResourceManager::getInstance().playerSpawnPoint);
-	player->setWalls(walls);
 	if (!Jon::getInstance().isConnected()) {
 		//while (!Jon::getInstance().openPort());
 	}
@@ -19,6 +18,9 @@ PrisonScene::PrisonScene() {
 
 	vector<QGraphicsPixmapItem*> ghosts = player->getAfterImages();
 	for (QGraphicsPixmapItem* ghost : ghosts) {
+		ghost->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
+		ghost->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
+		ghost->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 		addItem(ghost);
  	}
 
@@ -34,6 +36,7 @@ PrisonScene::PrisonScene() {
 		fallingStars.push_back(star);
 	}
 	inputs.volume = 0.5f;
+	setItemIndexMethod(QGraphicsScene::BspTreeIndex);
 }
 
 PrisonScene::~PrisonScene() {
@@ -73,7 +76,6 @@ void PrisonScene::updateScene(double deltaTime) {
 			selectTimer = 0.0;
 		}
 
-		update();
 		return;
 	}
 
@@ -121,14 +123,12 @@ void PrisonScene::updateScene(double deltaTime) {
 			selectTimer = 0.0;
 		}
 
-		update();
 		return;
 	}
 
 	if (!player->isAlive()) {
 		showDeath();
 		player->deactivate();
-		update();
 		AudioManager::getInstance().playGameOverSFX();
 		return;
 	}
@@ -141,18 +141,19 @@ void PrisonScene::updateScene(double deltaTime) {
 	AudioManager::getInstance().setVolume(inputs.volume);
 	timer += deltaTime;
 
-	// pieges et boosts
+	QList<QGraphicsItem*> collidingItems = player->collidingItems();
+	bool touchingBoost = false;
 	bool touchingTrap = false;
-	foreach(Trap* trap, traps) {
-		if (trap->collidesWithItem(player)) {
+
+	foreach(QGraphicsItem * item, collidingItems) {
+		int type = item->type();
+		if (type == Trap::Type) {
+			Trap* trap = qgraphicsitem_cast<Trap*>(item);
 			trap->applyEffect(player);
 			player->resetAcceleration();
 			touchingTrap = true;
 		}
-	}
-
-	foreach(Spike* spike, spikes) {
-		if (spike->collidesWithItem(player)) {
+		else if (type == Spike::Type) {
 			player->damage();
 			if (Jon::getInstance().isConnected()) {
 				if (player->getHp() == 2) {
@@ -170,34 +171,16 @@ void PrisonScene::updateScene(double deltaTime) {
 			player->resetAcceleration();
 			player->setInvinsible();
 		}
-	}
-
-	bool touchingBoost = false;
-	foreach(Boost* boost, boosts) {
-		if (boost->collidesWithItem(player)) {
+		else if (type == Boost::Type) {
+			Boost* boost = qgraphicsitem_cast<Boost*>(item);
 			boost->applyEffect(player);
 			touchingBoost = true;
 		}
-	}
-
-	if (!touchingTrap && !touchingBoost) {
-		player->setSpeedMultiplier(1.0f);
-		player->enableJump();
-	}
-	if (!touchingTrap) {
-		player->setFallSpeedMultiplier(1.0f);
-	}
-
-	foreach(End* end, endZones) {
-		if (end->collidesWithItem(player)) {
+		else if (type == End::Type) {
 			showEnd();
-			update();
 			return;
 		}
-	}
-
-	foreach(Hole* hole, holes) {
-		if (hole->collidesWithItem(player)) {
+		else if (type == Hole::Type) {
 			player->damage();
 			player->replace();
 			if (Jon::getInstance().isConnected()) {
@@ -214,6 +197,14 @@ void PrisonScene::updateScene(double deltaTime) {
 			int hp = player->getHp();
 			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
 		}
+	}
+
+	if (!touchingTrap && !touchingBoost) {
+		player->setSpeedMultiplier(1.0f);
+		player->enableJump();
+	}
+	if (!touchingTrap) {
+		player->setFallSpeedMultiplier(1.0f);
 	}
 
 	if (inputs.muon) {
@@ -243,7 +234,6 @@ void PrisonScene::updateScene(double deltaTime) {
 	}
 
 	player->update(deltaTime, inputs);
-	update();
 }
 
 void PrisonScene::showEnd() {
@@ -524,7 +514,8 @@ void PrisonScene::loadMap() {
 		std::string s = tile.getName().toStdString();
 		if (s == "walls") {
 			item = new Wall();
-			walls.push_back(item);
+			item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
+			item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 		}
 		else if (s == "trap") {
 			Trap* trap = new Trap(0.4f);
@@ -555,7 +546,6 @@ void PrisonScene::loadMap() {
 		else continue;
 		item->setPos(tile.getXPosition(), tile.getYPosition());
 		item->setPixmap(tile.getPixmap());
-		item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, tile.isCollide());
 		addItem(item);
 	}
 }

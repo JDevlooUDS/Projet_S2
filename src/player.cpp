@@ -22,6 +22,7 @@ Player::Player() {
 	reverseSpeed = REVERSE_SPEED;
 	dashXVelocity = 0;
 	dashYVelocity = 0;
+	setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 }
 
 Player::~Player() {}
@@ -340,30 +341,35 @@ QVector2D Player::getFixedVelocity() {
 	}
 }
 
-void Player::setWalls(vector<GameObject*> walls) {
-	this->walls = walls;
-}
-
 void Player::resolveCollisionX() {
-	for (GameObject* wall : walls) {
-		if (collidesWithItem(wall)) {
+	QList<QGraphicsItem*> items = collidingItems();
+
+	for (QGraphicsItem* item : items) {
+		int type = item->type();
+		if (type == Wall::Type) {
 			setX(lastPosition.x());
+			break;
 		}
 	}
 }
 
 void Player::resolveCollisionY() {
 	bool resolved = false;
-	for (GameObject* wall : walls) {
-		if (collidesWithItem(wall)) {
+
+	QList<QGraphicsItem*> items = collidingItems();
+
+	for (QGraphicsItem* item : items) {
+		int type = item->type();
+		if (type == Wall::Type) {
 			if (yVelocity > 0) {
 				setY(lastPosition.y());
 				resolved = true;
 				ground();
 			}
-			else if (yVelocity < 0) {		
+			else if (yVelocity < 0) {
 				setY(lastPosition.y());
 			}
+			break; 
 		}
 	}
 	isGrounded = resolved;

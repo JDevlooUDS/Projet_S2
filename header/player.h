@@ -5,6 +5,7 @@
 #include <QVector2D>
 #include <cmath>
 #include "audioManager.h"
+#include "wall.h"
 
 
 enum DashDirection {
@@ -52,7 +53,6 @@ public:
 	void setDashDirection(DashDirection dashDirection);
 	void updateFlip(double deltaTime);
 	QVector2D getFixedVelocity();
-	void setWalls(vector<GameObject*> walls);
 	void update(double deltaTime, const Inputs& inputs) override;
 	float getXVelocity();
 	QRectF boundingRect() const override;
@@ -99,8 +99,6 @@ private:
 
 	float facingRight = true;
 	float flipHoldTime = 0.0f;
-
-	vector<GameObject*> walls;
 
 	double dashTimer = 0.0;
 	const double DASH_LIMIT = 0.15; //longeur dash
