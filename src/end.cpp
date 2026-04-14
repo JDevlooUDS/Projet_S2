@@ -7,3 +7,7 @@ End::End() {
 End::~End() {}
 
 void End::update(double deltaTime, const Inputs& inputs) {}
+
+int End::type() const {
+    return Type;
+}

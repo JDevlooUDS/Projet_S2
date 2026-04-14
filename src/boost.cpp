@@ -14,3 +14,7 @@ void Boost::applyEffect(Player* player) {
 }
 
 void Boost::update(double deltaTime, const Inputs& inputs) {}
+
+int Boost::type() const {
+    return Type;
+}

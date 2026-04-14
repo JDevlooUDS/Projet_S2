@@ -14,7 +14,7 @@
 #include "baseScene.h"
 #include <QTimer>
 #include <QElapsedTimer>
-
+#include <QtOpenGLWidgets/QOpenGLWidget>
 #include "audioManager.h"
 
 using namespace std;

@@ -26,4 +26,4 @@ QMAKE_POST_LINK += xcopy \"$$MY_SOURCE\" \"$$MY_DEST\" /E /I /Y /D
 
 
 RESOURCES += resources
-QT += widgets serialport multimedia
+QT += widgets serialport multimedia openglwidgets

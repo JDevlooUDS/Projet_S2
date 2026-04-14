@@ -47,7 +47,6 @@ private:
 
 	Player* player = nullptr;
 	bool playerCollides = false;
-	vector<GameObject*> walls;
 	vector<Trap*> traps;
 	vector<Boost*> boosts;
 	vector<End*> endZones;

@@ -22,6 +22,7 @@ Player::Player() {
 	reverseSpeed = REVERSE_SPEED;
 	dashXVelocity = 0;
 	dashYVelocity = 0;
+	setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 }
 
 Player::~Player() {}
@@ -101,6 +102,9 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 		dashXVelocity = 0;
 		if (dashDirection == DOWN || dashDirection == DOWN_LEFT || dashDirection == DOWN_RIGHT) {
 			fallVelocity = BASE_FALL_VELOCITY; // vitesse max vers le bas
+		}
+		else if (dashDirection == UP || dashDirection == UP_LEFT || dashDirection == UP_RIGHT) {
+			fallVelocity = -UP_DASH_VELOCITY_RETAIN; // conserve un elan vers le haut
 		}
 		else {
 			fallVelocity = 0; // repart de zero pour tout autre dash
@@ -240,9 +244,13 @@ bool Player::isOnGround() {
 
 void Player::updateGravity(double deltaTime) {
 	fallVelocity += GRAVITY * deltaTime;
-	if (fallVelocity > BASE_FALL_VELOCITY) {
-		fallVelocity = BASE_FALL_VELOCITY;
+	if (fallVelocity > BASE_FALL_VELOCITY * fallSpeedMultiplier) {
+		fallVelocity = BASE_FALL_VELOCITY * fallSpeedMultiplier;
 	}
+}
+
+void Player::setFallSpeedMultiplier(float multiplier) {
+	fallSpeedMultiplier = multiplier;
 }
 
 void Player::disableJump() {
@@ -333,30 +341,35 @@ QVector2D Player::getFixedVelocity() {
 	}
 }
 
-void Player::setWalls(vector<GameObject*> walls) {
-	this->walls = walls;
-}
-
 void Player::resolveCollisionX() {
-	for (GameObject* wall : walls) {
-		if (collidesWithItem(wall)) {
+	QList<QGraphicsItem*> items = collidingItems();
+
+	for (QGraphicsItem* item : items) {
+		int type = item->type();
+		if (type == Wall::Type) {
 			setX(lastPosition.x());
+			break;
 		}
 	}
 }
 
 void Player::resolveCollisionY() {
 	bool resolved = false;
-	for (GameObject* wall : walls) {
-		if (collidesWithItem(wall)) {
+
+	QList<QGraphicsItem*> items = collidingItems();
+
+	for (QGraphicsItem* item : items) {
+		int type = item->type();
+		if (type == Wall::Type) {
 			if (yVelocity > 0) {
 				setY(lastPosition.y());
 				resolved = true;
 				ground();
 			}
-			else if (yVelocity < 0) {		
+			else if (yVelocity < 0) {
 				setY(lastPosition.y());
 			}
+			break; 
 		}
 	}
 	isGrounded = resolved;
@@ -520,15 +533,20 @@ void Player::setInvinsible() {
 /*
 
 TODO:
+	Ajouter les menus
 	Ajouter un classement
+	WaveDash seulement dans le soap 
+	Redonner le dash dans le truc qui rallenti
 
-	
-	
+	Mettre les voix de Alexis si je les recois
 
 BUGFIX:
-	le bouton retour du menu pause ne register pas des fois
+	double dash
+
 
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
 	Ajouter les menus
+	manque de son
+
 */

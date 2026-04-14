@@ -5,6 +5,7 @@
 #include <QVector2D>
 #include <cmath>
 #include "audioManager.h"
+#include "wall.h"
 
 
 enum DashDirection {
@@ -45,13 +46,13 @@ public:
 	void ground();
 	void setSpeedMultiplier(float multiplier);
 	float getSpeedMultiplier();
+	void setFallSpeedMultiplier(float multiplier);
 	void dash(const Inputs& inputs);
 	bool isDashing();
 	void updateDash(double deltaTime);
 	void setDashDirection(DashDirection dashDirection);
 	void updateFlip(double deltaTime);
 	QVector2D getFixedVelocity();
-	void setWalls(vector<GameObject*> walls);
 	void update(double deltaTime, const Inputs& inputs) override;
 	float getXVelocity();
 	QRectF boundingRect() const override;
@@ -87,21 +88,20 @@ private:
 	const bool KEYBOARD_CONTROL = true;
 
 	const float BASE_SPEED = 300.0; 
-	const float REVERSE_SPEED = 450.0f; //pas utilisé?
-	const float JUMP_VELOCITY = -750.0f;
+	const float REVERSE_SPEED = 450.0f; //pas utilise?
+	const float JUMP_VELOCITY = -770.0f;
 
 	const float GRAVITY = 3000.0f;
 	const float BASE_FALL_VELOCITY = 500.0f;
+	const float UP_DASH_VELOCITY_RETAIN = 250.0f; // vitesse vers le haut conservee apres un dash UP
 	const float FLIP_CONST = 0.2f;
 	float speedMultiplier = 1.0f; // < 1 pour ralentir, > 1 pour accelerer
 
 	float facingRight = true;
 	float flipHoldTime = 0.0f;
 
-	vector<GameObject*> walls;
-
 	double dashTimer = 0.0;
-	const double DASH_LIMIT = 0.25; //longeur dash
+	const double DASH_LIMIT = 0.15; //longeur dash
 	bool dashing = false;
 	bool isJumpingFromDash = false;
 
@@ -109,13 +109,14 @@ private:
 	const double JUMP_BUFFER_LIMIT = 0.2;
 
 	float fallVelocity = BASE_FALL_VELOCITY;
+	float fallSpeedMultiplier = 1.0f;
 	bool isGrounded = true;
 	bool jumpEnabled = true;
 	bool jumping = false;
 	DashDirection dashDirection = NONE;
 
 	int dashCount = 1;
-	const float DASH_MULTIPLIER = 1.8f; //vitesse dash%
+	const float DASH_MULTIPLIER = 2.8f; //longueur dash
 	const float WAVE_DASH_MULTIPLIER = 1.2f;
 	float dashXVelocity;
 	float dashYVelocity;
@@ -126,7 +127,7 @@ private:
 
 	const float MAX_ACCELERATION = 2;
 	const float MIN_ACCELERATION = 1;
-	const float ACCELERATION_DELTA = 0.5; //0.5 * deltaTime -> 1 à 2 fois la vitesse en 2s
+	const float ACCELERATION_DELTA = 0.5; //0.5 * deltaTime -> 1 a 2 fois la vitesse en 2s
 	float accelerationMultiplier = 1;
 	float lastFrameXVelocity = 0.0;
 
