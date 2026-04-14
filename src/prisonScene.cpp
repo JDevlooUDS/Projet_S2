@@ -36,26 +36,27 @@ PrisonScene::PrisonScene() {
 		addItem(star);
 		fallingStars.push_back(star);
 	}
-	inputs.volume = 0.5f;
 	setItemIndexMethod(QGraphicsScene::BspTreeIndex);
 }
 
-PrisonScene::~PrisonScene() {
+PrisonScene::~PrisonScene() {}
 
-}
-
-void PrisonScene::updateScene(double deltaTime) {
+void PrisonScene::updateScene(double deltaTime, const Inputs& inputs) {
 	if (debug) displayDebugInfo(deltaTime);
 	else clearDebug(views().first());
 
+	QPointF target = player->pos();
+	QGraphicsView* view = views().first();
+	QPointF current = view->mapToScene(view->viewport()->rect().center());
+
+	double smoothing = 8.0f;
+
+	QPointF newCenter = current + (target - current) * smoothing * deltaTime;
+	view->centerOn(newCenter);
+
 	if (Jon::getInstance().isConnected()) {
-		Jon::getInstance().RcvFromSerial(&inputs);
 		Jon::getInstance().SendTime(timer);
 		Jon::getInstance().SendBar(player->getAccelerationMapped());
-
-	}
-	else {
-		//while (!Jon::getInstance().openPort());
 	}
 
 	if (gameEndMenu) {
@@ -86,12 +87,11 @@ void PrisonScene::updateScene(double deltaTime) {
 		pause = !pause;
 		pauseTimer = 0.0;
 		if (pause) {
-			showPause();
+			showPause(inputs);
 		}
 		else {
 			cleanPause();
 		}
-		inputs.isPausePressed = false;
 	}
 	pauseTimer += deltaTime;
 
@@ -140,7 +140,6 @@ void PrisonScene::updateScene(double deltaTime) {
 
 	if (inputs.isDebugPressed) {
 		debug = !debug;
-		inputs.isDebugPressed = false;
 	}
 
 	AudioManager::getInstance().setVolume(inputs.volume);
@@ -299,7 +298,7 @@ void PrisonScene::showDeath() {
 
 }
 
-void PrisonScene::showPause() {
+void PrisonScene::showPause(const Inputs& inputs) {
 	QGraphicsView* view = views().first();
 	QPointF center = view->mapToScene(view->viewport()->rect().center());
 
@@ -381,8 +380,7 @@ void PrisonScene::showPause() {
 	slider->setVisible(false);
 	
 	connect(volume, &QSlider::valueChanged, this, [=](int value) {
-		inputs.volume = value / 100.0f;
-		AudioManager::getInstance().setVolume(inputs.volume);
+		emit setVolume(value);
 	});
 
 	//bouton retour
@@ -496,84 +494,9 @@ void PrisonScene::loadMap() {
 	}
 }
 
-void PrisonScene::keyPressEvent(QKeyEvent* event) {
-	if (!KEYBOARD_INPUT) return;
-	if (event->isAutoRepeat()) return;
-	event->accept();
-	if (event->key() == Qt::Key_A) {
-		inputs.isLeftPressed = true;
-	}
-	if (event->key() == Qt::Key_Left) {
-		inputs.isLeftPressed = true;
-	}
-	if (event->key() == Qt::Key_D) {
-		inputs.isRightPressed = true;
-	}
-	if (event->key() == Qt::Key_Right) {
-		inputs.isRightPressed = true;
-	}
-	if (event->key() == Qt::Key_E) {
-		inputs.isDashPressed = true;
-	}
-	if (event->key() == Qt::Key_W) {
-		inputs.isUpPressed = true;
-	}
-	if (event->key() == Qt::Key_Up) {
-		inputs.isUpPressed = true;
-	}
-	if (event->key() == Qt::Key_S) {
-		inputs.isDownPressed = true;
-	}
-	if (event->key() == Qt::Key_Down) {
-		inputs.isDownPressed = true;
-	}
-	if (event->key() == Qt::Key_Space) {
-		inputs.isSpacePressed = true;
-		inputs.isSelectPressed = true;
-	}
-}
 
-void PrisonScene::keyReleaseEvent(QKeyEvent* event) {
-	if (event->isAutoRepeat()) return;
-	event->accept();
-	if (event->key() == Qt::Key_A) {
-		inputs.isLeftPressed = false;
-	}
-	if (event->key() == Qt::Key_Left) {
-		inputs.isLeftPressed = false;
-	}
-	if (event->key() == Qt::Key_D) {
-		inputs.isRightPressed = false;
-	}
-	if (event->key() == Qt::Key_Right) {
-		inputs.isRightPressed = false;
-	}
-	if (event->key() == Qt::Key_E) {
-		inputs.isDashPressed = false;
-	}
-	if (event->key() == Qt::Key_W) {
-		inputs.isUpPressed = false;
-	}
-	if (event->key() == Qt::Key_Up) {
-		inputs.isUpPressed = false;
-	}
-	if (event->key() == Qt::Key_S) {
-		inputs.isDownPressed = false;
-	}
-	if (event->key() == Qt::Key_Down) {
-		inputs.isDownPressed = false;
-	}
-	if (event->key() == Qt::Key_Space) {
-		inputs.isSpacePressed = false;
-		inputs.isSelectPressed = false;
-	}
-	if (event->key() == Qt::Key_Q) {
-		inputs.isDebugPressed = true;
-	}
-	if (event->key() == Qt::Key_P) {
-		inputs.isPausePressed = true;
-	}
-}
+
+
 
 void PrisonScene::drawForeground(QPainter* painter, const QRectF& rect) {
 	painter->save();
@@ -605,7 +528,7 @@ void PrisonScene::goToMenu() {
 }
 
 void PrisonScene::clickContinue() {
-	inputs.isPausePressed = true;
+	pause = true;
 }
 
 void PrisonScene::clickSettings() {

@@ -17,24 +17,27 @@
 #include "fallingStar.h"
 #include "QSlider"
 #include "QGraphicsProxyWidget"
+#include "game.h"
 
 class PrisonScene : public BaseScene {
+	Q_OBJECT
 public:
 	PrisonScene();
 	~PrisonScene();
-	void updateScene(double deltaTime) override;
+	void updateScene(double deltaTime, const Inputs& inputs) override;
 	QGraphicsItem* getPlayer();
+
+signals:
+	void setVolume(int volume);
 
 protected:
 	void loadMap();
-	void keyPressEvent(QKeyEvent* event) override;
-	void keyReleaseEvent(QKeyEvent* event) override;
 	void drawForeground(QPainter* painter, const QRectF& rect) override;
 
 private:
 	void showEnd();
 	void showDeath();
-	void showPause();
+	void showPause(const Inputs& inputs);
 
 	void cleanPause();
 

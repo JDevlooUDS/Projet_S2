@@ -16,6 +16,7 @@ void SceneManager::setScene(SceneType sceneType) {
 		case Prison:
 			prisonScene = new PrisonScene();
 			connect(prisonScene, &BaseScene::changeScene, this, &SceneManager::setScene);
+			connect(prisonScene, &PrisonScene::setVolume, game, &Game::setVolume);
 			game->setScene(prisonScene);
 			break;
 		case Menu:

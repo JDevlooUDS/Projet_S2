@@ -603,7 +603,6 @@ void Player::manageCollision() {
 /*
 
 TODO:
-	Mettre le son global
 	Ajouter le background
 	Ajouter les menus
 	Ajouter un classement

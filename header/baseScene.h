@@ -14,11 +14,10 @@ class BaseScene : public QGraphicsScene {
 public:
 	BaseScene();
 	~BaseScene();
-	virtual void updateScene(double deltaTime);
+	virtual void updateScene(double deltaTime, const Inputs& inputs);
 signals:
 	void changeScene(SceneType sceneType);
 protected:
-	Inputs inputs;
 
 private:
 };
