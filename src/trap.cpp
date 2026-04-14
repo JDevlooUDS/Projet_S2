@@ -1,8 +1,9 @@
 #include "../header/trap.h"
 #include "../header/player.h"
 
-Trap::Trap(float slowFactor) {
+Trap::Trap(float slowFactor, float fallSpeedFactor) {
     this->slowFactor = slowFactor;
+    this->fallSpeedFactor = fallSpeedFactor;
     collides = false;
 }
 
@@ -10,6 +11,7 @@ Trap::~Trap() {}
 
 void Trap::applyEffect(Player* player) {
     player->setSpeedMultiplier(slowFactor);
+    player->setFallSpeedMultiplier(fallSpeedFactor);
     player->disableJump();
     // retirer vie, etc
 }

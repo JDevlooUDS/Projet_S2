@@ -166,6 +166,9 @@ void PrisonScene::updateScene(double deltaTime) {
 		player->setSpeedMultiplier(1.0f);
 		player->enableJump();
 	}
+	if (!touchingTrap) {
+		player->setFallSpeedMultiplier(1.0f);
+	}
 
 	foreach(End* end, endZones) {
 		if (end->collidesWithItem(player)) {
@@ -429,7 +432,7 @@ void PrisonScene::loadMap() {
 			item = trap;
 		}
 		else if (s == "boost") {
-			Boost* boost = new Boost(2.5f);
+			Boost* boost = new Boost(1.8f);
 			boosts.push_back(boost);
 			item = boost;
 		}
@@ -567,7 +570,7 @@ void PrisonScene::goToMenu() {
 
 void PrisonScene::displayDebugInfo(double deltaTime) {
 	// section debug
-	QGraphicsView* view = views().first();  // récupère la Game view
+	QGraphicsView* view = views().first();  // rï¿½cupï¿½re la Game view
 	clearDebug(view);
 	debugText(view, "fps: " + QString::number(1.0 / deltaTime, 'f', 0), 10, 500);
 	debugText(view, "pos_x: " + QString::number(player->x()), 30, 500);

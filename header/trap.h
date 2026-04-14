@@ -5,7 +5,7 @@ class Player; // eviter inclusion circulaire
 
 class Trap : public GameObject {
 public:
-    Trap(float slowFactor);
+    Trap(float slowFactor, float fallSpeedFactor = 0.3f);
     ~Trap();
     void applyEffect(Player* player);
     void updateEffect(double deltaTime);
@@ -13,4 +13,5 @@ public:
 
 private:
     float slowFactor;
+    float fallSpeedFactor;
 };

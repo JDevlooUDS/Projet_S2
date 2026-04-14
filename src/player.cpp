@@ -102,6 +102,9 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 		if (dashDirection == DOWN || dashDirection == DOWN_LEFT || dashDirection == DOWN_RIGHT) {
 			fallVelocity = BASE_FALL_VELOCITY; // vitesse max vers le bas
 		}
+		else if (dashDirection == UP || dashDirection == UP_LEFT || dashDirection == UP_RIGHT) {
+			fallVelocity = -UP_DASH_VELOCITY_RETAIN; // conserve un elan vers le haut
+		}
 		else {
 			fallVelocity = 0; // repart de zero pour tout autre dash
 		}
@@ -240,9 +243,13 @@ bool Player::isOnGround() {
 
 void Player::updateGravity(double deltaTime) {
 	fallVelocity += GRAVITY * deltaTime;
-	if (fallVelocity > BASE_FALL_VELOCITY) {
-		fallVelocity = BASE_FALL_VELOCITY;
+	if (fallVelocity > BASE_FALL_VELOCITY * fallSpeedMultiplier) {
+		fallVelocity = BASE_FALL_VELOCITY * fallSpeedMultiplier;
 	}
+}
+
+void Player::setFallSpeedMultiplier(float multiplier) {
+	fallSpeedMultiplier = multiplier;
 }
 
 void Player::disableJump() {
@@ -524,10 +531,10 @@ void Player::setInvinsible() {
 /*
 
 TODO:
-	Ralentir le joueur quand il change de coté
+	Ralentir le joueur quand il change de cotï¿½
 	Menu option pour changer le son
 	
-	Afficher un éclair quand on détecte un muons
+	Afficher un ï¿½clair quand on dï¿½tecte un muons
 	Ajouter un classement
 
 BUGFIX:
@@ -536,12 +543,12 @@ BUGFIX:
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
 	Ajouter les menus
-	Améliorer les règles de gain/perte d'accélération.
+	Amï¿½liorer les rï¿½gles de gain/perte d'accï¿½lï¿½ration.
 	manque de son
 
-	Si je suis motivé ajouter détection automatique du port de communication et gérer débranchement rebranchement de la manette
+	Si je suis motivï¿½ ajouter dï¿½tection automatique du port de communication et gï¿½rer dï¿½branchement rebranchement de la manette
 
 
-IDÉE: 
+IDï¿½E: 
 	Spikes tu prend une vie tu continue avec vitesse minimum invincible 1s
 */
