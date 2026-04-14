@@ -371,7 +371,7 @@ void Player::resolveCollisionY() {
 		}
 	}
 	isGrounded = resolved;
-	if (wasGroundedLastFrame && yVelocity == 0) ground();
+	if (wasGroundedLastFrame && dashing) ground();
 	if (!isGrounded && wasGroundedLastFrame) {
 		coyoteTimer = COYOTE_TIME_LIMIT;
 		fallVelocity = 0;
