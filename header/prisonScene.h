@@ -89,6 +89,8 @@ private:
 	QGraphicsTextItem* title = nullptr;
 	QGraphicsTextItem* timeDisplay = nullptr;
 
-	vector<FallingStar*> fallingStars;
+	vector<FallingStar*> fallingStars;	
+
+	int lastFrameHp;
 
 };

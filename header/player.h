@@ -6,7 +6,12 @@
 #include <cmath>
 #include "audioManager.h"
 #include "wall.h"
-
+#include "boost.h"
+#include "hole.h"
+#include "end.h"
+#include "Jon.h"
+#include "trap.h"
+#include "spike.h"
 
 enum DashDirection {
 	NONE,
@@ -86,6 +91,8 @@ private:
 
 	void manageAnimation(double deltaTime);
 	void setAnimation(const AnimationState state);
+
+	void manageCollision();
 
 
 	const bool KEYBOARD_CONTROL = true;
