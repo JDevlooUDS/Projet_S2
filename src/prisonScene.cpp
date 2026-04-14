@@ -151,6 +151,7 @@ void PrisonScene::updateScene(double deltaTime) {
 			Trap* trap = qgraphicsitem_cast<Trap*>(item);
 			trap->applyEffect(player);
 			player->resetAcceleration();
+			player->resetDash();
 			touchingTrap = true;
 		}
 		else if (type == Spike::Type) {
@@ -198,6 +199,8 @@ void PrisonScene::updateScene(double deltaTime) {
 			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
 		}
 	}
+
+	player->setInBoost(touchingBoost);
 
 	if (!touchingTrap && !touchingBoost) {
 		player->setSpeedMultiplier(1.0f);

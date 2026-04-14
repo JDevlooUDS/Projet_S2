@@ -65,6 +65,9 @@ public:
 	void setInvinsible();
 	void replace();
 
+	void setInBoost(bool inBoost);
+	void resetDash();
+
 
 private:
 	void moveX(double deltaTime);
@@ -159,4 +162,8 @@ private:
 	const double INVINSIBILITY_LIMIT = 1.5;
 	const double FLICKER_LIMIT = 0.1;
 	double flickerTimer = 0.0;
+
+	bool inBoost = false;
+	double inBoostBuffer = 0.0;
+	const double BOOST_BUFFER_LIMIT = 0.1;
 };
