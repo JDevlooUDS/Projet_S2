@@ -9,6 +9,7 @@ PrisonScene::PrisonScene() {
 	player->activate();
 	loadMap();
 	addItem(player);
+	lastFrameHp = player->getHp();
 	player->setPos(ResourceManager::getInstance().playerSpawnPoint);
 	if (!Jon::getInstance().isConnected()) {
 		//while (!Jon::getInstance().openPort());
@@ -133,6 +134,10 @@ void PrisonScene::updateScene(double deltaTime) {
 		return;
 	}
 
+	if (lastFrameHp > player->getHp()) {
+		healths[player->getHp()] = ResourceManager::getInstance().getEmptyHealth();
+	}
+
 	if (inputs.isDebugPressed) {
 		debug = !debug;
 		inputs.isDebugPressed = false;
@@ -141,73 +146,11 @@ void PrisonScene::updateScene(double deltaTime) {
 	AudioManager::getInstance().setVolume(inputs.volume);
 	timer += deltaTime;
 
-	QList<QGraphicsItem*> collidingItems = player->collidingItems();
-	bool touchingBoost = false;
-	bool touchingTrap = false;
-
-	foreach(QGraphicsItem * item, collidingItems) {
-		int type = item->type();
-		if (type == Trap::Type) {
-			Trap* trap = qgraphicsitem_cast<Trap*>(item);
-			trap->applyEffect(player);
-			player->resetAcceleration();
-			player->resetDash();
-			touchingTrap = true;
-		}
-		else if (type == Spike::Type) {
-			player->damage();
-			if (Jon::getInstance().isConnected()) {
-				if (player->getHp() == 2) {
-					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
-				}
-				if (player->getHp() == 1) {
-					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
-				}
-				if (player->getHp() == 0) {
-					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
-				}
-			}
-			int hp = player->getHp();
-			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
-			player->resetAcceleration();
-			player->setInvinsible();
-		}
-		else if (type == Boost::Type) {
-			Boost* boost = qgraphicsitem_cast<Boost*>(item);
-			boost->applyEffect(player);
-			touchingBoost = true;
-		}
-		else if (type == End::Type) {
+	foreach(End * end, endZones) {
+		if (end->collidesWithItem(player)) {
 			showEnd();
 			return;
 		}
-		else if (type == Hole::Type) {
-			player->damage();
-			player->replace();
-			if (Jon::getInstance().isConnected()) {
-				if (player->getHp() == 2) {
-					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
-				}
-				if (player->getHp() == 1) {
-					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
-				}
-				if (player->getHp() == 0) {
-					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
-				}
-			}
-			int hp = player->getHp();
-			healths[hp] = ResourceManager::getInstance().getEmptyHealth();
-		}
-	}
-
-	player->setInBoost(touchingBoost);
-
-	if (!touchingTrap && !touchingBoost) {
-		player->setSpeedMultiplier(1.0f);
-		player->enableJump();
-	}
-	if (!touchingTrap) {
-		player->setFallSpeedMultiplier(1.0f);
 	}
 
 	if (inputs.muon) {

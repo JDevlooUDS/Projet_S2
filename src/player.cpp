@@ -48,6 +48,7 @@ void Player::updateFlip(double deltaTime) {
 
 void Player::update(double deltaTime, const Inputs& inputs) {
 	if (!active) return;
+	manageCollision();
 	if (inputs.isAccelerated) accelBonus = ACCEL_BONUS;
 	else accelBonus = 1.0f;
 	if (playerState == NORMAL) {
@@ -535,17 +536,81 @@ void Player::setInBoost(bool inBoost) {
 	this->inBoost = inBoost;
 }
 
+void Player::manageCollision() {
+	QList<QGraphicsItem*> collidingItems = this->collidingItems();
+	bool touchingBoost = false;
+	bool touchingTrap = false;
+
+	foreach(QGraphicsItem * item, collidingItems) {
+		int type = item->type();
+		if (type == Trap::Type) {
+			Trap* trap = qgraphicsitem_cast<Trap*>(item);
+			trap->applyEffect(this);
+			resetAcceleration();
+			resetDash();
+			touchingTrap = true;
+		}
+		else if (type == Spike::Type) {
+			damage();
+			if (Jon::getInstance().isConnected()) {
+				if (hp == 2) {
+					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
+				}
+				if (hp == 1) {
+					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
+				}
+				if (hp == 0) {
+					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
+				}
+			}
+			resetAcceleration();
+			setInvinsible();
+		}
+		else if (type == Boost::Type) {
+			Boost* boost = qgraphicsitem_cast<Boost*>(item);
+			boost->applyEffect(this);
+			touchingBoost = true;
+		}
+		else if (type == Hole::Type) {
+			damage();
+			replace();
+			if (Jon::getInstance().isConnected()) {
+				if (hp == 2) {
+					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
+				}
+				if (hp == 1) {
+					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
+				}
+				if (hp == 0) {
+					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
+				}
+			}
+		}
+	}
+
+	setInBoost(touchingBoost);
+
+	if (!touchingTrap && !touchingBoost) {
+		setSpeedMultiplier(1.0f);
+		enableJump();
+	}
+	if (!touchingTrap) {
+		setFallSpeedMultiplier(1.0f);
+	}
+}
+
 
 /*
 
 TODO:
+	Mettre le son global
+	Ajouter le background
 	Ajouter les menus
 	Ajouter un classement
 	Mettre les voix de Alexis si je les recois
 
 BUGFIX:
-	double dash
-
+	Le personnage passe parfois au sol quand waveDash dans boost
 
 AUTRE:
 	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
