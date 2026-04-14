@@ -37,6 +37,8 @@ PrisonScene::PrisonScene() {
 		fallingStars.push_back(star);
 	}
 	setItemIndexMethod(QGraphicsScene::BspTreeIndex);
+
+	AudioManager::getInstance().updateMusic(MusicState::GAMEPLAY);
 }
 
 PrisonScene::~PrisonScene() {}
@@ -377,6 +379,7 @@ void PrisonScene::showPause(const Inputs& inputs) {
 	slider = addWidget(volume);
 	qreal volumeX = overlay->pos().x() + (width / 2) - (slider->boundingRect().width() / 2);
 	qreal volumeY = title->pos().y() + 75;
+	slider->setZValue(11);
 	slider->setPos(volumeX, volumeY);
 	slider->setVisible(false);
 	
@@ -389,7 +392,7 @@ void PrisonScene::showPause(const Inputs& inputs) {
 	qreal backX = overlay->pos().x() + (width / 2) - (backButton->boundingRect().width() / 2);
 	qreal backY = slider->pos().y() + 75;
 	backButton->setPos(backX, backY);
-	backButton->setZValue(1);
+	backButton->setZValue(11);
 	backButton->setVisible(false);
 	addItem(backButton);
 
@@ -542,13 +545,14 @@ void PrisonScene::clickSettings() {
 		slider->setVisible(true);
 		backButton->setVisible(true);
 		selectedButton = backButton;
+		selectedButton->select();
 	}
 	else {
 		replay->setVisible(true);
 		settings->setVisible(true);
 		returnMenu->setVisible(true);
 		continueButton->setVisible(true);
-		selectedButton = *it;
+		selectedButton = continueButton;
 		selectedButton->select();
 		slider->setVisible(false);
 		backButton->setVisible(false);

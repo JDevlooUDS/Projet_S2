@@ -20,7 +20,6 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 		qDebug() << "error loading audio files\n";
 		return;
 	}
-	AudioManager::getInstance().updateMusic(MusicState::GAMEPLAY);
 	setBackgroundBrush(Qt::gray);
 	inputs.volume = 0.5f;
 }

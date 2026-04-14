@@ -20,6 +20,7 @@ class AudioManager
 public:
     AudioManager();
     ~AudioManager();
+    int getVolume();
 
     static AudioManager& getInstance();
 
