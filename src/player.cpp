@@ -533,8 +533,13 @@ void Player::setInvinsible() {
 /*
 
 TODO:
+	Ajouter les menus
 	Ajouter un classement
+	WaveDash seulement dans le soap 
+	Redonner le dash dans le truc qui rallenti
 
+BUGFIX:
+	double dash
 
 
 AUTRE:

@@ -49,7 +49,7 @@ bool ResourceManager::loadPrisonSceneResources() {
 
 	//QFile file(":/map/tutoriel.json");
 	//QFile file(":/map/competition.json")
-	QFile file(":/map/compet.json");
+	QFile file(":/map/tuto.json");
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
 	}
