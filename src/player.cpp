@@ -610,7 +610,6 @@ void Player::manageCollision() {
 /*
 
 TODO:
-	Ajouter un classement
 	Ajouter les checkpoints de temps avec indice sur mécanique
 	Mettre les voix de Alexis si je les recois
 

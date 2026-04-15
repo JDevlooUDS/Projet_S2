@@ -152,6 +152,7 @@ void PrisonScene::updateScene(double deltaTime, const Inputs& inputs) {
 
 	foreach(End * end, endZones) {
 		if (end->collidesWithItem(player)) {
+			LeaderboardManager::getInstance().saveScore(static_cast<Game*>(view)->getPlayerName(), timer);
 			showEnd();
 			return;
 		}

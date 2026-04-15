@@ -18,6 +18,7 @@
 #include "QSlider"
 #include "QGraphicsProxyWidget"
 #include "game.h"
+#include "leaderboardManager.h"
 
 class PrisonScene : public BaseScene {
 	Q_OBJECT
