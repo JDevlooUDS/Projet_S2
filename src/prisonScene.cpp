@@ -39,6 +39,8 @@ PrisonScene::PrisonScene() {
 	setItemIndexMethod(QGraphicsScene::BspTreeIndex);
 
 	AudioManager::getInstance().updateMusic(MusicState::GAMEPLAY);
+	background = ResourceManager::getInstance().getBackground();
+
 }
 
 PrisonScene::~PrisonScene() {}
@@ -515,6 +517,24 @@ void PrisonScene::drawForeground(QPainter* painter, const QRectF& rect) {
 	painter->drawText(20,60,QString("Temps (s) : %1").arg(timer));
 
 	painter->restore();
+}
+
+void PrisonScene::drawBackground(QPainter* painter, const QRectF& rect) {
+	QRect viewportRect = views().first()->viewport()->rect();
+	QSize currentSize = viewportRect.size();
+
+	if (currentSize != lastSize) {
+		scaledBackground = background.scaled(currentSize,
+			Qt::KeepAspectRatioByExpanding,
+			Qt::SmoothTransformation);
+		lastSize = currentSize;
+	}
+
+	painter->setWorldMatrixEnabled(false);
+
+	painter->drawPixmap(0, 0, scaledBackground);
+
+	painter->setWorldMatrixEnabled(true);
 }
 
 QGraphicsItem* PrisonScene::getPlayer() {

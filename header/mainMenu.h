@@ -6,6 +6,7 @@
 #include "audioManager.h"
 #include <QGraphicsProxyWidget>
 #include <QSlider>
+#include "resourceManager.h"
 using std::vector;
 
 class MainMenu : public BaseScene {
@@ -15,9 +16,12 @@ public:
 	~MainMenu();
 	void init();
 	void updateScene(double deltaTime, const Inputs& inputs) override;
+
+
 signals:
 	void setVolume(int volume);
 protected:
+	void drawBackground(QPainter* painter, const QRectF& rect) override;
 
 private:
 	void playClicked();
@@ -45,5 +49,7 @@ private:
 	const double CHANGE_SELECT_LIMIT = 0.2;
 
 	bool toggleSettings = false;
+
+	QPixmap background;
 
 };
