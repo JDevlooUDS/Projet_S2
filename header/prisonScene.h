@@ -33,6 +33,7 @@ signals:
 protected:
 	void loadMap();
 	void drawForeground(QPainter* painter, const QRectF& rect) override;
+	void drawBackground(QPainter* painter, const QRectF& rect) override;
 
 private:
 	void showEnd();
@@ -97,5 +98,9 @@ private:
 	int lastFrameHp;
 
 	bool cancelPause = false;
+
+	QPixmap background;
+	QPixmap scaledBackground;
+	QSize lastSize;
 
 };

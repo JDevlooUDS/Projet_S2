@@ -9,7 +9,7 @@
 
 ResourceManager::ResourceManager() {}
 ResourceManager::~ResourceManager() {}
-//
+
 ResourceManager& ResourceManager::getInstance() {
 	static ResourceManager instance;
 	return instance;
@@ -240,6 +240,15 @@ bool ResourceManager::loadPlayerSprites() {
 	return true;
 }
 
+bool ResourceManager::loadMenuResources() {
+	QPixmap sprite("./resources/sprites/Space_background.png");
+	if (sprite.isNull()) {
+		qDebug() << "failed to load the background\n";
+		return false;
+	}
+	background = sprite.copy();
+}
+
 vector<Tile> ResourceManager::getTiles() {
 	return prisonMap;
 }
@@ -273,4 +282,8 @@ QPixmap ResourceManager::getEmptyHealth() {
 
 vector<QPixmap> ResourceManager::getFallingStarAnimation() {
 	return fallingStarAnimation;
+}
+
+QPixmap ResourceManager::getBackground() {
+	return background;
 }

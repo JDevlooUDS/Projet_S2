@@ -2,8 +2,11 @@
 
 
 MainMenu::MainMenu() {
+	ResourceManager::getInstance().loadMenuResources();
 	AudioManager::getInstance().updateMusic(MusicState::MENU);
 	setSceneRect(0,0,1920,1080);
+
+	background = ResourceManager::getInstance().getBackground();
 }
 
 MainMenu::~MainMenu() {}
@@ -206,4 +209,8 @@ void MainMenu::settingsClicked() {
 
 void MainMenu::exitClicked() {
 	QApplication::quit();
+}
+
+void MainMenu::drawBackground(QPainter* painter, const QRectF& rect) {
+	painter->drawPixmap(sceneRect().toRect(), background);
 }

@@ -225,6 +225,7 @@ void Player::moveDashY(double deltaTime) {
 }
 
 void Player::jump() {
+	if (jumping) return;
  	fallVelocity = JUMP_VELOCITY;
 	isGrounded = false;
 	jumping = true;
@@ -261,7 +262,7 @@ void Player::enableJump() {
 	jumpEnabled = true; 
 }
 
-void Player::ground() {//
+void Player::ground() {
 	if (!jumping && !dashing) isJumpingFromDash = false;
 	
 	isGrounded = true;
@@ -376,7 +377,7 @@ void Player::resolveCollisionY() {
 	if (wasGroundedLastFrame && dashing) ground();
 	if (!isGrounded && wasGroundedLastFrame) {
 		coyoteTimer = COYOTE_TIME_LIMIT;
-		fallVelocity = 0;
+		if (fallVelocity >= 0) fallVelocity = 0;
 	}
 }
 
@@ -609,7 +610,6 @@ void Player::manageCollision() {
 /*
 
 TODO:
-	Ajouter le background
 	Ajouter les menus
 	Ajouter un classement
 	Mettre les voix de Alexis si je les recois

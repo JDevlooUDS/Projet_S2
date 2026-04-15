@@ -10,6 +10,7 @@ class ResourceManager {
 public:
 	static ResourceManager& getInstance();
 	bool loadPrisonSceneResources();
+	bool loadMenuResources();
 	vector<Tile> getTiles();
 	vector<QPixmap> getRunAnimation();
 	vector<QPixmap> getJumpAnimation();
@@ -18,6 +19,7 @@ public:
 	QPixmap getFilledhealth();
 	QPixmap getEmptyHealth();
 	vector<QPixmap> getFallingStarAnimation();
+	QPixmap getBackground();
 
 
 	QPointF playerSpawnPoint;
@@ -38,4 +40,6 @@ private:
 	vector<QPixmap> fallingStarAnimation;
 	QPixmap filledHealth;
 	QPixmap emptyHealth;
+
+	QPixmap background;
 };
