@@ -15,6 +15,8 @@ Game::Game(QGraphicsScene* scene) : QGraphicsView(scene) {
 	elapsedTimer.start();
 	setSceneRect(0, -9000, 19920, 50000); // plus grand pis c chill
 
+	setDragMode(QGraphicsView::NoDrag);
+
 
 	if (!AudioManager::getInstance().init(this)) {
 		qDebug() << "error loading audio files\n";
@@ -79,6 +81,18 @@ void Game::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_P) {
 		inputs.isPausePressed = true;
 	}
+	switch (event->key()) {
+	case Qt::Key_Up:
+	case Qt::Key_Down:
+	case Qt::Key_Left:
+	case Qt::Key_Right:
+	case Qt::Key_PageUp:
+	case Qt::Key_PageDown:
+		return; 
+	default:
+		break;
+	}
+	QGraphicsView::keyPressEvent(event);
 }
 
 void Game::keyReleaseEvent(QKeyEvent* event) {
@@ -125,5 +139,13 @@ void Game::keyReleaseEvent(QKeyEvent* event) {
 
 void Game::setVolume(int volume) {
 	inputs.volume = volume / 100.0f;
+}
+
+void Game::setPlayerName(QString name) {
+	playerName = name;
+}
+
+QString Game::getPlayerName() {
+	return playerName;
 }
 

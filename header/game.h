@@ -25,6 +25,9 @@ public:
 	Game(QGraphicsScene *scene = nullptr);
 	~Game();
 
+	void setPlayerName(QString name);
+	QString getPlayerName();
+
 public slots:
 	void gameLoop();
 	void setVolume(int volume);
@@ -37,4 +40,6 @@ private:
 	QElapsedTimer elapsedTimer;
 	QRect cameraPos;
 	Inputs inputs;
+
+	QString playerName;
 };
