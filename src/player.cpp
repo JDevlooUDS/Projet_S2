@@ -178,7 +178,12 @@ void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
 
 	if (xVelocity != 0 && !dashing && !jumping) setAnimation(RUN);
 	if (xVelocity == 0 && !dashing && !jumping) setAnimation(IDLE);
-	if (!dashing && !jumping && !isGrounded) setAnimation(FALL);
+	if (!dashing && !jumping && !isGrounded) {
+
+		fallTimer += deltaTime;
+		if (fallTimer >= FALL_TIMER_SPEED) setAnimation(FALL);
+	}
+	else fallTimer = 0.0;
 
 	manageAcceleration(deltaTime);
 	updateFlip(deltaTime);
