@@ -135,6 +135,32 @@ void MainMenu::updateScene(double deltaTime, const Inputs& inputs) {
 	view->centerOn(target);
 
 	changeSelectTimer += deltaTime;
+	
+
+	if (showingNamePrompt) {
+		
+		if (changeSelectTimer >= CHANGE_SELECT_LIMIT) {
+			if (inputs.isUpPressed) {
+				selectedButton->unSelect();
+				selectedButton = confirmNameBtn;
+				selectedButton->select();
+			}
+			else if (inputs.isDownPressed) {
+				selectedButton->unSelect();
+				selectedButton = returnButton;
+				selectedButton->select();
+			}
+		}
+
+		selectTimer += deltaTime;
+
+		if (selectTimer >= SELECT_SPEED) {
+			if (inputs.isSelectPressed && selectedButton != nullptr) emit selectedButton->clicked();
+			selectTimer = 0.0;
+		}
+		return;
+	}
+
 
 	if (changeSelectTimer >= CHANGE_SELECT_LIMIT) {
 		if (inputs.isUpPressed) {
@@ -166,7 +192,8 @@ void MainMenu::updateScene(double deltaTime, const Inputs& inputs) {
 
 void MainMenu::playClicked() {
 	AudioManager::getInstance().playButtonSelectSFX();
-	emit changeScene(Prison);
+	showingNamePrompt = true;
+	showNamePrompt();
 }
 
 void MainMenu::tutoClicked() {
@@ -214,4 +241,87 @@ void MainMenu::exitClicked() {
 
 void MainMenu::drawBackground(QPainter* painter, const QRectF& rect) {
 	painter->drawPixmap(sceneRect().toRect(), background);
+}
+
+void MainMenu::showNamePrompt() {
+	overlay = new QGraphicsRectItem(0, 0, 1920, 1080);
+	overlay->setBrush(QColor(0, 0, 0, 150));
+	overlay->setZValue(20);
+	addItem(overlay);
+
+	nameEdit = new QLineEdit();
+	nameEdit->setPlaceholderText("Enter your name...");
+	nameEdit->setFixedWidth(400);
+	nameEdit->setStyleSheet("font-size: 24px; padding: 10px;");
+
+	nameInputProxy = addWidget(nameEdit);
+	nameInputProxy->setPos(1920 / 2 - 200, 1080 / 2 - 50);
+	nameInputProxy->setZValue(21);
+
+	confirmNameBtn = new MenuButton("Confirmer", 200, 60);
+	confirmNameBtn->setPos(1920 / 2 - 100, 1080 / 2 + 50);
+	confirmNameBtn->setZValue(21);
+	addItem(confirmNameBtn);
+
+	connect(confirmNameBtn, &MenuButton::clicked, this, &MainMenu::onNameConfirmed);
+	connect(nameEdit, &QLineEdit::returnPressed, this, &MainMenu::onNameConfirmed);
+
+	//return button
+	returnButton = new MenuButton("Annuler", 200, 60);
+	qreal returnX = (1920 / 2) - 100;
+	qreal returnY = confirmNameBtn->pos().y() + 85;
+	returnButton->setPos(returnX, returnY);
+	returnButton->setZValue(21);
+	addItem(returnButton);
+	connect(returnButton, &MenuButton::clicked, this, &MainMenu::cleanNamePrompt);
+
+	selectedButton->unSelect();
+	selectedButton = confirmNameBtn;
+	selectedButton->select();
+
+	nameInputProxy->setFocusPolicy(Qt::StrongFocus);
+	nameEdit->setFocus();
+	nameEdit->setEnabled(true);
+	nameInputProxy->setFocus();
+	views().first()->setInteractive(true);
+}
+
+void MainMenu::onNameConfirmed() {
+	AudioManager::getInstance().playButtonSelectSFX();
+	dynamic_cast<Game*>(views().first())->setPlayerName(nameEdit->text());
+	emit changeScene(Prison);
+}
+
+void MainMenu::cleanNamePrompt() {
+	showingNamePrompt = false;
+	if (nameInputProxy != nullptr) {
+		removeItem(nameInputProxy);
+		nameInputProxy->deleteLater();
+		nameInputProxy = nullptr;
+	}
+	if (nameEdit != nullptr) {
+		nameEdit->deleteLater();
+		nameEdit = nullptr;
+	}
+	if (confirmNameBtn != nullptr) {
+		removeItem(confirmNameBtn);
+		confirmNameBtn->deleteLater();
+		confirmNameBtn = nullptr;
+	}
+	if (overlay != nullptr) {
+		removeItem(overlay);
+		delete overlay;
+		overlay = nullptr;
+	}
+	if (returnButton != nullptr) {
+		removeItem(returnButton);
+		returnButton->deleteLater();
+		returnButton = nullptr;
+	}
+	selectedButton = tutorial;
+	selectedButton->select();
+}
+
+void MainMenu::keyPressEvent(QKeyEvent* event) {
+	QGraphicsScene::keyPressEvent(event);
 }
