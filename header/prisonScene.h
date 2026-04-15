@@ -15,6 +15,7 @@
 #include "audioManager.h"
 #include "spike.h"
 #include "fallingStar.h"
+#include "deco.h"
 #include "QSlider"
 #include "QGraphicsProxyWidget"
 #include "game.h"

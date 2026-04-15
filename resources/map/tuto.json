@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJztlEsKwDAIROeQrnP\/Y2QvlLTRqR984C7oPMQIAEFdRFVVxiMX4wEs\/zjXzD5yzfnaX79nVRcPa65ouniceMo5Hlys95qFbh5\/\/dvWjF6533ow5mgPDyL2xfCIgOGxASusRus=",
+         "data":"eJztltEKgCAMRfeFRfXeQw\/2B0X08yklSAx1a+ICL9yXrLxHbasDgAn+qw7u\/Iv1WjnLF\/n8jUOHGgfALB+HrbYfNLm62D8uUd+pHGEeigdr83hM3MvhpHJs1ntBHwhnDpe27wNbpzPjOW0cXDWOsvL\/fbHxdx3RyJHK48bNy1o5YvU5rOO1OPyZmJBrsZwp53Bw+19sLcP5sHPC5aDuo8S80hyl+zTmsL9JzO\/edwG1ZnsH",
          "encoding":"base64",
          "height":20,
          "id":5,
@@ -55,7 +55,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJzt1UENAAAIxLDzrwKp\/HEAtMk0LAFgqxoBwCcVH+SWBqtxBQE=",
+         "data":"eJztw7ENAAAIAyD\/v6Knurs4GyGhCoCrMgLAF1nCRQ2a2geB",
          "encoding":"base64",
          "height":20,
          "id":7,
@@ -103,41 +103,20 @@
          "y":0
         }, 
         {
-         "draworder":"topdown",
-         "id":4,
+         "compression":"zlib",
+         "data":"eJztwTEBAAAAwqD1T20MH6AAAACAtwEPoAAB",
+         "encoding":"base64",
+         "height":20,
+         "id":10,
          "name":"spikes",
-         "objects":[
-                {
-                 "gid":8,
-                 "height":32,
-                 "id":79,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":704,
-                 "y":352
-                }, 
-                {
-                 "gid":8,
-                 "height":32,
-                 "id":80,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":736,
-                 "y":352
-                }],
          "opacity":1,
-         "type":"objectgroup",
+         "type":"tilelayer",
          "visible":true,
+         "width":50,
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
+ "nextlayerid":11,
  "nextobjectid":84,
  "orientation":"orthogonal",
  "renderorder":"left-up",
@@ -147,7 +126,7 @@
         {
          "columns":8,
          "firstgid":1,
-         "image":"..\/sprites\/tilesets.png",
+         "image":"..\/..\/..\/JeuV5\/resources\/sprites\/tilesets.png",
          "imageheight":32,
          "imagewidth":256,
          "margin":0,
@@ -159,7 +138,7 @@
         }, 
         {
          "firstgid":9,
-         "source":"tileset_b.tsx"
+         "source":"..\/..\/..\/JeuV5\/resources\/map\/tileset_b.tsx"
         }],
  "tilewidth":32,
  "type":"map",

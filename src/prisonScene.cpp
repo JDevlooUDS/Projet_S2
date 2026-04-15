@@ -488,6 +488,11 @@ void PrisonScene::loadMap() {
 			spikes.push_back(spike);
 			item = spike;
 		}
+		else if (s == "deco") {
+			item = new Deco();
+			item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
+			item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+		}
 		else continue;
 		item->setPos(tile.getXPosition(), tile.getYPosition());
 		item->setPixmap(tile.getPixmap());

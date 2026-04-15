@@ -63,9 +63,11 @@ void Player::update(double deltaTime, const Inputs& inputs) {
 	if (xVelocity < 0 || dashXVelocity < 0) {
 		setTransform(QTransform());
 		setTransform(QTransform().translate(24,0).scale(-1, 1).translate(-24,0));
+		lastFacingRight = false;
 	}
 	if (xVelocity > 0 || dashXVelocity > 0) {
 		setTransform(QTransform());
+		lastFacingRight = true;
 	}
 
 	if (invinsibilityTimer >= INVINSIBILITY_LIMIT) {
@@ -91,10 +93,15 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 	else inBoostBuffer = 0.0;
 	if ((jumpBufferTimer > 0 && (isGrounded || coyoteTimer > 0)) && jumpEnabled) {
 		jump();
+		if (!inBoost) {
+			float maxSpeed = BASE_SPEED * MINI_WAVE_DASH_MULTIPLIER;
+			if (abs(dashXVelocity) > maxSpeed)
+				dashXVelocity = (dashXVelocity > 0) ? maxSpeed : -maxSpeed;
+		}
 		xVelocity = dashXVelocity;
 		dashXVelocity = 0;
 		dashCount = 1;
-		if (inBoost || inBoostBuffer < BOOST_BUFFER_LIMIT) isJumpingFromDash = true;
+		isJumpingFromDash = true;
 		coyoteTimer = 0;
 		jumpBufferTimer = 0;
 	}
@@ -167,12 +174,24 @@ void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
 	coyoteTimer -= deltaTime;
 	if ((jumpBufferTimer > 0 && (isGrounded || coyoteTimer > 0)) && jumpEnabled) {
 		jump();
+		dashCount = 1;
 		coyoteTimer = 0;
 		jumpBufferTimer = 0;
 	}
 
-	if (inputs.isDashPressed && dashCount > 0) {
-		dash(inputs);
+	if (inputs.isDashPressedThisFrame) {
+		if (dashCount > 0) {
+			dash(inputs);
+			dashBufferTimer = 0;
+		} else {
+			dashBufferTimer = DASH_BUFFER_LIMIT;
+			bufferedDashInputs = inputs;
+		}
+	}
+	dashBufferTimer -= deltaTime;
+	if (dashBufferTimer > 0 && dashCount > 0 && !inputs.isDashPressedThisFrame) {
+		dash(bufferedDashInputs);
+		dashBufferTimer = 0;
 	}
 	if (!dashing) updateGravity(deltaTime);
 
@@ -284,11 +303,11 @@ void Player::dash(const Inputs& inputs) {
 	manageDashDirection(inputs);
  	QVector2D direction = getFixedVelocity();
 	float targetSpeed;
-	if (abs(xVelocity) <= REVERSE_SPEED) {
-		targetSpeed = BASE_SPEED * DASH_MULTIPLIER;
+	if (inBoost && abs(xVelocity) > REVERSE_SPEED) {
+		targetSpeed = abs(xVelocity) * WAVE_DASH_MULTIPLIER;
 	}
 	else {
-		targetSpeed = abs(xVelocity) * WAVE_DASH_MULTIPLIER;
+		targetSpeed = BASE_SPEED * DASH_MULTIPLIER;
 	}
  	dashXVelocity = direction.x() * targetSpeed;
 	dashYVelocity = direction.y() * BASE_SPEED * DASH_MULTIPLIER;
@@ -406,7 +425,7 @@ void Player::manageDashDirection(const Inputs& inputs) {
 		setDashDirection(UP_LEFT);
 	}
 	else {
-		setDashDirection(RIGHT);
+		setDashDirection(lastFacingRight ? RIGHT : LEFT);
 	}
 	
 }
@@ -511,12 +530,13 @@ void Player::damage() {
 void Player::replace() {
 	if (pos().x() > lastGroundPosition.x()) {
 		setPos(lastGroundPosition.x() - 64, lastGroundPosition.y());
-
 	}
 	else {
 		setPos(lastGroundPosition.x() + 64, lastGroundPosition.y());
 	}
 	xVelocity = 0;
+	isJumpingFromDash = false;
+	dashBufferTimer = 0;
 }
 
 bool Player::isAlive() {
@@ -553,7 +573,6 @@ void Player::manageCollision() {
 			Trap* trap = qgraphicsitem_cast<Trap*>(item);
 			trap->applyEffect(this);
 			resetAcceleration();
-			resetDash();
 			touchingTrap = true;
 		}
 		else if (type == Spike::Type) {
@@ -594,6 +613,20 @@ void Player::manageCollision() {
 		}
 	}
 
+	if (touchingTrap && !wasTouchingTrap) {
+		hadDashBeforeTrap = (dashCount > 0);
+	}
+
+	if (touchingTrap && !hadDashBeforeTrap) {
+		resetDash();
+	}
+	else if (!touchingTrap && wasTouchingTrap) {
+		if (!hadDashBeforeTrap) {
+			dashCount = 0;
+		}
+		hadDashBeforeTrap = false;
+	}
+
 	setInBoost(touchingBoost);
 
 	if (!touchingTrap && !touchingBoost) {
@@ -603,6 +636,8 @@ void Player::manageCollision() {
 	if (!touchingTrap) {
 		setFallSpeedMultiplier(1.0f);
 	}
+
+	wasTouchingTrap = touchingTrap;
 }
 
 

@@ -7,6 +7,7 @@ struct Inputs {
 	bool isEscapePressed = false;
 	bool isSpacePressed = false;
 	bool isDashPressed = false;
+	bool isDashPressedThisFrame = false;
 	bool isUpPressed = false;
 	bool isDownPressed = false;
 	bool isDebugPressed = false;
@@ -23,6 +24,7 @@ struct Inputs {
 		isEscapePressed = false;
 		isSpacePressed = false;
 		isDashPressed = false;
+		isDashPressedThisFrame = false;
 		isDebugPressed = false;
 		isAccelerated = false;
 		isSelectPressed = false;

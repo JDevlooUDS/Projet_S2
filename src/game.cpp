@@ -42,6 +42,7 @@ void Game::gameLoop() {
 	}
 	AudioManager::getInstance().setVolume(inputs.volume);
 	currentScene->updateScene(deltaTime, inputs);
+	inputs.isDashPressedThisFrame = false;
 }
 
 void Game::keyPressEvent(QKeyEvent* event) {
@@ -61,6 +62,7 @@ void Game::keyPressEvent(QKeyEvent* event) {
 	}
 	if (event->key() == Qt::Key_E) {
 		inputs.isDashPressed = true;
+		inputs.isDashPressedThisFrame = true;
 	}
 	if (event->key() == Qt::Key_W) {
 		inputs.isUpPressed = true;

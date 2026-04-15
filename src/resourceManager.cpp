@@ -47,9 +47,9 @@ bool ResourceManager::loadPrisonSceneResources() {
 	if (!loadTileSet(":/sprites/tilesets.png")) return false;  // jutilise pu mais imp pour avoir bon affichage
 	if (!loadTileSet(":/sprites/tileset_b.png")) return false;
 
-	//QFile file(":/map/tutoriel.json");
-	//QFile file(":/map/competition.json")
-	QFile file(":/map/tuto.json");
+	//QFile file(":/map/tuto.json");
+	//QFile file("C:/Users/capro/OneDrive - USherbrooke/S2/P3/JeuV6/resources/map/compet.json");
+	QFile file(":/map/compet.json");
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
 	}
