@@ -171,6 +171,7 @@ void MainMenu::playClicked() {
 
 void MainMenu::tutoClicked() {
 	AudioManager::getInstance().playButtonSelectSFX();
+	emit changeScene(TUTO);
 }
 
 void MainMenu::leaderboardClicked() {

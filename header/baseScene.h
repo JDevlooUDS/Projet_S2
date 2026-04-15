@@ -6,7 +6,8 @@
 
 enum SceneType {
 	Prison,
-	Menu
+	Menu,
+	TUTO
 };
 
 class BaseScene : public QGraphicsScene {

@@ -15,7 +15,7 @@ ResourceManager& ResourceManager::getInstance() {
 	return instance;
 }
 
-bool ResourceManager::loadPrisonSceneResources() {
+bool ResourceManager::loadPrisonSceneResources(QString path) {
 	tiles.clear();
 	prisonMap.clear();
 	runAnimation.clear();
@@ -47,138 +47,7 @@ bool ResourceManager::loadPrisonSceneResources() {
 	if (!loadTileSet(":/sprites/tilesets.png")) return false;  // jutilise pu mais imp pour avoir bon affichage
 	if (!loadTileSet(":/sprites/tileset_b.png")) return false;
 
-	//QFile file(":/map/tutoriel.json");
-	//QFile file(":/map/competition.json")
-	QFile file(":/map/tuto.json");
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		return false;
-	}
-	else {
-		QByteArray rawData = file.readAll();
-		file.close();
-
-		QJsonDocument doc = QJsonDocument::fromJson(rawData);
-		if (!doc.isNull()) {
-			QJsonObject jsonObject = doc.object();
-
-			int firstgid = 1; // tilesets.png commence à GID 1, tileset_b à GID 9
-
-			QJsonArray array = jsonObject.value("layers").toArray();
-			if (array.isEmpty()) {
-				qDebug() << "failed to load layers";
-				return false;
-			}
-			int mapWidth = jsonObject.value("width").toInt();
-			for (int i = 0; i < array.size(); i++) {
-				QJsonObject layer = array[i].toObject();
-				QString name = layer.value("name").toString();
-				QString type = layer.value("type").toString();
-
-				if (name == "player") {
-					QJsonArray objects = layer.value("objects").toArray();
-					if (!objects.isEmpty()) {
-						QJsonObject obj = objects[0].toObject();
-						playerSpawnPoint = QPointF(
-							obj.value("x").toDouble(),
-							obj.value("y").toDouble()
-						);
-					}
-					continue;
-				}
-
-				bool collides = false;
-				QJsonArray properties = layer.value("properties").toArray();
-				for (int j = 0; j < properties.size(); j++) {
-					QJsonObject property = properties[j].toObject();
-					if (property.value("name").toString() == "collide") {
-						collides = property.value("value").toBool();
-					}
-				}
-
-				if (type == "tilelayer") {
-					QString encoding = layer.value("encoding").toString();
-					QString compression = layer.value("compression").toString();
-					int layerHeight = layer.value("height").toInt();
-
-					QByteArray rawData;
-					if (encoding == "base64") {
-						rawData = QByteArray::fromBase64(layer.value("data").toString().toLatin1());
-					} else {
-						qDebug() << "Unsupported tilelayer encoding:" << encoding;
-						continue;
-					}
-
-					QByteArray tileData;
-					if (compression == "zlib") {
-						// qUncompress attend un prefixe de 4 octets big-endian avec la taille decompressee
-						int expectedSize = mapWidth * layerHeight * 4;
-						QByteArray withHeader(4, 0);
-						withHeader[0] = (expectedSize >> 24) & 0xFF;
-						withHeader[1] = (expectedSize >> 16) & 0xFF;
-						withHeader[2] = (expectedSize >> 8) & 0xFF;
-						withHeader[3] = expectedSize & 0xFF;
-						withHeader.append(rawData);
-						tileData = qUncompress(withHeader);
-						if (tileData.isEmpty()) {
-							qDebug() << "Failed to decompress tilelayer:" << name;
-							continue;
-						}
-					} else if (compression.isEmpty()) {
-						tileData = rawData;
-					} else {
-						qDebug() << "Unsupported tilelayer compression:" << compression;
-						continue;
-					}
-
-					// Chaque GID est un uint32 little-endian (4 octets)
-					int tileCount = mapWidth * layerHeight;
-					for (int idx = 0; idx < tileCount; idx++) {
-						if (idx * 4 + 3 >= tileData.size()) break;
-						quint32 gid = (quint8)tileData[idx * 4]
-							| ((quint8)tileData[idx * 4 + 1] << 8)
-							| ((quint8)tileData[idx * 4 + 2] << 16)
-							| ((quint8)tileData[idx * 4 + 3] << 24);
-						if (gid == 0) continue; // case vide
-						int tileIndex = (int)gid - firstgid;
-						if (tileIndex < 0 || tileIndex >= (int)tiles.size()) {
-							qDebug() << "GID out of range:" << gid;
-							continue;
-						}
-						int tileX = (idx % mapWidth) * TILE_SIZE;
-						int tileY = (idx / mapWidth) * TILE_SIZE;
-						Tile tile(tileX, tileY, TILE_SIZE, TILE_SIZE, collides, tiles[tileIndex], name);
-						prisonMap.push_back(tile);
-					}
-				} else if (type == "objectgroup") {
-					QJsonArray layerArray = layer.value("objects").toArray();
-					for (int j = 0; j < layerArray.size(); j++) {
-						QJsonObject item = layerArray[j].toObject();
-						if (!item.contains("gid")) continue;
-						int gid = item.value("gid").toInt();
-						int tileIndex = gid - firstgid;
-						if (tileIndex < 0 || tileIndex >= (int)tiles.size()) {
-							qDebug() << "objectgroup GID out of range:" << gid << "/ tiles:" << tiles.size();
-							continue;
-						}
-						int objH = item.value("height").toInt();
-						Tile tile(
-							item.value("x").toInt(),
-							item.value("y").toInt() - objH,
-							objH,
-							item.value("width").toInt(),
-							collides,
-							tiles[tileIndex],
-							name
-						);
-						prisonMap.push_back(tile);
-					}
-				}
-			}
-		}
-		else {
-			return false;
-		}
-	}
+	loadMap(path);
 
 	QPixmap fallingStarTileSet;
 	fallingStarTileSet.load(":/sprites/falling_star.png");
@@ -247,6 +116,143 @@ bool ResourceManager::loadMenuResources() {
 		return false;
 	}
 	background = sprite.copy();
+}
+
+bool ResourceManager::loadMap(QString path) {
+	QFile file(path);
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return false;
+	}
+	else {
+		QByteArray rawData = file.readAll();
+		file.close();
+
+		QJsonDocument doc = QJsonDocument::fromJson(rawData);
+		if (!doc.isNull()) {
+			QJsonObject jsonObject = doc.object();
+
+			int firstgid = 1; // tilesets.png commence à GID 1, tileset_b à GID 9
+
+			QJsonArray array = jsonObject.value("layers").toArray();
+			if (array.isEmpty()) {
+				qDebug() << "failed to load layers";
+				return false;
+			}
+			int mapWidth = jsonObject.value("width").toInt();
+			for (int i = 0; i < array.size(); i++) {
+				QJsonObject layer = array[i].toObject();
+				QString name = layer.value("name").toString();
+				QString type = layer.value("type").toString();
+
+				if (name == "player") {
+					QJsonArray objects = layer.value("objects").toArray();
+					if (!objects.isEmpty()) {
+						QJsonObject obj = objects[0].toObject();
+						playerSpawnPoint = QPointF(
+							obj.value("x").toDouble(),
+							obj.value("y").toDouble()
+						);
+					}
+					continue;
+				}
+
+				bool collides = false;
+				QJsonArray properties = layer.value("properties").toArray();
+				for (int j = 0; j < properties.size(); j++) {
+					QJsonObject property = properties[j].toObject();
+					if (property.value("name").toString() == "collide") {
+						collides = property.value("value").toBool();
+					}
+				}
+
+				if (type == "tilelayer") {
+					QString encoding = layer.value("encoding").toString();
+					QString compression = layer.value("compression").toString();
+					int layerHeight = layer.value("height").toInt();
+
+					QByteArray rawData;
+					if (encoding == "base64") {
+						rawData = QByteArray::fromBase64(layer.value("data").toString().toLatin1());
+					}
+					else {
+						qDebug() << "Unsupported tilelayer encoding:" << encoding;
+						continue;
+					}
+
+					QByteArray tileData;
+					if (compression == "zlib") {
+						// qUncompress attend un prefixe de 4 octets big-endian avec la taille decompressee
+						int expectedSize = mapWidth * layerHeight * 4;
+						QByteArray withHeader(4, 0);
+						withHeader[0] = (expectedSize >> 24) & 0xFF;
+						withHeader[1] = (expectedSize >> 16) & 0xFF;
+						withHeader[2] = (expectedSize >> 8) & 0xFF;
+						withHeader[3] = expectedSize & 0xFF;
+						withHeader.append(rawData);
+						tileData = qUncompress(withHeader);
+						if (tileData.isEmpty()) {
+							qDebug() << "Failed to decompress tilelayer:" << name;
+							continue;
+						}
+					}
+					else if (compression.isEmpty()) {
+						tileData = rawData;
+					}
+					else {
+						qDebug() << "Unsupported tilelayer compression:" << compression;
+						continue;
+					}
+
+					// Chaque GID est un uint32 little-endian (4 octets)
+					int tileCount = mapWidth * layerHeight;
+					for (int idx = 0; idx < tileCount; idx++) {
+						if (idx * 4 + 3 >= tileData.size()) break;
+						quint32 gid = (quint8)tileData[idx * 4]
+							| ((quint8)tileData[idx * 4 + 1] << 8)
+							| ((quint8)tileData[idx * 4 + 2] << 16)
+							| ((quint8)tileData[idx * 4 + 3] << 24);
+						if (gid == 0) continue; // case vide
+						int tileIndex = (int)gid - firstgid;
+						if (tileIndex < 0 || tileIndex >= (int)tiles.size()) {
+							qDebug() << "GID out of range:" << gid;
+							continue;
+						}
+						int tileX = (idx % mapWidth) * TILE_SIZE;
+						int tileY = (idx / mapWidth) * TILE_SIZE;
+						Tile tile(tileX, tileY, TILE_SIZE, TILE_SIZE, collides, tiles[tileIndex], name);
+						prisonMap.push_back(tile);
+					}
+				}
+				else if (type == "objectgroup") {
+					QJsonArray layerArray = layer.value("objects").toArray();
+					for (int j = 0; j < layerArray.size(); j++) {
+						QJsonObject item = layerArray[j].toObject();
+						if (!item.contains("gid")) continue;
+						int gid = item.value("gid").toInt();
+						int tileIndex = gid - firstgid;
+						if (tileIndex < 0 || tileIndex >= (int)tiles.size()) {
+							qDebug() << "objectgroup GID out of range:" << gid << "/ tiles:" << tiles.size();
+							continue;
+						}
+						int objH = item.value("height").toInt();
+						Tile tile(
+							item.value("x").toInt(),
+							item.value("y").toInt() - objH,
+							objH,
+							item.value("width").toInt(),
+							collides,
+							tiles[tileIndex],
+							name
+						);
+						prisonMap.push_back(tile);
+					}
+				}
+			}
+		}
+		else {
+			return false;
+		}
+	}
 }
 
 vector<Tile> ResourceManager::getTiles() {

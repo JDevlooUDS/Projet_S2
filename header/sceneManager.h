@@ -2,6 +2,7 @@
 #include "game.h"
 #include "prisonScene.h"
 #include "mainMenu.h"
+#include "tutoScene.h"
 
 class SceneManager : public QObject{
 
@@ -18,4 +19,6 @@ private:
 	Game* game;
 	PrisonScene* prisonScene = nullptr;
 	MainMenu* menuScene = nullptr;
+	TutoScene* tutoScene = nullptr;
+	
 };

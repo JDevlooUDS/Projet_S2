@@ -25,5 +25,11 @@ void SceneManager::setScene(SceneType sceneType) {
 			game->setScene(menuScene);
 			menuScene->init();
 			break;
+		case TUTO:
+			tutoScene = new TutoScene();
+			connect(tutoScene, &BaseScene::changeScene, this, &SceneManager::setScene);
+			connect(tutoScene, &TutoScene::setVolume, game, &Game::setVolume);
+			game->setScene(tutoScene);
+			break;
 	}
 }
