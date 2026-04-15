@@ -176,4 +176,7 @@ private:
 	const double BOOST_BUFFER_LIMIT = 0.1;
 
 	bool wasJumpPressed = false;
+
+	double fallTimer = 0.0;
+	const double FALL_TIMER_SPEED = 0.1;
 };
