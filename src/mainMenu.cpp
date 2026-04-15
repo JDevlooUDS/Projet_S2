@@ -203,6 +203,7 @@ void MainMenu::tutoClicked() {
 
 void MainMenu::leaderboardClicked() {
 	AudioManager::getInstance().playButtonSelectSFX();
+	emit changeScene(Leaderboard);
 }
 
 void MainMenu::settingsClicked() {

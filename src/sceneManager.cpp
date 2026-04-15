@@ -31,5 +31,10 @@ void SceneManager::setScene(SceneType sceneType) {
 			connect(tutoScene, &TutoScene::setVolume, game, &Game::setVolume);
 			game->setScene(tutoScene);
 			break;
+		case Leaderboard:
+			leaderboardScene = new LeaderboardScene();
+			connect(leaderboardScene, &BaseScene::changeScene, this, &SceneManager::setScene);
+			game->setScene(leaderboardScene);
+			break;
 	}
 }
