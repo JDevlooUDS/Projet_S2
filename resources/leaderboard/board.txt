@@ -1,0 +1,10 @@
+Jeremy;125.0
+David;124.0
+Charles;123.0
+Tristan;124.52
+Eliane;100.0
+Jacob;99.0
+JF;112.0
+Lou;117.24
+Roch;0.12
+JP;20.87
