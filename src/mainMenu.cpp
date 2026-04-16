@@ -130,6 +130,7 @@ void MainMenu::init() {
 }
 
 void MainMenu::updateScene(double deltaTime, const Inputs& inputs) {
+	if (deltaTime >= 0.4) return;
 	QPointF target(1920 / 2, 1080 / 2);
 	QGraphicsView* view = views().first();
 	view->centerOn(target);
@@ -155,13 +156,16 @@ void MainMenu::updateScene(double deltaTime, const Inputs& inputs) {
 		selectTimer += deltaTime;
 
 		if (selectTimer >= SELECT_SPEED) {
-			if (inputs.isSelectPressed && selectedButton != nullptr) emit selectedButton->clicked();
-			selectTimer = 0.0;
+			if (inputs.isSelectPressed && selectedButton != nullptr) {
+				emit selectedButton->clicked();
+				selectTimer = 0.0;
+			}
 		}
 		return;
 	}
 
 
+	selectTimer += deltaTime;
 	if (changeSelectTimer >= CHANGE_SELECT_LIMIT) {
 		if (inputs.isUpPressed) {
 			if (it == buttons.begin()) return;
@@ -181,11 +185,12 @@ void MainMenu::updateScene(double deltaTime, const Inputs& inputs) {
 		}
 	}
 
-	selectTimer += deltaTime;
 
 	if (selectTimer >= SELECT_SPEED) {
-		if (inputs.isSelectPressed && selectedButton != nullptr) emit selectedButton->clicked();
-		selectTimer = 0.0;
+		if (inputs.isSelectPressed && selectedButton != nullptr) {
+			emit selectedButton->clicked();
+			selectTimer = 0.0;
+		}
 	}
 
 }
@@ -228,8 +233,7 @@ void MainMenu::settingsClicked() {
 		leaderboard->setVisible(true);
 		settings->setVisible(true);
 		exit->setVisible(true);
-		selectedButton = tutorial;
-		it = buttons.begin();
+		selectedButton = *it;
 		selectedButton->select();
 		back->setVisible(false);
 		slider->setVisible(false);

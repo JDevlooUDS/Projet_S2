@@ -3,7 +3,7 @@
 #include "debug.h"
 
 PrisonScene::PrisonScene() {
-	ResourceManager::getInstance().loadPrisonSceneResources(":/map/compet.json");
+	ResourceManager::getInstance().loadPrisonSceneResources(":/map/competNaked.json");
 	setSceneRect(0, 0, 16000, 1600);
 	player = new Player();
 	player->activate();
@@ -209,7 +209,7 @@ void PrisonScene::showEnd() {
 	QGraphicsView* view = views().first();
 	QPointF center = view->mapToScene(view->viewport()->rect().center());
 	
-	qreal width = 600;
+	qreal width = 900;
 	qreal height = 400;
 	
 	overlay = new QGraphicsRectItem(0, 0, width, height);
@@ -218,17 +218,30 @@ void PrisonScene::showEnd() {
 	overlay->setZValue(10);
 	addItem(overlay);
 
+	//Rang 
+	rankDisplay = new QGraphicsTextItem((QString)rank);
+	rankDisplay->setDefaultTextColor(Qt::yellow);
+	rankDisplay->setFont(QFont("Arial", 36, QFont::Bold));
+
+	qreal rankX = overlay->pos().x() + (width / 2) - (rankDisplay->boundingRect().width() / 2);
+	qreal rankY = overlay->pos().y() + 50;
+
+	rankDisplay->setPos(rankX, rankY);
+	rankDisplay->setZValue(11);
+	addItem(rankDisplay);
+
 	// message
 	title = new QGraphicsTextItem(rankMessages[rank]);
 	title->setDefaultTextColor(Qt::yellow);
 	title->setFont(QFont("Arial", 36, QFont::Bold));
 
 	qreal titleX = overlay->pos().x() + (width / 2) - (title->boundingRect().width()/2);
-	qreal titleY = overlay->pos().y() + 50;
+	qreal titleY = rankDisplay->pos().y() + 50;
 
 	title->setPos(titleX, titleY);
 	title->setZValue(11);
 	addItem(title);
+
 	// message
 	tip = new QGraphicsTextItem(tipMessage[rank]);
 	tip->setDefaultTextColor(Qt::yellow);
@@ -258,7 +271,7 @@ void PrisonScene::showEnd() {
 	replay = new MenuButton("Rejouer!", 200, 50);
 
 	qreal replayX = overlay->pos().x() + (width / 4) - (replay->boundingRect().width() / 2);
-	qreal replayY = overlay->pos().y() + 200;
+	qreal replayY = overlay->pos().y() + 300;
 	replay->setPos(replayX, replayY);
 	replay->setZValue(11);
 	addItem(replay);
@@ -269,7 +282,7 @@ void PrisonScene::showEnd() {
 	returnMenu = new MenuButton("retourner au menu!", 200, 50);
 
 	qreal returnMenuX = overlay->pos().x() + ((width / 4) * 3) - (returnMenu->boundingRect().width() / 2);
-	qreal returnMenuY = overlay->pos().y() + 200;
+	qreal returnMenuY = overlay->pos().y() + 300;
 	returnMenu->setPos(returnMenuX, returnMenuY);
 	returnMenu->setZValue(11);
 	addItem(returnMenu);
@@ -553,7 +566,9 @@ void PrisonScene::drawForeground(QPainter* painter, const QRectF& rect) {
 	}
 
 	painter->setFont(QFont("Arial", 10));
+	painter->setPen(Qt::white);
 	painter->drawText(20,60,QString("Temps (s) : %1").arg(timer));
+	painter->drawText(20,80,QString("Objectif (s) : 120.00"));
 
 	painter->restore();
 }

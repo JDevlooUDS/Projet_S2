@@ -11,9 +11,14 @@ LeaderboardScene::LeaderboardScene() {
 LeaderboardScene::~LeaderboardScene() {}
 
 void LeaderboardScene::updateScene(double deltaTime, const Inputs& inputs) {
+    if (deltaTime >= 0.4) return;
 	QPointF target(1920 / 2, 1080 / 2);
 	QGraphicsView* view = views().first();
 	view->centerOn(target);
+    selectTimer += deltaTime;
+    if (inputs.isSelectPressed) {
+        if (selectTimer >= SELECT_SPEED) emit selectedButton->clicked();
+    }
 }
 
 void LeaderboardScene::drawBackground(QPainter* painter, const QRectF& rect) {
@@ -44,13 +49,16 @@ void LeaderboardScene::showLeaderboardOverlay() {
     boardItem->setZValue(11);
     addItem(boardItem);
 
-    MenuButton* closeBtn = new MenuButton("Fermer", 200, 60);
-    closeBtn->setPos(1920 / 2 - 100, 800);
-    closeBtn->setZValue(11);
-    addItem(closeBtn);
+    menu = new MenuButton("Fermer", 200, 60);
+    menu->setPos(1920 / 2 - 100, 800);
+    menu->setZValue(11);
+    addItem(menu);
 
-    connect(closeBtn, &MenuButton::clicked, this, [=]() {
+    connect(menu, &MenuButton::clicked, this, [=]() {
         AudioManager::getInstance().playButtonSelectSFX();
         emit changeScene(Menu);
     });
+
+    selectedButton = menu;
+    selectedButton->select();
 }

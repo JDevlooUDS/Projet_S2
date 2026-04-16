@@ -52,7 +52,7 @@ private:
 	MenuButton* selectedButton = nullptr;
 
 	double selectTimer = 0.0;
-	const double SELECT_SPEED = 0.1;
+	const double SELECT_SPEED = 0.3;
 	double changeSelectTimer = 0.0;
 	const double CHANGE_SELECT_LIMIT = 0.2;
 

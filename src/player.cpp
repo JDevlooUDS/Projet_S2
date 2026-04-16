@@ -373,6 +373,26 @@ void Player::resolveCollisionX() {
 			setX(lastPosition.x());
 			return;
 		}
+		else if (type == Spike::Type) {
+			damage();
+			if (Jon::getInstance().isConnected()) {
+				if (hp == 2) {
+					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
+				}
+				if (hp == 1) {
+					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
+				}
+				if (hp == 0) {
+					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
+				}
+			}
+			resetAcceleration();
+			setInvinsible();
+
+			setX(lastPosition.x());
+			return;
+			
+		}
 	}
 }
 
@@ -393,6 +413,31 @@ void Player::resolveCollisionY() {
 				setY(lastPosition.y());
 			}
 			break; 
+		}
+		else if (type == Spike::Type) {
+			damage();
+			if (Jon::getInstance().isConnected()) {
+				if (hp == 2) {
+					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
+				}
+				if (hp == 1) {
+					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
+				}
+				if (hp == 0) {
+					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
+				}
+			}
+			resetAcceleration();
+			setInvinsible();
+			if (yVelocity > 0) {
+				setY(lastPosition.y());
+				resolved = true;
+				ground();
+			}
+			else if (yVelocity < 0) {
+				setY(lastPosition.y());
+			}
+			break;
 		}
 	}
 	isGrounded = resolved;
@@ -581,22 +626,6 @@ void Player::manageCollision() {
 			trap->applyEffect(this);
 			resetAcceleration();
 			touchingTrap = true;
-		}
-		else if (type == Spike::Type) {
-			damage();
-			if (Jon::getInstance().isConnected()) {
-				if (hp == 2) {
-					Jon::getInstance().SendToSerial(false, false, true, true, true, false);
-				}
-				if (hp == 1) {
-					Jon::getInstance().SendToSerial(false, true, true, true, false, false);
-				}
-				if (hp == 0) {
-					Jon::getInstance().SendToSerial(true, true, true, false, false, false);
-				}
-			}
-			resetAcceleration();
-			setInvinsible();
 		}
 		else if (type == Boost::Type) {
 			Boost* boost = qgraphicsitem_cast<Boost*>(item);

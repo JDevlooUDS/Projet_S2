@@ -95,6 +95,7 @@ private:
 	QGraphicsTextItem* title = nullptr;
 	QGraphicsTextItem* tip = nullptr;
 	QGraphicsTextItem* timeDisplay = nullptr;
+	QGraphicsTextItem* rankDisplay = nullptr;
 
 	vector<FallingStar*> fallingStars;	
 

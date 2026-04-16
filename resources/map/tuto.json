@@ -22,9 +22,9 @@
          "name":"end",
          "objects":[
                 {
-                 "gid":6,
+                 "gid":194,
                  "height":32,
-                 "id":84,
+                 "id":85,
                  "name":"",
                  "rotation":0,
                  "type":"",
@@ -127,7 +127,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJztwTEBAAAAwqD1T20MH6AAAACAtwEPoAAB",
+         "data":"eJztw0EJAAAIBLDrn8tgfi6EyAZLAAAAfpuGyxYeDAGJ",
          "encoding":"base64",
          "height":20,
          "id":10,
@@ -140,7 +140,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":85,
+ "nextobjectid":86,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.11.2",
@@ -162,6 +162,10 @@
         {
          "firstgid":9,
          "source":"..\/..\/..\/JeuV5\/resources\/map\/tileset_b.tsx"
+        }, 
+        {
+         "firstgid":189,
+         "source":"tilesets.tsx"
         }],
  "tilewidth":32,
  "type":"map",

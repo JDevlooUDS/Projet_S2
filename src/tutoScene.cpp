@@ -530,6 +530,7 @@ void TutoScene::drawForeground(QPainter* painter, const QRectF& rect) {
 	}
 
 	painter->setFont(QFont("Arial", 10));
+	painter->setPen(Qt::white);
 	painter->drawText(20, 60, QString("Temps (s) : %1").arg(timer));
 
 	painter->restore();

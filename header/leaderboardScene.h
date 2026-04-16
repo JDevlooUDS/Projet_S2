@@ -19,6 +19,10 @@ protected:
 private:
 
 	MenuButton* menu = nullptr;
+	MenuButton* selectedButton = nullptr;
+
+	double selectTimer = 0.0;
+	const double SELECT_SPEED = 0.3;
 
 	QPixmap background;
 
