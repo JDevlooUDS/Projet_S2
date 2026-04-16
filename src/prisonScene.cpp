@@ -22,6 +22,7 @@ PrisonScene::PrisonScene() {
 		ghost->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 		ghost->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
 		ghost->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+		ghost->setEnabled(false);
 		addItem(ghost);
  	}
 
@@ -60,6 +61,7 @@ PrisonScene::PrisonScene() {
 PrisonScene::~PrisonScene() {}
 
 void PrisonScene::updateScene(double deltaTime, const Inputs& inputs) {
+	if (deltaTime > 0.5f) return;
 	if (debug) displayDebugInfo(deltaTime);
 	else clearDebug(views().first());
 
@@ -172,7 +174,7 @@ void PrisonScene::updateScene(double deltaTime, const Inputs& inputs) {
 			return;
 		}
 	}
-
+	
 	if (inputs.muon) {
 		foreach(FallingStar* star, fallingStars) {
 			if (!star->isActive()) {
@@ -198,6 +200,7 @@ void PrisonScene::updateScene(double deltaTime, const Inputs& inputs) {
 			star->update(deltaTime, inputs);
 		}
 	}
+	
 
 	player->update(deltaTime, inputs);
 }
@@ -229,7 +232,7 @@ void PrisonScene::showEnd() {
 	// message
 	tip = new QGraphicsTextItem(tipMessage[rank]);
 	tip->setDefaultTextColor(Qt::yellow);
-	tip->setFont(QFont("Arial", 20, QFont::Bold));
+	tip->setFont(QFont("Arial", 16, QFont::Bold));
 
 	qreal tipX = overlay->pos().x() + (width / 2) - (tip->boundingRect().width() / 2);
 	qreal tipY = title->pos().y() + 50;
@@ -246,7 +249,7 @@ void PrisonScene::showEnd() {
 	timeDisplay->setFont(QFont("Arial", 24));
 
 	qreal timeX = overlay->pos().x() + (width / 2) - (timeDisplay->boundingRect().width() / 2);
-	qreal timeY = titleY + 50;
+	qreal timeY = tipY + 50;
 	timeDisplay->setPos(timeX, timeY);
 	timeDisplay->setZValue(11);
 	addItem(timeDisplay);
@@ -492,6 +495,8 @@ void PrisonScene::loadMap() {
 		if (s == "walls") {
 			item = new Wall();
 			item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
+			item->setFlag(QGraphicsItem::ItemIsSelectable, false);
+			item->setAcceptedMouseButtons(Qt::NoButton);
 			item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 		}
 		else if (s == "trap") {

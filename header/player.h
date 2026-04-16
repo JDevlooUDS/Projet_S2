@@ -185,4 +185,5 @@ private:
 
 	double fallTimer = 0.0;
 	const double FALL_TIMER_SPEED = 0.1;
+	QList<QGraphicsItem*> colliding;
 };

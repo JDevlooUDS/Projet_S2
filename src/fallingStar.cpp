@@ -18,7 +18,7 @@ void FallingStar::manageAnimation(double deltaTime) {
 		animationIndex++;
 	}
 
-	if (animationIndex == animation.size()) {
+	if (animationIndex >= animation.size()) {
 		deactivate();
 		setVisible(false);
 		animationIndex = 0;

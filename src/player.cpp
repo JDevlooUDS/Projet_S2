@@ -374,7 +374,7 @@ void Player::resolveCollisionX() {
 		int type = item->type();
 		if (type == Wall::Type) {
 			setX(lastPosition.x());
-			break;
+			return;
 		}
 	}
 }

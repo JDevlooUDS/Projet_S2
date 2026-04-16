@@ -147,6 +147,7 @@ bool Jon::RcvFromSerial(Inputs* inputs)
             if (lastSeuil) inputs->muon = true;
             else inputs->muon = false;
 
+
             return true;
         }
         catch (const std::exception&) {

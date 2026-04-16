@@ -239,9 +239,9 @@ void TutoScene::showEnd() {
 	addItem(overlay);
 
 	// message
-	title = new QGraphicsTextItem("Bravo! Maintenant obtiens le meilleur score possible en compétition!");
+	title = new QGraphicsTextItem("Bravo! Maintenant obtiens le meilleur score possible en competition!");
 	title->setDefaultTextColor(Qt::yellow);
-	title->setFont(QFont("Arial", 36, QFont::Bold));
+	title->setFont(QFont("Arial", 12, QFont::Bold));
 
 	qreal titleX = overlay->pos().x() + (width / 2) - (title->boundingRect().width() / 2);
 	qreal titleY = overlay->pos().y() + 50;
@@ -292,7 +292,7 @@ void TutoScene::showDeath() {
 	// message
 	title = new QGraphicsTextItem("L'important c'est d'apprendre!");
 	title->setDefaultTextColor(Qt::yellow);
-	title->setFont(QFont("Arial", 36, QFont::Bold));
+	title->setFont(QFont("Arial", 28, QFont::Bold));
 
 	qreal titleX = overlay->pos().x() + (width / 2) - (title->boundingRect().width() / 2);
 	qreal titleY = overlay->pos().y() + 50;

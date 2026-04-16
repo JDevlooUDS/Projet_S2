@@ -16,12 +16,14 @@ ResourceManager& ResourceManager::getInstance() {
 }
 
 bool ResourceManager::loadPrisonSceneResources(QString path) {
-	tiles.clear();
 	prisonMap.clear();
+	tutorialMap.clear();
+	tiles.clear();
 	runAnimation.clear();
-	dashAnimation.clear();
 	jumpAnimation.clear();
 	idleAnimation.clear();
+	dashAnimation.clear();
+	fallingStarAnimation.clear();
 
 	if (!loadPlayerSprites()) return false;
 	playerSprite.load(":/sprites/placeHolderSprite.png");
@@ -30,9 +32,15 @@ bool ResourceManager::loadPrisonSceneResources(QString path) {
 	QPixmap health;
 	health.load(":/sprites/health.png");
 	if (health.isNull()) return false;
-	filledHealth = health.copy(0,0, TILE_SIZE, TILE_SIZE);
-	emptyHealth = health.copy(TILE_SIZE,0, TILE_SIZE, TILE_SIZE);
+	filledHealth = health.copy(0, 0, TILE_SIZE, TILE_SIZE);
+	emptyHealth = health.copy(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
 	if (filledHealth.isNull() || emptyHealth.isNull()) return false;
+
+	QPixmap fallingStarTileset("./resources/sprites/falling_star.png");
+	for (int i = 0; i < TILE_SIZE * fallingStarTileset.width(); i++) {
+		QPixmap sprite = fallingStarTileset.copy(i*TILE_SIZE,0,TILE_SIZE,TILE_SIZE);
+		fallingStarAnimation.push_back(sprite);
+	}
 
 	auto loadTileSet = [&](const QString& path) -> bool {
 		QPixmap tileSet(path);
@@ -47,9 +55,7 @@ bool ResourceManager::loadPrisonSceneResources(QString path) {
 	if (!loadTileSet(":/sprites/tilesets.png")) return false;  // jutilise pu mais imp pour avoir bon affichage
 	if (!loadTileSet(":/sprites/tileset_b.png")) return false;
 
-	//QFile file(":/map/tuto.json");
-	//QFile file("C:/Users/capro/OneDrive - USherbrooke/S2/P3/JeuV6/resources/map/compet.json");
-	QFile file(":/map/compet.json");
+	QFile file(path);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
 	}
@@ -80,7 +86,7 @@ bool ResourceManager::loadPrisonSceneResources(QString path) {
 						QJsonObject obj = objects[0].toObject();
 						playerSpawnPoint = QPointF(
 							obj.value("x").toDouble(),
-							obj.value("y").toDouble()
+							obj.value("y").toDouble() - 200
 						);
 					}
 					continue;
