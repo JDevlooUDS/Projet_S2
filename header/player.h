@@ -182,4 +182,7 @@ private:
 	const double BOOST_BUFFER_LIMIT = 0.8;
 	bool hadDashBeforeTrap = false;
 	bool wasTouchingTrap = false;
+
+	double fallTimer = 0.0;
+	const double FALL_TIMER_SPEED = 0.1;
 };

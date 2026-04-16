@@ -185,6 +185,53 @@ bool ResourceManager::loadPrisonSceneResources(QString path) {
 	}
 }
 
+bool ResourceManager::loadPlayerSprites() {
+	QPixmap sheet;
+	sheet.load(":/sprites/Run_Voltron.png");
+	if (sheet.isNull()) return false;
+	int frameQuantity = sheet.width() / 48;
+	for (int i = 0; i < frameQuantity; i++) {
+		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
+		runAnimation.push_back(frame);
+	}
+
+	sheet.load(":/sprites/dash.png");
+	if (sheet.isNull()) return false;
+	frameQuantity = sheet.width() / 48;
+	for (int i = 0; i < frameQuantity; i++) {
+		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
+		dashAnimation.push_back(frame);
+	}
+
+	sheet.load(":/sprites/jump.png");
+	if (sheet.isNull()) return false;
+	frameQuantity = sheet.width() / 48;
+	for (int i = 0; i < frameQuantity; i++) {
+		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
+		jumpAnimation.push_back(frame);
+	}
+
+	sheet.load(":/sprites/idle.png");
+	if (sheet.isNull()) return false;
+	frameQuantity = sheet.width() / 48;
+	for (int i = 0; i < frameQuantity; i++) {
+		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
+		idleAnimation.push_back(frame);
+	}
+
+	return true;
+}
+
+bool ResourceManager::loadMenuResources() {
+	QPixmap sprite("./resources/sprites/Space_background.png");
+	if (sprite.isNull()) {
+		qDebug() << "failed to load the background\n";
+		return false;
+	}
+	background = sprite.copy();
+	return true;
+}
+
 vector<Tile> ResourceManager::getTiles() {
 	return prisonMap;
 }
