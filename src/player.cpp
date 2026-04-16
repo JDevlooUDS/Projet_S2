@@ -91,19 +91,16 @@ void Player::manageDashState(double deltaTime, const Inputs& inputs) {
 	coyoteTimer -= deltaTime;
 	if (!inBoost) inBoostBuffer += deltaTime;
 	else inBoostBuffer = 0.0;
+	if (dashDirection == UP || dashDirection == UP_LEFT || dashDirection == UP_RIGHT) isGrounded = false; coyoteTimer = 0.0;
 	if ((jumpBufferTimer > 0 && (isGrounded || coyoteTimer > 0)) && jumpEnabled) {
 		jump();
-		if (!inBoost) {
-			float maxSpeed = BASE_SPEED * MINI_WAVE_DASH_MULTIPLIER;
-			if (abs(dashXVelocity) > maxSpeed)
-				dashXVelocity = (dashXVelocity > 0) ? maxSpeed : -maxSpeed;
-		}
 		xVelocity = dashXVelocity;
 		dashXVelocity = 0;
 		dashCount = 1;
-		isJumpingFromDash = true;
+		if (inBoost || inBoostBuffer < BOOST_BUFFER_LIMIT) isJumpingFromDash = true;
 		coyoteTimer = 0;
 		jumpBufferTimer = 0;
+		return;
 	}
 
 	if (dashTimer >= DASH_LIMIT) {
@@ -403,6 +400,9 @@ void Player::resolveCollisionY() {
 	if (!isGrounded && wasGroundedLastFrame) {
 		coyoteTimer = COYOTE_TIME_LIMIT;
 		if (fallVelocity >= 0) fallVelocity = 0;
+	}
+	else {
+		coyoteTimer = 0.0;
 	}
 }
 

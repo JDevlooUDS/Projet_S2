@@ -118,7 +118,7 @@ private:
 	bool isJumpingFromDash = false;
 
 	double jumpBufferTimer = 0.0;
-	const double JUMP_BUFFER_LIMIT = 0.2;
+	const double JUMP_BUFFER_LIMIT = 0.1;
 
 	double dashBufferTimer = 0.0;
 	const double DASH_BUFFER_LIMIT = 0.2;
