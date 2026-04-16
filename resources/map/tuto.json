@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJztltEKgCAMRfeFRfXeQw\/2B0X08yklSAx1a+ICL9yXrLxHbasDgAn+qw7u\/Iv1WjnLF\/n8jUOHGgfALB+HrbYfNLm62D8uUd+pHGEeigdr83hM3MvhpHJs1ntBHwhnDpe27wNbpzPjOW0cXDWOsvL\/fbHxdx3RyJHK48bNy1o5YvU5rOO1OPyZmJBrsZwp53Bw+19sLcP5sHPC5aDuo8S80hyl+zTmsL9JzO\/edwG1ZnsH",
+         "data":"eJztlmEKgCAMhXdCo7xBP+wGRXT5lBREhjpztMAH709Wvs9sUwGAhv9KwZN\/td4+zvJGIf\/gkKHBIUuDgyZXFydvjvpO5YjzUDxbG++lcG8LJ5Vjtz4YfSKcNVzS\/g9sna6K56RxtGpw8Cqc+3LjaR2RyFHK48ZNYqkcufoc1\/GvOMKe0Mi1XM6Sazha+19uLeP5sH3SykH9jj3m7c3B3acxx\/2tx\/zufTd6snqp",
          "encoding":"base64",
          "height":20,
          "id":5,
@@ -13,6 +13,29 @@
          "type":"tilelayer",
          "visible":true,
          "width":50,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":11,
+         "name":"end",
+         "objects":[
+                {
+                 "gid":6,
+                 "height":32,
+                 "id":84,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":416,
+                 "y":160
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -116,8 +139,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":11,
- "nextobjectid":84,
+ "nextlayerid":12,
+ "nextobjectid":85,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.11.2",

@@ -177,6 +177,7 @@ void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
 		dashCount = 1;
 		coyoteTimer = 0;
 		jumpBufferTimer = 0;
+		dashBufferTimer = 0;
 	}
 
 	if (inputs.isDashPressedThisFrame) {
