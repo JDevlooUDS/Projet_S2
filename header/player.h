@@ -139,7 +139,7 @@ private:
 	float dashYVelocity;
 
 	double coyoteTimer = 0.0;
-	const double COYOTE_TIME_LIMIT = 0.1;
+	const double COYOTE_TIME_LIMIT = 0.15;
 	bool wasGroundedLastFrame = false;
 
 	const float MAX_ACCELERATION = 2;

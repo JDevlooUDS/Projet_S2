@@ -15,40 +15,36 @@
 #include "audioManager.h"
 #include "spike.h"
 #include "fallingStar.h"
-#include "deco.h"
 #include "QSlider"
 #include "QGraphicsProxyWidget"
 #include "game.h"
-#include "leaderboardManager.h"
 
-class PrisonScene : public BaseScene {
+class TutoScene : public BaseScene {
 	Q_OBJECT
 public:
-	PrisonScene();
-	~PrisonScene();
+	TutoScene();
+	~TutoScene();
 	void updateScene(double deltaTime, const Inputs& inputs) override;
 
 signals:
-	void setVolume(int volume);
+	void setVolume(int value);
 
 protected:
-	void loadMap();
 	void drawForeground(QPainter* painter, const QRectF& rect) override;
 	void drawBackground(QPainter* painter, const QRectF& rect) override;
 
 private:
 	void showEnd();
 	void showDeath();
+	void loadMap();
 	void showPause(const Inputs& inputs);
-
 	void cleanPause();
 
-	void replayGame();
-	void goToMenu();
 	void clickContinue();
+	void replayGame();
 	void clickSettings();
-	void displayDebugInfo(double deltaTime);
-
+	void goToMenu();
+	
 
 	Player* player = nullptr;
 	bool playerCollides = false;
@@ -94,7 +90,7 @@ private:
 	QGraphicsTextItem* title = nullptr;
 	QGraphicsTextItem* timeDisplay = nullptr;
 
-	vector<FallingStar*> fallingStars;	
+	vector<FallingStar*> fallingStars;
 
 	int lastFrameHp;
 

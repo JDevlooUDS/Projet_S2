@@ -198,7 +198,12 @@ void Player::manageNormalState(double deltaTime, const Inputs& inputs) {
 
 	if (xVelocity != 0 && !dashing && !jumping) setAnimation(RUN);
 	if (xVelocity == 0 && !dashing && !jumping) setAnimation(IDLE);
-	if (!dashing && !jumping && !isGrounded) setAnimation(FALL);
+	if (!dashing && !jumping && !isGrounded) {
+
+		fallTimer += deltaTime;
+		if (fallTimer >= FALL_TIMER_SPEED) setAnimation(FALL);
+	}
+	else fallTimer = 0.0;
 
 	manageAcceleration(deltaTime);
 	updateFlip(deltaTime);
@@ -245,6 +250,7 @@ void Player::moveDashY(double deltaTime) {
 }
 
 void Player::jump() {
+	if (jumping) return;
  	fallVelocity = JUMP_VELOCITY;
 	isGrounded = false;
 	jumping = true;
@@ -281,7 +287,7 @@ void Player::enableJump() {
 	jumpEnabled = true; 
 }
 
-void Player::ground() {//
+void Player::ground() {
 	if (!jumping && !dashing) isJumpingFromDash = false;
 	
 	isGrounded = true;
@@ -396,7 +402,7 @@ void Player::resolveCollisionY() {
 	if (wasGroundedLastFrame && dashing) ground();
 	if (!isGrounded && wasGroundedLastFrame) {
 		coyoteTimer = COYOTE_TIME_LIMIT;
-		fallVelocity = 0;
+		if (fallVelocity >= 0) fallVelocity = 0;
 	}
 }
 
@@ -645,15 +651,10 @@ void Player::manageCollision() {
 /*
 
 TODO:
-	Ajouter le background
-	Ajouter les menus
-	Ajouter un classement
+	Ajouter les checkpoints de temps avec indice sur mécanique
 	Mettre les voix de Alexis si je les recois
 
 BUGFIX:
 	Le personnage passe parfois au sol quand waveDash dans boost
-
-AUTRE:
-	trouver une facons d'enlever le scroll avec la souris dans la scene de jeu
-	manque de son
+	Le personnage préserve un wavedash apres avoir wavedash
 */

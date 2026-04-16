@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     Game game;
     game.resize(1220, 680); //1920, 1080
     SceneManager sceneManager(&game);
-    sceneManager.setScene(Prison);
+    sceneManager.setScene(Menu);
     game.show();
     return app.exec();
 }
