@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJztlmEKgCAMhXdCo7xBP+wGRXT5lBREhjpztMAH709Wvs9sUwGAhv9KwZN\/td4+zvJGIf\/gkKHBIUuDgyZXFydvjvpO5YjzUDxbG++lcG8LJ5Vjtz4YfSKcNVzS\/g9sna6K56RxtGpw8Cqc+3LjaR2RyFHK48ZNYqkcufoc1\/GvOMKe0Mi1XM6Sazha+19uLeP5sH3SykH9jj3m7c3B3acxx\/2tx\/zufTd6snqp",
+         "data":"eJztltEKgCAMRfeFRvUHPdgfFNHP50hBRNRZywVeOE8W3FO0pQBghv9Gwd1\/MayNuzyJ6989ZKR7yEr3oAXn4mDhmO9UD78PhdGgLVPm2hpPqsdm2Bk5Ip4lXtK+j9hzOgvuk+ZRm+7BG\/fflzoP54hEj1wfPNcBUj1S89mf4608SnZQrGeOEo\/a\/fdWR4oH9T1KAz249\/QX4L68AL\/efc0=",
          "encoding":"base64",
          "height":20,
          "id":5,
@@ -22,9 +22,9 @@
          "name":"end",
          "objects":[
                 {
-                 "gid":194,
+                 "gid":6,
                  "height":32,
-                 "id":85,
+                 "id":84,
                  "name":"",
                  "rotation":0,
                  "type":"",
@@ -78,7 +78,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJztw7ENAAAIAyD\/v6Knurs4GyGhCoCrMgLAF1nCRQ2a2geB",
+         "data":"eJztw0EJAAAIBDD7p7io\/sUC4garAuCqjADwRZZwXQNyjwWh",
          "encoding":"base64",
          "height":20,
          "id":7,
@@ -94,31 +94,7 @@
          "draworder":"topdown",
          "id":3,
          "name":"holes",
-         "objects":[
-                {
-                 "gid":7,
-                 "height":32,
-                 "id":75,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":960,
-                 "y":640
-                }, 
-                {
-                 "gid":7,
-                 "height":32,
-                 "id":76,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":992,
-                 "y":640
-                }],
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -127,7 +103,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJztw0EJAAAIBLDrn8tgfi6EyAZLAAAAfpuGyxYeDAGJ",
+         "data":"eJzt1qENAAAIBLGX7D8xhgFQGNrkdriET2oCAIAt\/wg3GgXvABk=",
          "encoding":"base64",
          "height":20,
          "id":10,
@@ -140,7 +116,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":86,
+ "nextobjectid":85,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.11.2",
@@ -162,10 +138,6 @@
         {
          "firstgid":9,
          "source":"..\/..\/..\/JeuV5\/resources\/map\/tileset_b.tsx"
-        }, 
-        {
-         "firstgid":189,
-         "source":"tilesets.tsx"
         }],
  "tilewidth":32,
  "type":"map",
