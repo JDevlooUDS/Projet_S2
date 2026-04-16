@@ -41,6 +41,20 @@ PrisonScene::PrisonScene() {
 	AudioManager::getInstance().updateMusic(MusicState::GAMEPLAY);
 	background = ResourceManager::getInstance().getBackground();
 
+	rankMessages['S'] = "Légende!";
+	rankMessages['A'] = "Éclair!";
+	rankMessages['B'] = "Bonne vitesse!";
+	rankMessages['C'] = "Pas mal!";
+	rankMessages['D'] = "T'as ton diplôme!";
+	rankMessages['E'] = "Trop lent...";
+
+	tipMessage['S'] = "";
+	tipMessage['A'] = "Technique ultime: Dash depuis le sol permet de buffer un jump et le dash est conservé";
+	tipMessage['B'] = "Technique 3: Dasher puis sauter d’un bloc de vitesse conserve le momentum, continuer de sauter permet de garder cette vitesse.";
+	tipMessage['C'] = "Technique 2: Aller sur des piques permet de passer par des endroits autrement inaccessibles.";
+	tipMessage['D'] = "Technique 1: Être dans un ralentisseur redonne le dash.";
+	tipMessage['E'] = "";
+
 }
 
 PrisonScene::~PrisonScene() {}
@@ -152,6 +166,7 @@ void PrisonScene::updateScene(double deltaTime, const Inputs& inputs) {
 
 	foreach(End * end, endZones) {
 		if (end->collidesWithItem(player)) {
+			rank = computeRank();
 			LeaderboardManager::getInstance().saveScore(static_cast<Game*>(view)->getPlayerName(), timer);
 			showEnd();
 			return;
@@ -201,7 +216,7 @@ void PrisonScene::showEnd() {
 	addItem(overlay);
 
 	// message
-	title = new QGraphicsTextItem("Ahh ouais beau gosse");
+	title = new QGraphicsTextItem(rankMessages[rank]);
 	title->setDefaultTextColor(Qt::yellow);
 	title->setFont(QFont("Arial", 36, QFont::Bold));
 
@@ -211,6 +226,17 @@ void PrisonScene::showEnd() {
 	title->setPos(titleX, titleY);
 	title->setZValue(11);
 	addItem(title);
+	// message
+	tip = new QGraphicsTextItem(tipMessage[rank]);
+	tip->setDefaultTextColor(Qt::yellow);
+	tip->setFont(QFont("Arial", 20, QFont::Bold));
+
+	qreal tipX = overlay->pos().x() + (width / 2) - (tip->boundingRect().width() / 2);
+	qreal tipY = title->pos().y() + 50;
+
+	tip->setPos(tipX, tipY);
+	tip->setZValue(11);
+	addItem(tip);
 
 	// temps
 	double finalTime = timer;
@@ -595,4 +621,8 @@ void PrisonScene::displayDebugInfo(double deltaTime) {
 	int hp = player->getHp();
 	QString health = QString::number(hp);
 	debugText(view, "Health : " + health, 90, 500);
+}
+
+char PrisonScene::computeRank() {
+	return 'D';
 }

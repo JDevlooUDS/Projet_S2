@@ -48,6 +48,7 @@ private:
 	void clickContinue();
 	void clickSettings();
 	void displayDebugInfo(double deltaTime);
+	char computeRank();
 
 
 	Player* player = nullptr;
@@ -92,6 +93,7 @@ private:
 
 	QGraphicsRectItem* overlay = nullptr;
 	QGraphicsTextItem* title = nullptr;
+	QGraphicsTextItem* tip = nullptr;
 	QGraphicsTextItem* timeDisplay = nullptr;
 
 	vector<FallingStar*> fallingStars;	
@@ -103,5 +105,8 @@ private:
 	QPixmap background;
 	QPixmap scaledBackground;
 	QSize lastSize;
+	QHash<char, QString> rankMessages;
+	QHash<char, QString> tipMessage;
+	char rank;
 
 };
