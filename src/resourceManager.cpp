@@ -47,79 +47,9 @@ bool ResourceManager::loadPrisonSceneResources(QString path) {
 	if (!loadTileSet(":/sprites/tilesets.png")) return false;  // jutilise pu mais imp pour avoir bon affichage
 	if (!loadTileSet(":/sprites/tileset_b.png")) return false;
 
-	loadMap(path);
-
-	QPixmap fallingStarTileSet;
-	fallingStarTileSet.load(":/sprites/falling_star.png");
-	if (fallingStarTileSet.isNull()) {
-		qDebug() << "Failed to load falling_star.png\n";
-		return false;
-	}
-	for (int i = 0; i < (480 / TILE_SIZE); i++) {
-		QPixmap sprite = fallingStarTileSet.copy(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
-		fallingStarAnimation.push_back(sprite);
-	}
-
-	return true;
-}
-
-bool ResourceManager::loadPlayerSprites() {
-	QPixmap sheet;
-	sheet.load(":/sprites/Run_Voltron.png");
-
-	if (sheet.isNull()) return false;
-
-	int frameQuantity = sheet.width() / 48;
-
-	for (int i = 0; i < frameQuantity; i++) {
-		QPixmap frame = sheet.copy(i * 48, 0, 48,48);
-		runAnimation.push_back(frame);
-	}
-
-	sheet.load(":/sprites/dash.png");
-	if (sheet.isNull()) return false;
-
-	frameQuantity = sheet.width() / 48;
-
-	for (int i = 0; i < frameQuantity; i++) {
-		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
-		dashAnimation.push_back(frame);
-	}
-
-	sheet.load(":/sprites/jump.png");
-	if (sheet.isNull()) return false;
-
-	frameQuantity = sheet.width() / 48;
-
-	for (int i = 0; i < frameQuantity; i++) {
-		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
-		jumpAnimation.push_back(frame);
-	}
-
-	sheet.load(":/sprites/idle.png");
-	if (sheet.isNull()) return false;
-
-	frameQuantity = sheet.width() / 48;
-
-	for (int i = 0; i < frameQuantity; i++) {
-		QPixmap frame = sheet.copy(i * 48, 0, 48, 48);
-		idleAnimation.push_back(frame);
-	}
-
-	return true;
-}
-
-bool ResourceManager::loadMenuResources() {
-	QPixmap sprite("./resources/sprites/Space_background.png");
-	if (sprite.isNull()) {
-		qDebug() << "failed to load the background\n";
-		return false;
-	}
-	background = sprite.copy();
-}
-
-bool ResourceManager::loadMap(QString path) {
-	QFile file(path);
+	//QFile file(":/map/tuto.json");
+	//QFile file("C:/Users/capro/OneDrive - USherbrooke/S2/P3/JeuV6/resources/map/compet.json");
+	QFile file(":/map/compet.json");
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
 	}

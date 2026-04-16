@@ -110,6 +110,7 @@ private:
 
 	float facingRight = true;
 	float flipHoldTime = 0.0f;
+	bool lastFacingRight = true;
 
 	double dashTimer = 0.0;
 	const double DASH_LIMIT = 0.15; //longeur dash
@@ -118,6 +119,10 @@ private:
 
 	double jumpBufferTimer = 0.0;
 	const double JUMP_BUFFER_LIMIT = 0.2;
+
+	double dashBufferTimer = 0.0;
+	const double DASH_BUFFER_LIMIT = 0.2;
+	Inputs bufferedDashInputs;
 
 	float fallVelocity = BASE_FALL_VELOCITY;
 	float fallSpeedMultiplier = 1.0f;
@@ -129,6 +134,7 @@ private:
 	int dashCount = 1;
 	const float DASH_MULTIPLIER = 2.8f; //longueur dash
 	const float WAVE_DASH_MULTIPLIER = 1.2f;
+	const float MINI_WAVE_DASH_MULTIPLIER = 1.3f; // wavedash sur sol normal
 	float dashXVelocity;
 	float dashYVelocity;
 
@@ -173,10 +179,7 @@ private:
 
 	bool inBoost = false;
 	double inBoostBuffer = 0.0;
-	const double BOOST_BUFFER_LIMIT = 0.1;
-
-	bool wasJumpPressed = false;
-
-	double fallTimer = 0.0;
-	const double FALL_TIMER_SPEED = 0.1;
+	const double BOOST_BUFFER_LIMIT = 0.8;
+	bool hadDashBeforeTrap = false;
+	bool wasTouchingTrap = false;
 };
