@@ -232,7 +232,7 @@ void PrisonScene::showEnd() {
 	// message
 	tip = new QGraphicsTextItem(tipMessage[rank]);
 	tip->setDefaultTextColor(Qt::yellow);
-	tip->setFont(QFont("Arial", 16, QFont::Bold));
+	tip->setFont(QFont("Arial", 10, QFont::Bold));
 
 	qreal tipX = overlay->pos().x() + (width / 2) - (tip->boundingRect().width() / 2);
 	qreal tipY = title->pos().y() + 50;
@@ -529,6 +529,8 @@ void PrisonScene::loadMap() {
 			item = new Deco();
 			item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
 			item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+			item->setEnabled(false);
+			item->setFlag(QGraphicsItem::ItemHasNoContents);
 		}
 		else continue;
 		item->setPos(tile.getXPosition(), tile.getYPosition());
@@ -629,5 +631,9 @@ void PrisonScene::displayDebugInfo(double deltaTime) {
 }
 
 char PrisonScene::computeRank() {
-	return 'D';
+	if (timer <= 30.0) return 'S';
+	if (timer <= 45.0) return 'A';
+	if (timer <= 60.0) return 'B';
+	if (timer <= 90.0) return 'C';
+	if (timer <= 120.0) return 'D';
 }

@@ -37,7 +37,7 @@ bool ResourceManager::loadPrisonSceneResources(QString path) {
 	if (filledHealth.isNull() || emptyHealth.isNull()) return false;
 
 	QPixmap fallingStarTileset("./resources/sprites/falling_star.png");
-	for (int i = 0; i < TILE_SIZE * fallingStarTileset.width(); i++) {
+	for (int i = 0; i < fallingStarTileset.width()/TILE_SIZE; i++) {
 		QPixmap sprite = fallingStarTileset.copy(i*TILE_SIZE,0,TILE_SIZE,TILE_SIZE);
 		fallingStarAnimation.push_back(sprite);
 	}
@@ -86,7 +86,7 @@ bool ResourceManager::loadPrisonSceneResources(QString path) {
 						QJsonObject obj = objects[0].toObject();
 						playerSpawnPoint = QPointF(
 							obj.value("x").toDouble(),
-							obj.value("y").toDouble() - 200
+							obj.value("y").toDouble() - 500
 						);
 					}
 					continue;
